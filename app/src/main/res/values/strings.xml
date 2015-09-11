@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Brings</string>
+    <string name="b_search">Search &#032; &#032;</string>
+    <string name="tv_name">Name</string>
+    <string name="tv_date">Date</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_home">Home</string>
+    <string name="action_edit">Edit</string>
+
+    <string name="tv_name_title">Event Name</string>
+    <string name="tv_place_title">Place</string>
+    <string name="tv_start_title">Start</string>
+    <string name="tv_end_title">End</string>
+    <string name="tv_description_title">Description</string>
+    <string name="tv_pic_title">Picture</string>
+    <string name="bt_pic_ui">Load Picture</string>
+    <string name="bt_create_event_ui">Create Event</string>
+    <string name="bt_save_ui">Save</string>
+    <string name="bt_cancel_ui">Cancel</string>
+
+
+    <string name="tv_yes_title">Yes:</string>
+    <string name="tv_maybe_title">Maybe: </string>
+    <string name="tv_no_title">No: </string>
+
+    <string name="tv_attending_name">Name</string>
+
+    <string name="tv_checked_title">Checked:</string>
+    <string name="tv_unchecked_title">Unchecked:</string>
+    <string name="title_activity2">Brings</string>
+
+    <string name="title_section1">Main</string>
+    <string name="title_section2">Attending</string>
+    <string name="title_section3">Todo</string>
+    <string name="title_section4">Chat</string>
+
+    <string name="hello_world">Hello world!</string>
+
+</resources>

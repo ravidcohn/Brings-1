@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1" >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bt_save_ui"
+            android:id="@+id/bt_ee_save_ui"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/tv_ee_description_tit"
+            android:layout_toEndOf="@+id/tv_ee_description_tit" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/et_ee_name_ui"
+            android:layout_alignTop="@+id/tv_ee_name_tit"
+            android:layout_toRightOf="@+id/tv_ee_name_tit"
+            android:layout_toEndOf="@+id/tv_ee_name_tit"
+            android:layout_marginLeft="25dp"
+            android:layout_marginStart="25dp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="date|datetime"
+            android:focusableInTouchMode="false"
+            android:imeOptions="actionDone"
+            android:ems="10"
+            android:id="@+id/et_ee_start_ui"
+            android:layout_alignBottom="@+id/tv_ee_start_tit"
+            android:layout_alignLeft="@+id/et_ee_name_ui"
+            android:layout_alignStart="@+id/et_ee_name_ui" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="date|datetime"
+            android:imeOptions="actionDone"
+            android:focusableInTouchMode="false"
+            android:ems="10"
+            android:id="@+id/et_ee_end_ui"
+            android:layout_alignBottom="@+id/tv_ee_end_tit"
+            android:layout_alignLeft="@+id/et_ee_start_ui"
+            android:layout_alignStart="@+id/et_ee_start_ui" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:imeOptions="actionDone"
+            android:id="@+id/et_ee_description_ui"
+            android:layout_alignBottom="@+id/tv_ee_description_tit"
+            android:layout_alignLeft="@+id/et_ee_end_ui"
+            android:layout_alignStart="@+id/et_ee_end_ui" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/et_ee_place_ui"
+            android:layout_alignTop="@+id/tv_ee_place_tit"
+            android:layout_alignLeft="@+id/et_ee_name_ui"
+            android:layout_alignStart="@+id/et_ee_name_ui" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/tv_place_title"
+            android:id="@+id/tv_ee_place_tit"
+            android:layout_weight="0.05"
+            android:layout_marginTop="41dp"
+            android:layout_below="@+id/tv_ee_name_tit"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/tv_name_title"
+            android:id="@+id/tv_ee_name_tit"
+            android:layout_marginTop="27dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/tv_start_title"
+            android:id="@+id/tv_ee_start_tit"
+            android:layout_marginTop="51dp"
+            android:layout_below="@+id/tv_ee_place_tit"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/tv_ee_name_tit"
+            android:layout_alignEnd="@+id/tv_ee_name_tit" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/tv_end_title"
+            android:id="@+id/tv_ee_end_tit"
+            android:layout_below="@+id/tv_ee_start_tit"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="45dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/tv_description_title"
+            android:id="@+id/tv_ee_description_tit"
+            android:layout_below="@+id/tv_ee_end_tit"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="49dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bt_cancel_ui"
+            android:id="@+id/bt_ee_cancel_ui"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/bt_ee_save_ui"
+            android:layout_toEndOf="@+id/bt_ee_save_ui" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ib_ee_pic_ui"
+            android:src="@drawable/ic_insert_photo_black_48dp"
+            android:layout_alignRight="@+id/bt_ee_cancel_ui"
+            android:layout_alignEnd="@+id/bt_ee_cancel_ui"
+            android:layout_below="@+id/et_ee_description_ui" />
+    </RelativeLayout>
+</LinearLayout>
