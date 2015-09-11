@@ -75,11 +75,7 @@ public class edit_event extends AppCompatActivity {
             public void onClick(View v) {
                 boolean ok = saveData();
                 if(ok) {
-                    Bundle b = new Bundle();
-                    b.putInt("ID", ID);
-                    b.putString("USERNAME",USERNAME);
-                    tabs2.putExtras(b);
-                    startActivityForResult(tabs2, 2);
+                    finish();
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"only description can by empty..",Toast.LENGTH_SHORT).show();
@@ -92,11 +88,7 @@ public class edit_event extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Bundle b = new Bundle();
-                b.putInt("ID", ID);
-                b.putString("USERNAME",USERNAME);
-                tabs2.putExtras(b);
-                startActivityForResult(tabs2,2);
+                finish();
             }
 
         });

@@ -74,7 +74,8 @@ public class newEvent extends AppCompatActivity {
                     b.putString("USERNAME",USERNAME);
                     tabs2.putExtras(b);
                         // startActivity(tabs);
-                        startActivityForResult(tabs2, 2);
+                        startActivity(tabs2);
+                    finish();
                     }
                    else{
                         Toast.makeText(getApplicationContext(),"only description can by empty..",Toast.LENGTH_SHORT).show();
@@ -241,9 +242,6 @@ public class newEvent extends AppCompatActivity {
                 Bitmap thumbnail =  bitmapHelper.decodeSampledBitmapFromFile(picturePath, 100, 100);//(BitmapFactory.decodeFile(picturePath));
                 iv_ne_pic_ui.setImageBitmap(thumbnail);
             }
-        }
-        else{
-            finish();
         }
     }
 
