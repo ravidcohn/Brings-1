@@ -18,6 +18,7 @@
         </activity>
         <activity android:name=".newEvent" />
         <activity android:name=".edit_event" />
+        <activity android:name=".newTask" />
       <!--  <activity android:name=".tab" />  -->
         <activity android:name=".tab2"/>
     </application>

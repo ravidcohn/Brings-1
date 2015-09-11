@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/tv_task_title"
+            android:id="@+id/tv_nt_task_tit"
+            android:layout_alignBottom="@+id/et_nt_task_ui"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/tv_description_title"
+            android:id="@+id/tv_nt_description_tit"
+            android:layout_weight="0.05"
+            android:layout_marginTop="52dp"
+            android:layout_below="@+id/tv_nt_task_tit"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/et_nt_description_ui"
+            android:layout_alignBottom="@+id/tv_nt_description_tit"
+            android:layout_alignLeft="@+id/bt_nt_create_task_ui"
+            android:layout_alignStart="@+id/bt_nt_create_task_ui" />
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bt_create_task_ui"
+            android:id="@+id/bt_nt_create_task_ui"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="43dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/et_nt_task_ui"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/et_nt_description_ui"
+        android:layout_alignStart="@+id/et_nt_description_ui"
+        android:layout_marginTop="45dp" />
+
+</RelativeLayout>

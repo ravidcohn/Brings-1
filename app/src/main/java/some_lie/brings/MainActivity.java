@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
         //db.execSQL("DROP TABLE Events");
         db.execSQL("create table if not exists Events(ID varchar NOT NULL primary key,Name varchar NOT NULL,Place VARCHAR NOT NULL,Start DATE not null,End Date not null,Description varchar,imagePath varchar)");
+        db.execSQL("create table if not exists Tasks(ID varchar NOT NULL ,Task varchar NOT NULL,Description varchar, Name varchar)");
         Cursor c = db.rawQuery("select * from Events;", null);
         while (c.moveToNext()) {
             String[] s = c.getString(0).split(" - ");
