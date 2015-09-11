@@ -42,6 +42,12 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
     ViewPager mViewPager;
     private static int ID;
     private static String USERNAME;
+    private static TextView name;
+    private static TextView place;
+    private static TextView start;
+    private static TextView end;
+    private static TextView description;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +112,9 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
         switch (item.getItemId()) {
             case R.id.action_home:
                 final Intent home =  new Intent(this,MainActivity.class);
-                startActivityForResult(home,1);
+                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(home);
+
             //    return true;
             //noinspection SimplifiableIfStatement
             case R.id.action_settings:
@@ -117,18 +125,9 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                 b.putInt("ID", ID);
                 b.putString("USERNAME",USERNAME);
                 edit.putExtras(b);
-                startActivityForResult(edit, 2);
+                startActivityForResult(edit, 1);
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-        }
-        else{
-            finish();
         }
     }
 
@@ -188,16 +187,31 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
         }
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == 1) {
+                SQLiteDatabase db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
+                Cursor c = db.rawQuery("select * from Events where ID = '" + USERNAME + " - " + ID + "';", null);
+                c.moveToFirst();
+                name.setText(c.getString(1));
+                place.setText(c.getString(2));
+                start.setText(c.getString(3));
+                end.setText(c.getString(4));
+                description.setText(c.getString(5));
+                c.close();
+                db.close();
+            }
+    }
+
+                /**
+                 * A placeholder fragment containing a simple view.
+                 */
     public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
-
         /**
          * Returns a new instance of this fragment for the given section
          * number.
@@ -219,16 +233,13 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
             SQLiteDatabase db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
             Cursor c = db.rawQuery("select * from Events where ID = '" + USERNAME + " - " + ID + "';", null);
             c.moveToFirst();
-
             switch(this.getArguments().getInt(ARG_SECTION_NUMBER)){
                 case 1:{
-                    TextView name = (TextView)rootView.findViewById(R.id.tv_em_name_ui);
-                    TextView place = (TextView)rootView.findViewById(R.id.tv_em_place_ui);
-                    TextView start = (TextView)rootView.findViewById(R.id.tv_em_start_ui);
-                    TextView end = (TextView)rootView.findViewById(R.id.tv_em_end_ui);
-                    TextView description = (TextView)rootView.findViewById(R.id.tv_em_description_ui);
-
-
+                    name = (TextView)rootView.findViewById(R.id.tv_em_name_ui);
+                    place = (TextView)rootView.findViewById(R.id.tv_em_place_ui);
+                    start = (TextView)rootView.findViewById(R.id.tv_em_start_ui);
+                    end = (TextView)rootView.findViewById(R.id.tv_em_end_ui);
+                    description = (TextView)rootView.findViewById(R.id.tv_em_description_ui);
                     name.setText(c.getString(1));
                     place.setText(c.getString(2));
                     start.setText(c.getString(3));
@@ -237,7 +248,6 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                     break;
                 }
                 case 2:{
-
                     break;
                 }
                 case 3:{

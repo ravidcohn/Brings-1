@@ -178,18 +178,9 @@ public class MainActivity extends AppCompatActivity {
                 data.putInt("ID", IDS.get(position));
                 data.putString("USERNAME", users_names.get(position));
                 tabs.putExtras(data);
-                startActivityForResult(tabs, 1);
+                startActivity(tabs);
             }
         });
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-        }
-        else{
-            finish();
-        }
     }
 
     private class StableArrayAdapter extends BaseAdapter implements View.OnClickListener {
