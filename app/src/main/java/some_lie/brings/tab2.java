@@ -252,12 +252,16 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                     bt_etd_add_task.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Bundle b
                             final Intent task = new Intent(getActivity().getApplicationContext(),newTask.class);
+                            Bundle data = new Bundle();
+                            data.putInt("ID", ID);
+                            data.putString("USERNAME", USERNAME);
+                            task.putExtras(data);
+                            startActivity(task);
 
                         }
                     });
-                    setList(rootView);
+                    //setList(rootView);
                     break;
                 }
                 case 4:{
@@ -270,7 +274,7 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
             c.close();
             return rootView;
         }
-
+        /*
         private void setList(View rootView) {
             //users_names.clear();
             //IDS.clear();
@@ -323,10 +327,11 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
             });
 
             listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+            */
                 /**
                  *  starts the Register class for specific course when clicked on in the list
                  */
+                /*
                 @Override
                 public void onItemClick(final AdapterView<?> parent, final View view, final int position, long id) {
                     Bundle data = new Bundle();
@@ -386,6 +391,7 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
 
             }
         }
+        */
     }
 
 
