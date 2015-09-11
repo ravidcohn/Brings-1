@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Switch;
@@ -259,11 +260,11 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                     break;
                 }
                 case 3:{
-                    Button bt_etd_add_task = (Button) rootView.findViewById(R.id.bt_etd_add_task);
+                    ImageButton bt_etd_add_task = (ImageButton) rootView.findViewById(R.id.bt_etd_add_task);
                     bt_etd_add_task.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            final Intent task = new Intent(getActivity().getApplicationContext(),newTask.class);
+                            final Intent task = new Intent(getActivity().getApplicationContext(), newTask.class);
                             Bundle data = new Bundle();
                             data.putInt("ID", ID);
                             data.putString("USERNAME", USERNAME);
