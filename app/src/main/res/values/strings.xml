@@ -34,6 +34,9 @@
     <string name="title_section3">Todo</string>
     <string name="title_section4">Chat</string>
 
+    <string name="tv_task_title">Task</string>
+    <string name="bt_create_task_ui">Create Taskk</string>
+
     <string name="hello_world">Hello world!</string>
 
 </resources>
