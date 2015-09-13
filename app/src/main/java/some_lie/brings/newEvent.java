@@ -70,8 +70,9 @@ public class newEvent extends AppCompatActivity {
                 boolean ok = saveData();
                 if(ok) {
                     Bundle b = new Bundle();
-                    b.putInt("ID", ID);
-                    b.putString("USERNAME",USERNAME);
+                    b.putString("KEY", USERNAME + " - " + ID);
+                    //b.putInt("ID", ID);
+                    //b.putString("USERNAME",USERNAME);
                     tabs2.putExtras(b);
                         // startActivity(tabs);
                         startActivity(tabs2);
