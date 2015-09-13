@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/tv_task_title"
+        android:id="@+id/tv_et_task_tit"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/tv_description_title"
+        android:id="@+id/tv_et_description_tit"
+        android:layout_weight="0.05"
+        android:layout_marginTop="52dp"
+        android:layout_below="@+id/tv_et_task_tit"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/tv_et_task_info"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/tv_et_description_tit"
+        android:layout_toEndOf="@+id/tv_et_description_tit"
+        android:layout_marginLeft="56dp"
+        android:layout_marginStart="56dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/tv_et_description_info"
+        android:layout_alignBottom="@+id/tv_et_description_tit"
+        android:layout_alignRight="@+id/tv_et_task_info"
+        android:layout_alignEnd="@+id/tv_et_task_info" />
+
+</RelativeLayout>

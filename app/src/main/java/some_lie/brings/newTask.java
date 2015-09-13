@@ -35,6 +35,7 @@ public class newTask extends AppCompatActivity {
     private int ID;
     private String imagePath = "";
     private String USERNAME = "user 1";//TODO
+    private String KEY;
 
 
     @Override
@@ -45,8 +46,9 @@ public class newTask extends AppCompatActivity {
         et_nt_description_ui = (EditText)findViewById(R.id.et_nt_description_ui);
         bt_nt_create_task_ui = (Button)findViewById(R.id.bt_nt_create_task_ui);
         Bundle b = getIntent().getExtras();
-        ID = b.getInt("ID");
-        USERNAME = b.getString("USERNAME");
+        //ID = b.getInt("ID");
+        //USERNAME = b.getString("USERNAME");
+        KEY = b.getString("KEY");
         bt_nt_create_task_ui.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -67,12 +69,25 @@ public class newTask extends AppCompatActivity {
         if(et_nt_task_ui.getText().length() > 0) {
             ok = true;
             db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
-            int id = 0;
-            String key = USERNAME + " - "+id;
+            int task_id = 0;
+            String task_key = KEY + " - " + task_id;
+            ArrayList<String> allIDS = new ArrayList<>();
+            Cursor c = db.rawQuery("select * from Tasks;", null);
+            while (c.moveToNext()){
+                String t_id = c.getString(0);
+                allIDS.add(t_id);
+            }
+            while (allIDS.contains(task_key)){
+                task_id++;
+                task_key = KEY + " - "+task_id;
+            }
+            ID = task_id;
             String task = et_nt_task_ui.getText().toString();
             String description = et_nt_description_ui.getText().toString();
+            String name = "";
 
-            db.execSQL("insert into Tasks values('"+key+"','" + task + "','" + description+"');");
+            db.execSQL("insert into Tasks values('"+task_key+"','" + task + "','" + description + "','" + name + "');");
+            c.close();
             db.close();
         }
         return ok;

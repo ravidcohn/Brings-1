@@ -45,6 +45,7 @@ public class edit_event extends AppCompatActivity {
     private Button bt_ee_cancel_ui;
     private SQLiteDatabase db;
     private int ID;
+    private String KEY;
     private String imagePath = "";
     private String USERNAME = "user 1";//TODO
 
@@ -63,9 +64,10 @@ public class edit_event extends AppCompatActivity {
         bt_ee_cancel_ui = (Button)findViewById(R.id.bt_ee_cancel_ui);
         //store value
         Bundle b = getIntent().getExtras();
-        ID = b.getInt("ID");
-        USERNAME = b.getString("USERNAME");
-        store_value(ID, USERNAME);
+        //ID = b.getInt("ID");
+        //USERNAME = b.getString("USERNAME");
+        KEY = b.getString("KEY");
+        store_value();
 
         //final Intent tabs = new Intent(this,tab.class);
         final Intent tabs2 = new Intent(this,tab2.class);
@@ -96,11 +98,12 @@ public class edit_event extends AppCompatActivity {
         setOnClick();
     }
 
-    private void store_value(int id, String username) {
+    private void store_value() {
 
 
         SQLiteDatabase db =  db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
-        Cursor c = db.rawQuery("select * from Events where ID = '" + USERNAME + " - " + ID + "';", null);
+        //Cursor c = db.rawQuery("select * from Events where ID = '" + USERNAME + " - " + ID + "';", null);
+        Cursor c = db.rawQuery("select * from Events where ID = '" + KEY+ "';", null);
         c.moveToFirst();
         imagePath = c.getString(6);
 
@@ -120,7 +123,7 @@ public class edit_event extends AppCompatActivity {
             ok = true;
             db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
             int id = ID;
-            String key = USERNAME + " - "+id;
+            //String key = USERNAME + " - "+id;
             /*
             ArrayList<String> allIDS = new ArrayList<>();
             Cursor c = db.rawQuery("select * from Events;", null);
@@ -139,7 +142,7 @@ public class edit_event extends AppCompatActivity {
             String start = et_ee_start_ui.getText().toString();
             String end = et_ee_end_ui.getText().toString();
             String description = et_ee_description_ui.getText().toString();
-            db.execSQL("update Events set Name = '" + name + "', place = '" + place + "', start = '" + start + "', end = '" + end + "', description = '" + description+ "', imagePath = '" + imagePath + "' where ID = '" + key + "';");
+            db.execSQL("update Events set Name = '" + name + "', place = '" + place + "', start = '" + start + "', end = '" + end + "', description = '" + description+ "', imagePath = '" + imagePath + "' where ID = '" + KEY + "';");
  //           db.execSQL("update into Events values('" + USERNAME + " - " + id + "','" + name + "','" + place + "','" + start + "','" + end + "','" + description + "','"+imagePath+"');");
             //c.close();
             db.close();
