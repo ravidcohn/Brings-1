@@ -424,8 +424,8 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
             db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
             //db.execSQL("DROP TABLE Events");
             db.execSQL("create table if not exists Tasks(ID varchar NOT NULL,TaskNumber number NOT NULL,Task varchar NOT NULL,Description varchar, Name varchar)");
-            //Cursor c = db.rawQuery("select * from Tasks where ID = '" + KEY + "';", null);
-            Cursor c = db.rawQuery("select * from Tasks;",null);
+            Cursor c = db.rawQuery("select * from Tasks where ID = '" + KEY + "';", null);
+        //    Cursor c = db.rawQuery("select * from Tasks;",null);
             while (c.moveToNext()) {
                 Toast.makeText(getContext(),c.getString(0)+" "+c.getString(1)+" "+c.getString(2)+" "+c.getString(3),Toast.LENGTH_LONG).show();
 
