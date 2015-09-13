@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Switch;
@@ -259,11 +260,11 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                     break;
                 }
                 case 3:{
-                    Button bt_etd_add_task = (Button) rootView.findViewById(R.id.bt_etd_add_task);
+                    ImageButton bt_etd_add_task = (ImageButton) rootView.findViewById(R.id.bt_etd_add_task);
                     bt_etd_add_task.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Bundle b
+                            //Bundle b
                             final Intent task = new Intent(getActivity().getApplicationContext(),newTask.class);
 
                         }
@@ -309,11 +310,11 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
-                                    String key = users_names.get(pos) + " - " + IDS.get(pos);
-                                    db.execSQL("delete from Events where ID = '" + key + "';");
-                                    setList();
-                                    db.close();
+                                    //db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
+                                    //String key = users_names.get(pos) + " - " + IDS.get(pos);
+                                    //db.execSQL("delete from Events where ID = '" + key + "';");
+                                    //setList();
+                                    //db.close();
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -341,8 +342,8 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                 @Override
                 public void onItemClick(final AdapterView<?> parent, final View view, final int position, long id) {
                     Bundle data = new Bundle();
-                    data.putInt("ID", IDS.get(position));
-                    data.putString("USERNAME", users_names.get(position));
+       //             data.putInt("ID", IDS.get(position));
+        //            data.putString("USERNAME", users_names.get(position));
                     tabs.putExtras(data);
                     startActivityForResult(tabs, 1);
                 }
@@ -365,7 +366,7 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                 TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
                 TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
 
-                db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
+       /*         db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
                 Cursor c = db.rawQuery("select * from Events where ID = '" + users_names.get(position) + " - " + IDS.get(position) + "';", null);
                 c.moveToFirst();
                 tvName.setText(c.getString(1));
@@ -373,17 +374,17 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                 iv.setImageBitmap(bitmapHelper.decodeSampledBitmapFromFile(c.getString(6), 100, 100));
                 c.close();
                 db.close();
-
+*/
                 return convertView;
             }
 
             public int getCount() {
-                return IDS.size();
+                return 0;//IDS.size();
             }
 
             @Override
             public Object getItem(int position) {
-                String s = users_names.get(position)+" - "+IDS.get(position);
+                String s = "";//users_names.get(position)+" - "+IDS.get(position);
                 return s;
             }
 
