@@ -320,7 +320,8 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    db = SQLiteDatabase.openOrCreateDatabase("_edata", SQLiteDatabase.MODE_PRIVATE, null);
+                                    String path = "/data/data/some_lie.brings/databases/_edata";
+                                    db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
                                     String task_key = Tasks_keys.get(pos);
                                     db.execSQL("delete from Tasks where ID = '" + task_key + "';");
                                     setList(rootView);
@@ -378,7 +379,8 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                 TextView task_friend = (TextView) convertView.findViewById(R.id.tv_etd_list_item_frind_tit);
                 CheckBox task_do = (CheckBox) convertView.findViewById(R.id.cb_etd_list_item_task);
 
-                db = SQLiteDatabase.openOrCreateDatabase("_edata", MODE_PRIVATE, null);
+                String path = "/data/data/some_lie.brings/databases/_edata";
+                db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
                 Cursor c = db.rawQuery("select * from Tasks where ID = '" + Tasks_keys.get(position) + "';", null);
                 c.moveToFirst();
                 task_tit.setText(c.getString(1));
@@ -419,8 +421,8 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
 
         private void sql() {
             final Context context = getActivity().getApplicationContext();
-            db = SQLiteDatabase.openOrCreateDatabase("_edata", context.MODE_PRIVATE, null);
-            //db.execSQL("DROP TABLE Events");
+            String path = "/data/data/some_lie.brings/databases/_edata";
+            db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);            //db.execSQL("DROP TABLE Events");
             db.execSQL("create table if not exists Tasks(ID varchar NOT NULL primary key,Task varchar NOT NULL,Description varchar, Name varchar)");
             Cursor c = db.rawQuery("select * from Tasks;", null);
             while (c.moveToNext()) {
