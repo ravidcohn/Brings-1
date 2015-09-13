@@ -57,6 +57,8 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
     private static TextView description;
     private static ArrayList<String> Tasks_keys;
     private static SQLiteDatabase db;
+    final private static String path = "/data/data/some_lie.brings/databases/_edata";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,7 +245,6 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(layouts[this.getArguments().getInt(ARG_SECTION_NUMBER) - 1], container, false);//R.layout.fragment_tab2
-            String path = "/data/data/some_lie.brings/databases/_edata";
             db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
             //Cursor c = db.rawQuery("select * from Events where ID = '" + USERNAME + " - " + ID + "';", null);
             Cursor c = db.rawQuery("select * from Events where ID = '" + KEY + "';", null);
@@ -320,7 +321,6 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    String path = "/data/data/some_lie.brings/databases/_edata";
                                     db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
                                     String task_key = Tasks_keys.get(pos);
                                     db.execSQL("delete from Tasks where ID = '" + task_key + "';");
@@ -379,7 +379,6 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                 TextView task_friend = (TextView) convertView.findViewById(R.id.tv_etd_list_item_frind_tit);
                 CheckBox task_do = (CheckBox) convertView.findViewById(R.id.cb_etd_list_item_task);
 
-                String path = "/data/data/some_lie.brings/databases/_edata";
                 db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
                 Cursor c = db.rawQuery("select * from Tasks where ID = '" + Tasks_keys.get(position) + "';", null);
                 c.moveToFirst();
@@ -421,8 +420,8 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
 
         private void sql() {
             final Context context = getActivity().getApplicationContext();
-            String path = "/data/data/some_lie.brings/databases/_edata";
-            db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);            //db.execSQL("DROP TABLE Events");
+            db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+            //db.execSQL("DROP TABLE Events");
             db.execSQL("create table if not exists Tasks(ID varchar NOT NULL primary key,Task varchar NOT NULL,Description varchar, Name varchar)");
             Cursor c = db.rawQuery("select * from Tasks;", null);
             while (c.moveToNext()) {
