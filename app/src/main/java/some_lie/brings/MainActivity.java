@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
         //db.execSQL("DROP TABLE Events");
         db.execSQL("create table if not exists Events(ID varchar NOT NULL primary key,Name varchar NOT NULL,Place VARCHAR NOT NULL,Start DATE not null,End Date not null,Description varchar,imagePath varchar)");
-        db.execSQL("create table if not exists Tasks(ID varchar NOT NULL ,Task varchar NOT NULL,Description varchar, Name varchar)");
         Cursor c = db.rawQuery("select * from Events;", null);
         while (c.moveToNext()) {
             String[] s = c.getString(0).split(" - ");
@@ -176,8 +175,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(final AdapterView<?> parent, final View view, final int position, long id) {
                 Bundle data = new Bundle();
-                data.putInt("ID", IDS.get(position));
-                data.putString("USERNAME", users_names.get(position));
+                //data.putInt("ID", IDS.get(position));
+                //data.putString("USERNAME", users_names.get(position));
+                data.putString("KEY", users_names.get(position) + " - " + IDS.get(position));
                 tabs.putExtras(data);
                 startActivity(tabs);
             }

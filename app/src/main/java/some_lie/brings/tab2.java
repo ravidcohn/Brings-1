@@ -24,13 +24,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
 
@@ -49,22 +47,26 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-    private static int ID;
-    private static String USERNAME;
+    //private static int ID;
+    //private static String USERNAME;
+    private static String KEY;
     private static TextView name;
     private static TextView place;
     private static TextView start;
     private static TextView end;
     private static TextView description;
-
+    private static ArrayList<String> Tasks_keys;
+    private static SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tab2);
         Bundle b = getIntent().getExtras();
-        ID = b.getInt("ID");
-        USERNAME = b.getString("USERNAME");
+        //ID = b.getInt("ID");
+        //USERNAME = b.getString("USERNAME");
+        KEY = b.getString("KEY");
+        Tasks_keys = new ArrayList<>();
 
 
 
@@ -131,8 +133,9 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
             case R.id.action_edit:
                 final Intent edit =  new Intent(this,edit_event.class);
                 Bundle b = new Bundle();
-                b.putInt("ID", ID);
-                b.putString("USERNAME",USERNAME);
+                //b.putInt("ID", ID);
+                //b.putString("USERNAME",USERNAME);
+                b.putString("KEY", KEY);
                 edit.putExtras(b);
                 startActivityForResult(edit, 1);
             default:
@@ -200,7 +203,8 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
         super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == 1) {
                 SQLiteDatabase db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
-                Cursor c = db.rawQuery("select * from Events where ID = '" + USERNAME + " - " + ID + "';", null);
+                //Cursor c = db.rawQuery("select * from Events where ID = '" + USERNAME + " - " + ID + "';", null);
+                Cursor c = db.rawQuery("select * from Events where ID = '" + KEY + "';", null);
                 c.moveToFirst();
                 name.setText(c.getString(1));
                 place.setText(c.getString(2));
@@ -216,6 +220,7 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                  * A placeholder fragment containing a simple view.
                  */
     public static class PlaceholderFragment extends Fragment {
+
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -239,8 +244,9 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(layouts[this.getArguments().getInt(ARG_SECTION_NUMBER) - 1], container, false);//R.layout.fragment_tab2
             String path = "/data/data/some_lie.brings/databases/_edata";
-            SQLiteDatabase db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-            Cursor c = db.rawQuery("select * from Events where ID = '" + USERNAME + " - " + ID + "';", null);
+            db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+            //Cursor c = db.rawQuery("select * from Events where ID = '" + USERNAME + " - " + ID + "';", null);
+            Cursor c = db.rawQuery("select * from Events where ID = '" + KEY + "';", null);
             c.moveToFirst();
             switch(this.getArguments().getInt(ARG_SECTION_NUMBER)){
                 case 1:{
@@ -260,12 +266,18 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                     break;
                 }
                 case 3:{
+                    setList(rootView);
                     ImageButton bt_etd_add_task = (ImageButton) rootView.findViewById(R.id.bt_etd_add_task);
                     bt_etd_add_task.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //Bundle b
-                            final Intent task = new Intent(getActivity().getApplicationContext(),newTask.class);
+                            final Intent task = new Intent(getActivity().getApplicationContext(), newTask.class);
+                            Bundle data = new Bundle();
+                            //data.putInt("ID", ID);
+                            //data.putString("USERNAME", USERNAME);
+                            data.putString("KEY", KEY);
+                            task.putExtras(data);
+                            startActivity(task);
 
                         }
                     });
@@ -277,21 +289,19 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                     break;
                 }
             }
-
-            db.close();
             c.close();
+            db.close();
             return rootView;
         }
 
-        private void setList(View rootView) {
-            //users_names.clear();
-            //IDS.clear();
-            //sql();
+        private void setList(final View rootView) {
+            Tasks_keys.clear();
+            sql();
 
             final Context context = getActivity().getApplicationContext();
             final ListView listview = (ListView)rootView.findViewById(R.id.lv_etd);
             listview.setClickable(true);
-            final Intent tabs =  new Intent(getActivity().getApplicationContext(),tab2.class);
+            final Intent task =  new Intent(getActivity().getApplicationContext(),Task.class);
 
             StableArrayAdapter adapter = new StableArrayAdapter(getActivity().getApplicationContext());
             listview.setAdapter(adapter);
@@ -306,15 +316,15 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
 
                     // set dialog message
                     alertDialogBuilder
-                            .setMessage("Delete Event?")
+                            .setMessage("Delete Task?")
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    //db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
-                                    //String key = users_names.get(pos) + " - " + IDS.get(pos);
-                                    //db.execSQL("delete from Events where ID = '" + key + "';");
-                                    //setList();
-                                    //db.close();
+                                    db = SQLiteDatabase.openOrCreateDatabase("_edata", SQLiteDatabase.MODE_PRIVATE, null);
+                                    String task_key = Tasks_keys.get(pos);
+                                    db.execSQL("delete from Tasks where ID = '" + task_key + "';");
+                                    setList(rootView);
+                                    db.close();
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -339,13 +349,15 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                 /**
                  *  starts the Register class for specific course when clicked on in the list
                  */
+
                 @Override
                 public void onItemClick(final AdapterView<?> parent, final View view, final int position, long id) {
                     Bundle data = new Bundle();
-       //             data.putInt("ID", IDS.get(position));
-        //            data.putString("USERNAME", users_names.get(position));
-                    tabs.putExtras(data);
-                    startActivityForResult(tabs, 1);
+                    //data.putInt("ID", IDS.get(position));
+                    //data.putString("USERNAME", users_names.get(position));
+                    data.putString("KEY", Tasks_keys.get(position));
+                    task.putExtras(data);
+                    startActivityForResult(task, 1);
                 }
             });
         }
@@ -360,32 +372,38 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
             public View getView(int position, View convertView, ViewGroup viewGroup) {
                 LayoutInflater inflater = (LayoutInflater) context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.main_list_item, null);
+                convertView = inflater.inflate(R.layout.event_tasks_list_item, null);
 
-                ImageView iv = (ImageView) convertView.findViewById(R.id.ivPic);
-                TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
-                TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
+                TextView task_tit = (TextView) convertView.findViewById(R.id.tv_etd_list_item_task_tit);
+                TextView task_friend = (TextView) convertView.findViewById(R.id.tv_etd_list_item_frind_tit);
+                CheckBox task_do = (CheckBox) convertView.findViewById(R.id.cb_etd_list_item_task);
 
-       /*         db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
-                Cursor c = db.rawQuery("select * from Events where ID = '" + users_names.get(position) + " - " + IDS.get(position) + "';", null);
+                db = SQLiteDatabase.openOrCreateDatabase("_edata", MODE_PRIVATE, null);
+                Cursor c = db.rawQuery("select * from Tasks where ID = '" + Tasks_keys.get(position) + "';", null);
                 c.moveToFirst();
-                tvName.setText(c.getString(1));
-                tvDate.setText(c.getString(3));
-                iv.setImageBitmap(bitmapHelper.decodeSampledBitmapFromFile(c.getString(6), 100, 100));
+                task_tit.setText(c.getString(1));
+                task_friend.setText(c.getString(3));
+                if (c.getString(3).equals("")) {
+                    task_do.setChecked(false);
+                }else{
+                    task_do.setChecked(true);
+                }
                 c.close();
                 db.close();
-*/
+
                 return convertView;
             }
 
             public int getCount() {
-                return 0;//IDS.size();
+                //return IDS.size();
+                return 0;
             }
 
             @Override
             public Object getItem(int position) {
-                String s = "";//users_names.get(position)+" - "+IDS.get(position);
-                return s;
+                //String s = users_names.get(position)+" - "+IDS.get(position);
+                //return s;
+                return "";
             }
 
             @Override
@@ -398,7 +416,21 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
 
             }
         }
-    }
 
+        private void sql() {
+            final Context context = getActivity().getApplicationContext();
+            db = SQLiteDatabase.openOrCreateDatabase("_edata", context.MODE_PRIVATE, null);
+            //db.execSQL("DROP TABLE Events");
+            db.execSQL("create table if not exists Tasks(ID varchar NOT NULL primary key,Task varchar NOT NULL,Description varchar, Name varchar)");
+            Cursor c = db.rawQuery("select * from Tasks;", null);
+            while (c.moveToNext()) {
+                String task_key = c.getString(0);
+                Tasks_keys.add(task_key);
+            }
+            c.close();
+            db.close();
+        }
+
+    }
 
 }
