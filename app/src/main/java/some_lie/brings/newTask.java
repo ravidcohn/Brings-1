@@ -40,7 +40,7 @@ public class newTask extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_event);
+        setContentView(R.layout.new_task);
         et_nt_task_ui = (EditText)findViewById(R.id.et_nt_task_ui);
         et_nt_description_ui = (EditText)findViewById(R.id.et_nt_description_ui);
         bt_nt_create_task_ui = (Button)findViewById(R.id.bt_nt_create_task_ui);
