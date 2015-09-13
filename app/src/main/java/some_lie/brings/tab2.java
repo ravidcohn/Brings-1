@@ -279,7 +279,6 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                             data.putString("KEY", KEY);
                             task.putExtras(data);
                             startActivity(task);
-
                         }
                     });
                     setList(rootView);
