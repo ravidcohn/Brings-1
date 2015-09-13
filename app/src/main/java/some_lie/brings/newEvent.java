@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.security.Key;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -70,8 +71,8 @@ public class newEvent extends AppCompatActivity {
                 boolean ok = saveData();
                 if(ok) {
                     Bundle b = new Bundle();
-                    b.putInt("ID", ID);
-                    b.putString("USERNAME",USERNAME);
+                    b.putString("KEY", USERNAME+" - "+ID);
+                 //   b.putString("USERNAME",USERNAME);
                     tabs2.putExtras(b);
                         // startActivity(tabs);
                         startActivity(tabs2);
