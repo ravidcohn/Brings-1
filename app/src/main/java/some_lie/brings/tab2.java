@@ -423,7 +423,7 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
             db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
             //db.execSQL("DROP TABLE Events");
             db.execSQL("create table if not exists Tasks(ID varchar NOT NULL primary key,Task varchar NOT NULL,Description varchar, Name varchar)");
-            Cursor c = db.rawQuery("select * from Tasks;", null);
+            Cursor c = db.rawQuery("select * from Tasks where ID = '" + KEY + "';", null);
             while (c.moveToNext()) {
                 String task_key = c.getString(0);
                 Tasks_keys.add(task_key);
