@@ -32,7 +32,6 @@ public class newTask extends AppCompatActivity {
     private EditText et_nt_description_ui;
     private Button bt_nt_create_task_ui;
     private SQLiteDatabase db;
-    private int ID;
     private String imagePath = "";
     private String USERNAME = "user 1";//TODO
     private String KEY;
@@ -46,6 +45,7 @@ public class newTask extends AppCompatActivity {
         et_nt_description_ui = (EditText)findViewById(R.id.et_nt_description_ui);
         bt_nt_create_task_ui = (Button)findViewById(R.id.bt_nt_create_task_ui);
         Bundle b = getIntent().getExtras();
+
         //ID = b.getInt("ID");
         //USERNAME = b.getString("USERNAME");
         KEY = b.getString("KEY");
@@ -70,23 +70,20 @@ public class newTask extends AppCompatActivity {
             ok = true;
             db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
             int task_id = 0;
-            String task_key = KEY + " - " + task_id;
-            ArrayList<String> allIDS = new ArrayList<>();
-            Cursor c = db.rawQuery("select * from Tasks;", null);
+            ArrayList<Integer> allIDS = new ArrayList<>();
+            Cursor c = db.rawQuery("select * from Tasks where ID = '"+KEY+"';", null);
             while (c.moveToNext()){
-                String t_id = c.getString(0);
+                int t_id = c.getInt(1);
                 allIDS.add(t_id);
             }
-            while (allIDS.contains(task_key)){
+            while (allIDS.contains(task_id)){
                 task_id++;
-                task_key = KEY + " - "+task_id;
             }
-            ID = task_id;
             String task = et_nt_task_ui.getText().toString();
             String description = et_nt_description_ui.getText().toString();
             String name = "";
 
-            db.execSQL("insert into Tasks values('"+task_key+"','" + task + "','" + description + "','" + name + "');");
+            db.execSQL("insert into Tasks values('"+KEY+"',"+task_id+",'" + task + "','" + description + "','" + name + "');");
             c.close();
             db.close();
         }

@@ -29,6 +29,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
 
@@ -55,7 +56,7 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
     private static TextView start;
     private static TextView end;
     private static TextView description;
-    private static ArrayList<String> Tasks_keys;
+    private static ArrayList<Integer> Tasks_keys;
     private static SQLiteDatabase db;
     final private static String path = "/data/data/some_lie.brings/databases/_edata";
 
@@ -321,8 +322,8 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-                                    String task_key = Tasks_keys.get(pos);
-                                    db.execSQL("delete from Tasks where ID = '" + task_key + "';");
+                                    int task_key = Tasks_keys.get(pos);
+                                    db.execSQL("delete from Tasks where ID = '" + KEY + "' and TaskNumber = "+task_key+";");//task_key
                                     setList(rootView);
                                     db.close();
                                 }
@@ -355,7 +356,8 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                     Bundle data = new Bundle();
                     //data.putInt("ID", IDS.get(position));
                     //data.putString("USERNAME", users_names.get(position));
-                    data.putString("KEY", Tasks_keys.get(position));
+                    data.putInt("taskID", Tasks_keys.get(position));
+                    data.getString("KEY",KEY);
                     task.putExtras(data);
                     startActivityForResult(task, 1);
                 }
@@ -421,10 +423,13 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
             final Context context = getActivity().getApplicationContext();
             db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
             //db.execSQL("DROP TABLE Events");
-            db.execSQL("create table if not exists Tasks(ID varchar NOT NULL primary key,Task varchar NOT NULL,Description varchar, Name varchar)");
-            Cursor c = db.rawQuery("select * from Tasks where ID = '" + KEY + "';", null);
+            db.execSQL("create table if not exists Tasks(ID varchar NOT NULL,TaskNumber number NOT NULL,Task varchar NOT NULL,Description varchar, Name varchar)");
+            //Cursor c = db.rawQuery("select * from Tasks where ID = '" + KEY + "';", null);
+            Cursor c = db.rawQuery("select * from Tasks;",null);
             while (c.moveToNext()) {
-                String task_key = c.getString(0);
+                Toast.makeText(getContext(),c.getString(0)+" "+c.getString(1)+" "+c.getString(2)+" "+c.getString(3),Toast.LENGTH_LONG).show();
+
+                int task_key = c.getInt(1);
                 Tasks_keys.add(task_key);
             }
             c.close();
