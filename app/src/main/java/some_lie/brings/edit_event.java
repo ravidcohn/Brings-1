@@ -70,7 +70,7 @@ public class edit_event extends AppCompatActivity {
         store_value();
 
         //final Intent tabs = new Intent(this,tab.class);
-        final Intent tabs2 = new Intent(this,tab2.class);
+        final Intent tabs2 = new Intent(this,tab.class);
         bt_ee_save_ui.setOnClickListener(new View.OnClickListener() {
 
             @Override

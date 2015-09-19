@@ -63,7 +63,7 @@ public class newEvent extends AppCompatActivity {
         bt_ne_create_event_ui = (Button)findViewById(R.id.bt_ne_create_event_ui);
 
         //final Intent tabs = new Intent(this,tab.class);
-        final Intent tabs2 = new Intent(this,tab2.class);
+        final Intent tabs2 = new Intent(this,tab.class);
         bt_ne_create_event_ui.setOnClickListener(new View.OnClickListener() {
 
             @Override
