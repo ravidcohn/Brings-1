@@ -60,7 +60,6 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
     private static SQLiteDatabase db;
     final private static String path = "/data/data/some_lie.brings/databases/_edata";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -214,6 +213,8 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                 start.setText(c.getString(3));
                 end.setText(c.getString(4));
                 description.setText(c.getString(5));
+
+
                 c.close();
                 db.close();
             }
@@ -279,7 +280,7 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                             //data.putString("USERNAME", USERNAME);
                             data.putString("KEY", KEY);
                             task.putExtras(data);
-                            startActivity(task);
+                            startActivityForResult(task, 1);
                         }
                     });
                     setList(rootView);
@@ -381,7 +382,7 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
                 CheckBox task_do = (CheckBox) convertView.findViewById(R.id.cb_etd_list_item_task);
 
                 db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-                Cursor c = db.rawQuery("select * from Tasks where ID = '" + Tasks_keys.get(position) + "';", null);
+                Cursor c = db.rawQuery("select * from Tasks where ID = '" + KEY + "';", null);
                 c.moveToFirst();
                 task_tit.setText(c.getString(1));
                 task_friend.setText(c.getString(3));
@@ -398,14 +399,14 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
 
             public int getCount() {
                 //return IDS.size();
-                return 0;
+                return Tasks_keys.size();
             }
 
             @Override
             public Object getItem(int position) {
                 //String s = users_names.get(position)+" - "+IDS.get(position);
                 //return s;
-                return "";
+                return Tasks_keys.get(position);
             }
 
             @Override
@@ -427,7 +428,7 @@ public class tab2 extends AppCompatActivity implements ActionBar.TabListener {
             Cursor c = db.rawQuery("select * from Tasks where ID = '" + KEY + "';", null);
         //    Cursor c = db.rawQuery("select * from Tasks;",null);
             while (c.moveToNext()) {
-                Toast.makeText(getContext(),c.getString(0)+" "+c.getString(1)+" "+c.getString(2)+" "+c.getString(3),Toast.LENGTH_LONG).show();
+                //Toast.makeText(getContext(),c.getString(0)+" "+c.getString(1)+" "+c.getString(2)+" "+c.getString(3),Toast.LENGTH_LONG).show();
 
                 int task_key = c.getInt(1);
                 Tasks_keys.add(task_key);
