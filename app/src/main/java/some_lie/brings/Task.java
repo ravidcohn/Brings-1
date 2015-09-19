@@ -42,18 +42,18 @@ public class Task extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_task);
-        tv_et_task_info = (TextView)findViewById(R.id.et_nt_task_ui);
-        tv_et_description_info = (TextView)findViewById(R.id.et_nt_description_ui);
+        tv_et_task_info = (TextView)findViewById(R.id.tv_et_task_info);
+        tv_et_description_info = (TextView)findViewById(R.id.tv_et_description_info);
         Bundle b = getIntent().getExtras();
         KEY = b.getString("KEY");
         ID = b.getInt("taskID");
         String path = "/data/data/some_lie.brings/databases/_edata";
         db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
         //Cursor c = db.rawQuery("select * from Events where ID = '" + USERNAME + " - " + ID + "';", null);
-        Cursor c = db.rawQuery("select * from Tasks where ID = '" + KEY + "' and ID = "+ID+";", null);
+        Cursor c = db.rawQuery("select * from Tasks where ID = '" + KEY + "' and TaskNumber = "+ID+";", null);
         c.moveToFirst();
-        tv_et_task_info.setText(c.getString(1));
-        tv_et_description_info.setText(c.getString(2));
+        tv_et_task_info.setText(c.getString(2));
+        tv_et_description_info.setText(c.getString(3));
         c.close();
         db.close();
     }

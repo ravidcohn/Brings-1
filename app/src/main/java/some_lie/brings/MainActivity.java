@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         final Context context = this;
         final ListView listview = (ListView) findViewById(R.id.lvMain);
         listview.setClickable(true);
-        final Intent tabs =  new Intent(this,tab2.class);
+        final Intent tabs =  new Intent(this,tab.class);
 
         StableArrayAdapter adapter = new StableArrayAdapter(this);
         listview.setAdapter(adapter);

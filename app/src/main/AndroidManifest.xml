@@ -19,7 +19,9 @@
         <activity android:name=".newEvent" />
         <activity android:name=".edit_event" />
         <activity android:name=".newTask" />
-        <activity android:name=".tab2"/>
+        <activity android:name=".tab"/>
+        <activity android:name=".Task"/>
+        <activity android:name=".AddFriend"/>
     </application>
 
 </manifest>
