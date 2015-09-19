@@ -42,9 +42,9 @@ public class tab extends AppCompatActivity {
     private void refresh(){
 
         transaction = getSupportFragmentManager().beginTransaction();
-        int src_todo = fragment.getArguments().getInt("todo");
-        if(src_todo == 2){
-            cItem = src_todo;
+        int from = fragment.getArguments().getInt("from");
+        if(from == 1 || from == 2 ){
+            cItem = from;
         }
         fragment = new SlidingTabs();
         Bundle b = new Bundle();

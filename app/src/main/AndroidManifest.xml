@@ -21,6 +21,7 @@
         <activity android:name=".newTask" />
         <activity android:name=".tab"/>
         <activity android:name=".Task"/>
+        <activity android:name=".AddFriend"/>
     </application>
 
 </manifest>

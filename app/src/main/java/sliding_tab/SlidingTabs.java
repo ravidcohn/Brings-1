@@ -31,13 +31,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import some_lie.brings.AddFriend;
 import some_lie.brings.R;
 import some_lie.brings.Task;
 import some_lie.brings.newTask;
@@ -116,6 +119,7 @@ public class SlidingTabs extends Fragment {
         final private String path = "/data/data/some_lie.brings/databases/_edata";
         private String KEY = "";
         ArrayList<Integer> Tasks_keys = new ArrayList<>();
+        ArrayList<String> members_keys = new ArrayList<>();
         /**
          * @return the number of pages to display
          */
@@ -149,11 +153,11 @@ public class SlidingTabs extends Fragment {
 
         /**
          * Instantiate the {@link View} which should be displayed at {@code position}. Here we
-         * inflate a layout from the apps resources and then change the text view to signify the position.
+         * inflate a add_friend from the apps resources and then change the text view to signify the position.
          */
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            // Inflate a new layout from our resources
+            // Inflate a new add_friend from our resources
             View view = getActivity().getLayoutInflater().inflate(layouts[position],
                     container, false);
             if(KEY.equals("")){
@@ -201,13 +205,26 @@ public class SlidingTabs extends Fragment {
             c.close();
             db.close();
         }
-        private void setAttendingTab(View view){
+        private void setAttendingTab(final View view){
+            ImageButton addFriend = (ImageButton) view.findViewById(R.id.ib_ea_add_friend);
+            addFriend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Intent addFriend = new Intent(getActivity(), AddFriend.class);
+                    Bundle data = new Bundle();
+                    data.putString("KEY", KEY);
+                    addFriend.putExtras(data);
+                    getArguments().putInt("from", 1);
+                    startActivityForResult(addFriend, 1);
+                }
+            });
+            setAttendinglist(view);
 
         }
 
         private void setTodoTab(View view){
 
-            setList(view);
+            setTodoList(view);
             ImageButton bt_etd_add_task = (ImageButton) view.findViewById(R.id.bt_etd_add_task);
             bt_etd_add_task.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -216,7 +233,7 @@ public class SlidingTabs extends Fragment {
                     Bundle data = new Bundle();
                     data.putString("KEY", KEY);
                     task.putExtras(data);
-                    getArguments().putInt("todo" ,2);
+                    getArguments().putInt("from", 2);
                     startActivityForResult(task, 2);
                 }
             });
@@ -234,10 +251,56 @@ public class SlidingTabs extends Fragment {
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
         }
+        private void setAttendinglist(final View view){
+            members_keys.clear();
+            sqlAttending();
 
-        private void setList(final View rootView) {
+            final Context context = getActivity();
+            ListView listview = (ListView) view.findViewById(R.id.lvAttending);
+            StableArrayAdapterAttending adapter = new StableArrayAdapterAttending(getActivity() ,db ,members_keys ,path ,KEY);
+            listview.setAdapter(adapter);
+
+            listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+                public boolean onItemLongClick(AdapterView<?> arg0, final View arg1,
+                                               final int pos, final long id) {
+                    // TODO Auto-generated method stub
+
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+                    // set dialog message
+                    alertDialogBuilder
+                            .setMessage("Delete " + members_keys.get(pos) + "?")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+                                    String task_key = members_keys.get(pos);
+                                    db.execSQL("delete from Attending where ID = '" + KEY + "' and member = '" + task_key + "';");
+                                    setAttendinglist(view);
+                                    db.close();
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // if this button is clicked, just close
+                                    // the dialog box and do nothing
+                                    dialog.cancel();
+                                }
+                            });
+
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+
+                    // show it
+                    alertDialog.show();
+                    return true;
+                }
+            });
+        }
+        private void setTodoList(final View rootView) {
             Tasks_keys.clear();
-            sql();
+            sqlTodo();
 
             final Context context = getActivity();
             ListView listview = (ListView) rootView.findViewById(R.id.lv_etd);
@@ -264,7 +327,7 @@ public class SlidingTabs extends Fragment {
                                     db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
                                     int task_key = Tasks_keys.get(pos);
                                     db.execSQL("delete from Tasks where ID = '" + KEY + "' and TaskNumber = " + task_key + ";");//task_key
-                                    setList(rootView);
+                                    setTodoList(rootView);
                                     db.close();
                                 }
                             })
@@ -304,7 +367,7 @@ public class SlidingTabs extends Fragment {
             });
         }
 
-        private void sql() {
+        private void sqlTodo() {
             final Context context = getActivity().getApplicationContext();
             db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
             //db.execSQL("DROP TABLE Events");
@@ -316,6 +379,21 @@ public class SlidingTabs extends Fragment {
 
                 int task_key = c.getInt(1);
                 Tasks_keys.add(task_key);
+            }
+            c.close();
+            db.close();
+        }
+
+
+        private void sqlAttending() {
+            final Context context = getActivity().getApplicationContext();
+            db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+            db.execSQL("create table if not exists Attending(ID varchar NOT NULL,member varchar NOT NULL)");
+            Cursor c = db.rawQuery("select * from Attending where ID = '" + KEY + "';", null);
+            //    Cursor c = db.rawQuery("select * from Tasks;",null);
+            while (c.moveToNext()) {
+                String task_key = c.getString(1);
+                members_keys.add(task_key);
             }
             c.close();
             db.close();
@@ -375,6 +453,71 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
         //String s = users_names.get(position)+" - "+IDS.get(position);
         //return s;
         return Tasks_keys.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+}
+
+class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickListener {
+
+    private Context context;
+    private String path;
+    private SQLiteDatabase db;
+    private ArrayList<String> members_keys;
+    private String KEY;
+
+    public StableArrayAdapterAttending(Context context, SQLiteDatabase db, ArrayList<String> members_keys, String path, String KEY) {
+        this.context = context;
+        this.db = db;
+        this.members_keys = members_keys;
+        this.path = path;
+        this.KEY = KEY;
+    }
+
+    public View getView(int position, View convertView, ViewGroup viewGroup) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        convertView = inflater.inflate(R.layout.event_attending_list_item, null);
+
+        TextView name = (TextView) convertView.findViewById(R.id.tv_ea_list_item);
+        RadioGroup radioGroup = (RadioGroup) convertView.findViewById(R.id.radioGroup);
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                }
+        });
+
+        db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+        db.execSQL("create table if not exists Attending(ID varchar NOT NULL,member varchar NOT NULL)");
+        Cursor c = db.rawQuery("select * from Attending where ID = '" + KEY + "';", null);
+        c.moveToPosition(position);
+        name.setText(c.getString(1));
+
+        c.close();
+        db.close();
+
+        return convertView;
+    }
+
+    public int getCount() {
+        //return IDS.size();
+        return members_keys.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        //String s = users_names.get(position)+" - "+IDS.get(position);
+        //return s;
+        return members_keys.get(position);
     }
 
     @Override

@@ -38,7 +38,7 @@ import android.widget.TextView;
  * <p>
  * To use the component, simply add it to your view hierarchy. Then in your
  * {@link android.app.Activity} or {@link android.support.v4.app.Fragment} call
- * {@link #setViewPager(ViewPager)} providing it the ViewPager this layout is being used for.
+ * {@link #setViewPager(ViewPager)} providing it the ViewPager this add_friend is being used for.
  * <p>
  * The colors can be customized in two ways. The first and simplest is to provide an array of colors
  * via {@link #setSelectedIndicatorColors(int...)} and {@link #setDividerColors(int...)}. The
@@ -46,12 +46,12 @@ import android.widget.TextView;
  * which color is used for any individual position.
  * <p>
  * The views used as tabs can be customized by calling {@link #setCustomTabView(int, int)},
- * providing the layout ID of your custom layout.
+ * providing the add_friend ID of your custom add_friend.
  */
 public class SlidingTabLayout extends HorizontalScrollView {
 
     /**
-     * Allows complete control over the colors drawn in the tab layout. Set with
+     * Allows complete control over the colors drawn in the tab add_friend. Set with
      * {@link #setCustomTabColorizer(TabColorizer)}.
      */
     public interface TabColorizer {
@@ -136,7 +136,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
     /**
      * Set the {@link ViewPager.OnPageChangeListener}. When using {@link SlidingTabLayout} you are
      * required to set any {@link ViewPager.OnPageChangeListener} through this method. This is so
-     * that the layout can update it's scroll position correctly.
+     * that the add_friend can update it's scroll position correctly.
      *
      * @see ViewPager#setOnPageChangeListener(ViewPager.OnPageChangeListener)
      */
@@ -145,7 +145,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
     }
 
     /**
-     * Set the custom layout to be inflated for the tab views.
+     * Set the custom add_friend to be inflated for the tab views.
      *
      * @param layoutResId Layout id to be inflated
      * @param textViewId id of the {@link TextView} in the inflated view
@@ -205,7 +205,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
         }
 
         int padding = (int) (TAB_VIEW_PADDING_DIPS * getResources().getDisplayMetrics().density);
-        textView.setPadding(padding/2, padding, padding/2, padding);
+        textView.setPadding(padding / 2, padding, padding / 2, padding);
 
         return textView;
     }
@@ -219,7 +219,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
             TextView tabTitleView = null;
 
             if (mTabViewLayoutId != 0) {
-                // If there is a custom tab view layout id set, try and inflate it
+                // If there is a custom tab view add_friend id set, try and inflate it
                 tabView = LayoutInflater.from(getContext()).inflate(mTabViewLayoutId, mTabStrip,
                         false);
                 tabTitleView = (TextView) tabView.findViewById(mTabViewTextViewId);
