@@ -19,4 +19,5 @@
 
         <property name="gcm.api.key" value="AIzaSyDEAV2-JZrcBQRpBBFn3OAznT0bV0a5TdE" />
     </system-properties>
+    <use-google-connector-j>true</use-google-connector-j>
 </appengine-web-app>
