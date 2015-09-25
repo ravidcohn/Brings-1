@@ -48,6 +48,7 @@ public class Event_AsyncTask extends AsyncTask<String, Void, Event> {
         try {
             return myApiService.insert(params[0],params[1]).execute();
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return null;
@@ -55,6 +56,7 @@ public class Event_AsyncTask extends AsyncTask<String, Void, Event> {
 
     @Override
     protected void onPostExecute(Event result) {
+        Toast.makeText(context, result.getName(), Toast.LENGTH_LONG).show();
         //Toast.makeText(context,result.getMessage(),Toast.LENGTH_LONG).show();
         /*Toast.makeText(context,result.getFrom(),Toast.LENGTH_LONG).show();
         */if(result != null) {

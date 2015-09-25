@@ -80,6 +80,7 @@ public class EventEndpoint {
             httpMethod = ApiMethod.HttpMethod.POST)
     public Event insert(@Named("ID")String id, @Named("Name")String name) {
         String url = null;
+        Event d = new Event();
         try {
             Class.forName("com.mysql.jdbc.GoogleDriver");
             url =
@@ -89,19 +90,21 @@ public class EventEndpoint {
             //        d.setFrom(url);
             Connection conn = DriverManager.getConnection(url);
             //String query = "CREATE TABLE `Test`(`from` VARCHAR(50),`to` VARCHAR(50),`message` VARCHAR(500));";
-            String query = "CREATE TABLE `Events`(`id` VARCHAR(50),`name` VARCHAR(50));";
-            String query2 = "insert into Events values('"+id+"','"+name+"');";
+            //String query = "CREATE TABLE `Events`(`id` VARCHAR(50),`name` VARCHAR(50));";
+            //String query2 = "insert into Events values('"+id+"','"+name+"');";
+            String query2 = "INSERT INTO `Events` VALUES ('s', 's');";
             //conn.createStatement().execute("DROP TABLE `Test`;");
             //boolean rs2 = conn.createStatement().execute(query);
-            conn.createStatement().execute(query);
+            conn.createStatement().execute(query2);
             //boolean rs = conn.createStatement().execute(query2);
 
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String exceptionAsString = sw.toString();
+            d.setName("Error!: " + exceptionAsString);
         }
-        return null;
+        return d;
     }
 
 
