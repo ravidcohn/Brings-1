@@ -1,13 +1,11 @@
 package some_lie.brings;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,17 +16,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.security.Key;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Locale;
+
+import backend.Event_AsyncTask;
 
 /**
  * Created by pinhas on 08/09/2015.
@@ -64,12 +60,14 @@ public class newEvent extends AppCompatActivity {
 
         //final Intent tabs = new Intent(this,tab.class);
         final Intent tabs2 = new Intent(this,tab.class);
+        final Context context = this;
         bt_ne_create_event_ui.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 boolean ok = saveData();
                 if(ok) {
+                    new Event_AsyncTask(context).execute(USERNAME+" - "+ID, tv_ne_name_ui.getText().toString());
                     Bundle b = new Bundle();
                     b.putString("KEY", USERNAME+" - "+ID);
                  //   b.putString("USERNAME",USERNAME);

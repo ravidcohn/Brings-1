@@ -14,8 +14,8 @@
         <init-param>
             <param-name>services</param-name>
             <param-value>com.example.some_lie.backend.RegistrationEndpoint,
-                com.example.some_lie.backend.MessagingEndpoint
-            </param-value>
+                com.example.some_lie.backend.MessagingEndpoint,
+                com.example.some_lie.backend.EventEndpoint</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
