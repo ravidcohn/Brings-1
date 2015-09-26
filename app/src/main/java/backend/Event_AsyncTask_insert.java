@@ -16,11 +16,11 @@ import java.io.IOException;
 /**
  * Created by Ravid on 25/09/2015.
  */
-public class Event_AsyncTask extends AsyncTask<String, Void, Event> {
+public class Event_AsyncTask_insert extends AsyncTask<String, Void, Event> {
     private static EventApi myApiService = null;
     private Context context;
 
-    public Event_AsyncTask(Context context) {
+    public Event_AsyncTask_insert(Context context) {
         this.context = context;
     }
 
@@ -46,7 +46,7 @@ public class Event_AsyncTask extends AsyncTask<String, Void, Event> {
         }
 
         try {
-            return myApiService.insert(params[0],params[1]).execute();
+            return myApiService.insert(params[0],params[1],params[2],params[3],params[4],params[5],params[6]).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,7 +56,6 @@ public class Event_AsyncTask extends AsyncTask<String, Void, Event> {
 
     @Override
     protected void onPostExecute(Event result) {
-        Toast.makeText(context, result.getName(), Toast.LENGTH_LONG).show();
         //Toast.makeText(context,result.getMessage(),Toast.LENGTH_LONG).show();
         /*Toast.makeText(context,result.getFrom(),Toast.LENGTH_LONG).show();
         */if(result != null) {

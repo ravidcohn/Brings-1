@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import backend.Event_AsyncTask;
+import backend.Event_AsyncTask_insert;
 
 /**
  * Created by pinhas on 08/09/2015.
@@ -67,7 +67,13 @@ public class newEvent extends AppCompatActivity {
             public void onClick(View v) {
                 boolean ok = saveData();
                 if(ok) {
-                    new Event_AsyncTask(context).execute(USERNAME+" - "+ID, tv_ne_name_ui.getText().toString());
+                    String key = USERNAME+" - "+ID;
+                    String name = tv_ne_name_ui.getText().toString();
+                    String place = tv_ne_place_ui.getText().toString();
+                    String start = tv_ne_start_ui.getText().toString();
+                    String end = tv_ne_end_ui.getText().toString();
+                    String description = tv_ne_description_ui.getText().toString();
+                    new Event_AsyncTask_insert(context).execute(key, name, place, start, end, description, imagePath);
                     Bundle b = new Bundle();
                     b.putString("KEY", USERNAME+" - "+ID);
                  //   b.putString("USERNAME",USERNAME);

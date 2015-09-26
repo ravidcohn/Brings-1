@@ -78,7 +78,7 @@ public class EventEndpoint {
             name = "insert",
             path = "event",
             httpMethod = ApiMethod.HttpMethod.POST)
-    public Event insert(@Named("ID")String id, @Named("Name")String name) {
+    public Event insert(@Named("ID")String id, @Named("Name")String name, @Named("Place")String place, @Named("Start")String start, @Named("End")String end, @Named("Description")String description,@Named("ImagePath")String imagePath) {
         String url = null;
         Event d = new Event();
         try {
@@ -92,7 +92,8 @@ public class EventEndpoint {
             //String query = "CREATE TABLE `Test`(`from` VARCHAR(50),`to` VARCHAR(50),`message` VARCHAR(500));";
             //String query = "CREATE TABLE `Events`(`id` VARCHAR(50),`name` VARCHAR(50));";
             //String query2 = "insert into Events values('"+id+"','"+name+"');";
-            String query2 = "INSERT INTO `Events` VALUES ('s', 's');";
+            //String query2 = "INSERT INTO `Events` VALUES ('"+id+"', '"+name+"');";
+            String query2 ="INSERT INTO `Events` VALUES('"+id+"','" +name+"','" +place+ "','" +start+ "','"+end+"','"+description+"','"+imagePath+"');";
             //conn.createStatement().execute("DROP TABLE `Test`;");
             //boolean rs2 = conn.createStatement().execute(query);
             conn.createStatement().execute(query2);
