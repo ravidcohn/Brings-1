@@ -1,3 +1,12 @@
+/gradle.properties
+/Brings.iml
+/gradlew
+/build.gradle
+/gradle
+/.gradle
+/.idea
+/settings.gradle
+/gradlew.bat
 .gradle
 /local.properties
 /.idea/workspace.xml
