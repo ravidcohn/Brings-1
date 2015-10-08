@@ -6,15 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -36,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        login();
         setContentView(R.layout.activity_main);
         users_names = new ArrayList<>();
         IDS = new ArrayList<>();
@@ -47,6 +47,24 @@ public class MainActivity extends AppCompatActivity {
         tvSearch.setText("Search  ");
 
         setList();
+
+    }
+
+    private void login() {
+        db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
+        //db.execSQL("DROP TABLE Events");
+        db.execSQL("create table if not exists Registration(Mail varchar NOT NULL primary key,Name varchar NOT NULL,Password VARCHAR NOT NULL,Phone varchar NOT NULL)");
+        Cursor c = db.rawQuery("select * from Registration;", null);
+        int count = 0;
+        while (c.moveToNext()) {
+            count++;
+        }
+        c.close();
+        db.close();
+        if (count==0){
+            Intent login = new Intent(this,Registration.class);
+            startActivity(login);
+        }
 
     }
 

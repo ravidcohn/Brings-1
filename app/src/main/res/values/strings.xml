@@ -39,4 +39,11 @@
 
     <string name="bt_add_friend">Add Friend</string>
 
+    <string name="tv_mail_title">Mail</string>
+    <string name="tv_your_name_title">Your Name</string>
+    <string name="tv_phone_title">Phone number</string>
+    <string name="tv_password_title">Password</string>
+    <string name="tv_confirm_password_title">Confirm Password</string>
+    <string name="bt_register_title">Register</string>
+
 </resources>

@@ -93,7 +93,15 @@ public class EventEndpoint {
             //String query = "CREATE TABLE `Events`(`id` VARCHAR(50),`name` VARCHAR(50));";
             //String query2 = "insert into Events values('"+id+"','"+name+"');";
             //String query2 = "INSERT INTO `Events` VALUES ('"+id+"', '"+name+"');";
-            String query ="CREATE TABLE IF NOT EXISTS `Events`(ID varchar NOT NULL primary key,Name varchar NOT NULL,Place VARCHAR NOT NULL,Start DATE not null,End Date not null,Description varchar,imagePath varchar)";
+            String query ="CREATE TABLE IF NOT EXISTS `datdbase1`.`Events` (" +
+                    "  `ID` VARCHAR(45) NOT NULL COMMENT ''," +
+                    "  `Name` VARCHAR(45) NOT NULL COMMENT ''," +
+                    "  `Place` VARCHAR(45) NOT NULL COMMENT ''," +
+                    "  `Start_DATE` VARCHAR(45) NOT NULL COMMENT ''," +
+                    "  `End_DATE` VARCHAR(45) NOT NULL COMMENT ''," +
+                    "  `Description` VARCHAR(45) NOT NULL COMMENT ''," +
+                    "  `imagePath` VARCHAR(45) NOT NULL COMMENT ''," +
+                    "  PRIMARY KEY (`ID`)  COMMENT '');";
             conn.createStatement().execute(query);
 
             query ="INSERT INTO `Events` VALUES('"+id+"','" +name+"','" +place+ "','" +start+ "','"+end+"','"+description+"','"+imagePath+"');";
@@ -102,9 +110,10 @@ public class EventEndpoint {
             conn.createStatement().execute(query);
 
 
-            query ="CREATE TABLE IF NOT EXISTS `Events_Friends`(Event_ID varchar NOT NULL primary key,Friend_ID varchar NOT NULL)";
+            query ="CREATE TABLE IF NOT EXISTS `datdbase1`.`Events_Friends` (" +
+                    "  `Event_ID` VARCHAR(45) NOT NULL COMMENT ''," +
+                    "  `Friend_ID` VARCHAR(45) NOT NULL COMMENT '');";
             conn.createStatement().execute(query);
-
             query ="INSERT INTO `Events_Friends` VALUES('"+id+"','" +name+"');";
             conn.createStatement().execute(query);
 

@@ -34,6 +34,7 @@
         <activity android:name=".tab" />
         <activity android:name=".Task" />
         <activity android:name=".AddFriend" />
+        <activity android:name=".Registration" />
     </application>
 
 </manifest>

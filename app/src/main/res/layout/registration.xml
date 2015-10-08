@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/tv_mail_title"
+        android:id="@+id/tv_rg_mail_tit"
+        android:layout_alignBottom="@+id/et_rg_mail_ui"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="271dp"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/et_rg_mail_ui"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="31dp"
+        android:layout_alignLeft="@+id/bt_rg_register_ui"
+        android:layout_alignStart="@+id/bt_rg_register_ui" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/tv_your_name_title"
+        android:id="@+id/tv_rg_your_name_tit"
+        android:layout_marginTop="33dp"
+        android:layout_below="@+id/tv_rg_mail_tit"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/tv_phone_title"
+        android:id="@+id/tv_rg_phone_tit"
+        android:layout_below="@+id/tv_rg_your_name_tit"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="38dp"
+        android:layout_alignRight="@+id/tv_rg_password_tit"
+        android:layout_alignEnd="@+id/tv_rg_password_tit" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/tv_password_title"
+        android:id="@+id/tv_rg_password_tit"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/tv_confirm_password_title"
+        android:id="@+id/tv_rg_confirm_password_tit"
+        android:layout_below="@+id/tv_rg_password_tit"
+        android:layout_marginTop="23dp"
+        android:layout_toLeftOf="@+id/et_rg_mail_ui"
+        android:layout_toStartOf="@+id/et_rg_mail_ui" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/et_rg_your_name_ui"
+        android:layout_alignBottom="@+id/tv_rg_your_name_tit"
+        android:layout_alignRight="@+id/et_rg_mail_ui"
+        android:layout_alignEnd="@+id/et_rg_mail_ui"
+        android:layout_alignLeft="@+id/et_rg_mail_ui"
+        android:layout_alignStart="@+id/et_rg_mail_ui" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        android:id="@+id/et_rg_phone_ui"
+        android:layout_alignTop="@+id/tv_rg_phone_tit"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignLeft="@+id/et_rg_your_name_ui"
+        android:layout_alignStart="@+id/et_rg_your_name_ui" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/et_rg_password_ui"
+        android:layout_alignBottom="@+id/tv_rg_password_tit"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignLeft="@+id/et_rg_phone_ui"
+        android:layout_alignStart="@+id/et_rg_phone_ui" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/et_rg_confirm_password_ui"
+        android:layout_alignTop="@+id/tv_rg_confirm_password_tit"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/tv_rg_confirm_password_tit"
+        android:layout_toEndOf="@+id/tv_rg_confirm_password_tit" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bt_register_title"
+        android:id="@+id/bt_rg_register_ui"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp" />
+
+</RelativeLayout>
