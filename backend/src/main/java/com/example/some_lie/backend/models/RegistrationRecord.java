@@ -1,4 +1,4 @@
-package com.example.some_lie.backend;
+package com.example.some_lie.backend.models;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;

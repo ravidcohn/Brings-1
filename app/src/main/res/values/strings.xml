@@ -39,4 +39,9 @@
 
     <string name="bt_add_friend">Add Friend</string>
 
+    <string name="gcmRegistrationError">An error occurred during
+        registration. Trying again later</string>
+    <string name="gcmRegistrationSuccess">Device registered, registration
+        ID= %1s</string>
+
 </resources>

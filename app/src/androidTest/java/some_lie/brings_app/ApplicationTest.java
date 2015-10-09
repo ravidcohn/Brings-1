@@ -1,4 +1,4 @@
-package some_lie.brings;
+package some_lie.brings_app;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

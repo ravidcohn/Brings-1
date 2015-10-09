@@ -1,13 +1,15 @@
-package com.example.some_lie.backend;
+package com.example.some_lie.backend.apis;
 
+import com.example.some_lie.backend.Constants;
+import com.example.some_lie.backend.models.Event;
 import com.google.api.server.spi.config.Api;
+import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.QueryResultIterator;
-import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cmd.Query;
 
 import java.io.PrintWriter;
@@ -30,15 +32,21 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * <p/>
  * DO NOT deploy this code unchanged as part of a real application to real users.
  */
-@Api(
-        name = "eventApi",
-        version = "v1",
-        resource = "event",
+
+
+@Api(name = "brings", version = "v1",
         namespace = @ApiNamespace(
-                ownerDomain = "backend.some_lie.example.com",
-                ownerName = "backend.some_lie.example.com",
-                packagePath = ""
+                ownerDomain = Constants.API_OWNER,
+                ownerName = Constants.API_OWNER,
+                packagePath = Constants.API_PACKAGE_PATH
         )
+)
+@ApiClass(resource = "event",
+        clientIds = {
+                Constants.ANDROID_CLIENT_ID,
+                Constants.IOS_CLIENT_ID,
+                Constants.WEB_CLIENT_ID},
+        audiences = {Constants.AUDIENCE_ID}
 )
 public class EventEndpoint {
 
@@ -46,10 +54,6 @@ public class EventEndpoint {
 
     private static final int DEFAULT_LIST_LIMIT = 20;
 
-    static {
-        // Typically you would register this inside an OfyServive wrapper. See: https://code.google.com/p/objectify-appengine/wiki/BestPractices
-        ObjectifyService.register(Event.class);
-    }
 
     /**
      * Returns the {@link Event} with the corresponding ID.

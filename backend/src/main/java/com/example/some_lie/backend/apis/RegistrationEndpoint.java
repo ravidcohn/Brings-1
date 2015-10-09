@@ -4,12 +4,17 @@
    https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/GcmEndpoints
 */
 
-package com.example.some_lie.backend;
+package com.example.some_lie.backend.apis;
 
+import com.example.some_lie.backend.models.RegistrationRecord;
+import com.example.some_lie.backend.utils.EndpointUtil;
 import com.google.api.server.spi.config.Api;
+import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
+import com.google.api.server.spi.response.UnauthorizedException;
+import com.google.appengine.api.users.User;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -28,14 +33,20 @@ import static com.example.some_lie.backend.OfyService.ofy;
  * authentication! If this app is deployed, anyone can access this endpoint! If
  * you'd like to add authentication, take a look at the documentation.
  */
-@Api(
-        name = "registration",
-        version = "v1",
+
+@Api(name = "brings", version = "v1",
         namespace = @ApiNamespace(
-                ownerDomain = "backend.some_lie.example.com",
-                ownerName = "backend.some_lie.example.com",
-                packagePath = ""
+                ownerDomain = com.example.some_lie.backend.Constants.API_OWNER,
+                ownerName = com.example.some_lie.backend.Constants.API_OWNER,
+                packagePath = com.example.some_lie.backend.Constants.API_PACKAGE_PATH
         )
+)
+@ApiClass(resource = "registration",
+        clientIds = {
+                com.example.some_lie.backend.Constants.ANDROID_CLIENT_ID,
+                com.example.some_lie.backend.Constants.IOS_CLIENT_ID,
+                com.example.some_lie.backend.Constants.WEB_CLIENT_ID},
+        audiences = {com.example.some_lie.backend.Constants.AUDIENCE_ID}
 )
 public class RegistrationEndpoint {
 
@@ -46,8 +57,9 @@ public class RegistrationEndpoint {
      *
      * @param regId The Google Cloud Messaging registration Id to add
      */
-    @ApiMethod(name = "register")
-    public void registerDevice(@Named("regId") String regId) {
+    @ApiMethod(name = "register",httpMethod = "POST")
+    public void registerDevice(@Named("regId") String regId, User user) throws UnauthorizedException {
+        EndpointUtil.throwIfNotAuthenticated(user);
         if (findRecord(regId) != null) {
             log.info("Device " + regId + " already registered, skipping register");
             return;
@@ -62,7 +74,7 @@ public class RegistrationEndpoint {
      *
      * @param regId The Google Cloud Messaging registration Id to remove
      */
-    @ApiMethod(name = "unregister")
+    @ApiMethod(name = "Unregister",httpMethod = "DELETE")
     public void unregisterDevice(@Named("regId") String regId) {
         RegistrationRecord record = findRecord(regId);
         if (record == null) {
@@ -78,8 +90,9 @@ public class RegistrationEndpoint {
      * @param count The number of devices to list
      * @return a list of Google Cloud Messaging registration Ids
      */
-    @ApiMethod(name = "listDevices")
-    public CollectionResponse<RegistrationRecord> listDevices(@Named("count") int count) {
+    @ApiMethod(name = "listDevices",httpMethod = "GET")
+    public CollectionResponse<RegistrationRecord> listDevices(@Named("count") int count, User user) throws UnauthorizedException {
+        EndpointUtil.throwIfNotAdmin(user);
         List<RegistrationRecord> records = ofy().load().type(RegistrationRecord.class).limit(count).list();
         return CollectionResponse.<RegistrationRecord>builder().setItems(records).build();
     }

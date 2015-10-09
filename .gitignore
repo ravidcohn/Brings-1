@@ -1,3 +1,9 @@
+/app/build
+/app/app.iml
+/app/proguard-rules.pro
+/app/build.gradle
+/backend/build
+/backend/build.gradle
 /gradle.properties
 /Brings.iml
 /gradlew

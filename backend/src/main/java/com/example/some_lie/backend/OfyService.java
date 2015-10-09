@@ -1,5 +1,7 @@
 package com.example.some_lie.backend;
 
+import com.example.some_lie.backend.models.Event;
+import com.example.some_lie.backend.models.RegistrationRecord;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;

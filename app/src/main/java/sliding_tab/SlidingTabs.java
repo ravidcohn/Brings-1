@@ -31,7 +31,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -40,10 +39,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import some_lie.brings.AddFriend;
-import some_lie.brings.R;
-import some_lie.brings.Task;
-import some_lie.brings.newTask;
+import brings_app.AddFriend;
+import brings_app.R;
+import brings_app.Task;
+import brings_app.newTask;
 
 public class SlidingTabs extends Fragment {
 
