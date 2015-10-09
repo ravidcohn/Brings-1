@@ -40,15 +40,15 @@ public class Registration extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                boolean ok = saveData();
+               /* boolean ok = saveData();
                 if (ok) {
                     finish();
-                }
+                }*/
             }
 
         });
     }
-
+/*
     private boolean saveData(){
         boolean ok = false;
         String mail = et_rg_mail_ui.getText().toString();
@@ -86,7 +86,7 @@ public class Registration extends AppCompatActivity {
         }
         return ok;
     }
-
+*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
