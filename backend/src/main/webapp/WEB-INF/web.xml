@@ -16,6 +16,7 @@
             <param-value>com.example.some_lie.server.apis.RegistrationEndpoint,
                 com.example.some_lie.server.apis.MessagingEndpoint,
                 com.example.some_lie.server.apis.EventEndpoint</param-value>
+
         </init-param>
     </servlet>
     <servlet-mapping>
