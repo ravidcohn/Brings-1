@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package backend;
+package server;
 
 import com.example.some_lie.backend.brings.Brings;
 import com.google.api.client.extensions.android.http.AndroidHttp;

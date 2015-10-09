@@ -1,4 +1,4 @@
-package backend;
+package server;
 
 import android.app.IntentService;
 import android.content.Intent;

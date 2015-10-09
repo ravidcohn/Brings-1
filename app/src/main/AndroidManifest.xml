@@ -35,7 +35,7 @@
         <activity android:name=".Task" />
         <activity android:name=".AddFriend" />
         <receiver
-            android:name="backend.GcmBroadcastReceiver"
+            android:name="server.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -43,7 +43,7 @@
                 <category android:name="backend" />
             </intent-filter>
         </receiver>
-        <service android:name="backend.GcmIntentService" />
+        <service android:name="server.GcmIntentService" />
     </application>
 
 </manifest>

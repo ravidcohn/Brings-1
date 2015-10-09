@@ -1,4 +1,4 @@
-package backend;
+package server;
 
 import android.app.Activity;
 import android.content.ComponentName;

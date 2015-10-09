@@ -1,4 +1,4 @@
-package backend;
+package server;
 
 /**
  * Created by Ravid on 26/09/2015.

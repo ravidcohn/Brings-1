@@ -1,4 +1,4 @@
-package backend;
+package server;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -6,12 +6,6 @@ import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.Event;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
-import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
-
-import java.io.IOException;
 
 /**
  * Created by Ravid on 25/09/2015.

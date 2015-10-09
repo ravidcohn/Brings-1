@@ -36,7 +36,7 @@ import java.util.ArrayList;
 
 import com.example.some_lie.backend.brings.Brings;
 
-import backend.CloudEndpointBuilderHelper;
+import server.CloudEndpointBuilderHelper;
 
 public class MainActivity extends AppCompatActivity {
 

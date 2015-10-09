@@ -13,8 +13,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import backend.Event_AsyncTask_insert;
-
 /**
  * Created by Ravid on 08/10/2015.
  */
