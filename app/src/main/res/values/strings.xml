@@ -44,4 +44,11 @@
     <string name="gcmRegistrationSuccess">Device registered, registration
         ID= %1s</string>
 
+    <string name="tv_mail_title">Mail</string>
+    <string name="tv_your_name_title">Name</string>
+    <string name="tv_phone_title">Phone</string>
+    <string name="tv_password_title">Password</string>
+    <string name="tv_confirm_password_title">Confirm Password</string>
+    <string name="bt_register_title">Register</string>
+
 </resources>

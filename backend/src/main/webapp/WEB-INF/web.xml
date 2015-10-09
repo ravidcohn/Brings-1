@@ -13,10 +13,9 @@
         <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
         <init-param>
             <param-name>services</param-name>
-            <param-value>com.example.some_lie.server.apis.RegistrationEndpoint,
-                com.example.some_lie.server.apis.MessagingEndpoint,
-                com.example.some_lie.server.apis.EventEndpoint</param-value>
-
+            <param-value>com.example.some_lie.backend.apis.RegistrationEndpoint,
+                com.example.some_lie.backend.apis.MessagingEndpoint,
+                com.example.some_lie.backend.apis.EventEndpoint</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
