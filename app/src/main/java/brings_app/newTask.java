@@ -1,4 +1,4 @@
-package some_lie.brings;
+package brings_app;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,32 +9,37 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-/**
- * Created by pinhas on 19/09/2015.
- */
-public class AddFriend extends AppCompatActivity {
+import java.util.ArrayList;
 
-    private TextView Name;
-    private EditText input;
-    private Button add;
+/**
+ * Created by pinhas on 08/09/2015.
+ */
+public class newTask extends AppCompatActivity {
+
+    private EditText et_nt_task_ui;
+    private EditText et_nt_description_ui;
+    private Button bt_nt_create_task_ui;
     private SQLiteDatabase db;
+    private String imagePath = "";
+    private String USERNAME = "user 1";//TODO
     private String KEY;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_friend);
-        Name = (TextView)findViewById(R.id.tv_addFriend);
-        input = (EditText)findViewById(R.id.et_addFriend);
-        add = (Button)findViewById(R.id.bt_addFriend);
+        setContentView(R.layout.new_task);
+        et_nt_task_ui = (EditText)findViewById(R.id.et_nt_task_ui);
+        et_nt_description_ui = (EditText)findViewById(R.id.et_nt_description_ui);
+        bt_nt_create_task_ui = (Button)findViewById(R.id.bt_nt_create_task_ui);
         Bundle b = getIntent().getExtras();
 
+        //ID = b.getInt("ID");
+        //USERNAME = b.getString("USERNAME");
         KEY = b.getString("KEY");
-        add.setOnClickListener(new View.OnClickListener() {
+        bt_nt_create_task_ui.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -51,12 +56,25 @@ public class AddFriend extends AppCompatActivity {
 
     private boolean saveData(){
         boolean ok = false;
-        if(input.getText().length() > 0) {
+        if(et_nt_task_ui.getText().length() > 0) {
             ok = true;
             db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
+            int task_id = 0;
+            ArrayList<Integer> allIDS = new ArrayList<>();
+            Cursor c = db.rawQuery("select * from Tasks where ID = '"+KEY+"';", null);
+            while (c.moveToNext()){
+                int t_id = c.getInt(1);
+                allIDS.add(t_id);
+            }
+            while (allIDS.contains(task_id)){
+                task_id++;
+            }
+            String task = et_nt_task_ui.getText().toString();
+            String description = et_nt_description_ui.getText().toString();
+            String name = "";
 
-            String name = input.getText().toString();
-            db.execSQL("insert into Attending values('"+KEY+"','" + name + "');");
+            db.execSQL("insert into Tasks values('"+KEY+"',"+task_id+",'" + task + "','" + description + "','" + name + "');");
+            c.close();
             db.close();
         }
         return ok;

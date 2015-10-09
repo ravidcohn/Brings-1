@@ -1,4 +1,4 @@
-package some_lie.brings;
+package brings_app;
 
 
 import android.content.Intent;
