@@ -1,6 +1,7 @@
 package com.example.some_lie.backend;
 
 import com.example.some_lie.backend.models.Event;
+import com.example.some_lie.backend.models.Event_Friend;
 import com.example.some_lie.backend.models.RegistrationRecord;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
@@ -15,6 +16,7 @@ public class OfyService {
     static {
         ObjectifyService.register(RegistrationRecord.class);
         ObjectifyService.register(Event.class);
+        ObjectifyService.register(Event_Friend.class);
     }
 
     public static Objectify ofy() {

@@ -9,22 +9,23 @@ import com.googlecode.objectify.annotation.Id;
 @Entity
 public class Event {
     @Id
-    private Long id;
+    private String id;
     private String name;
     private String location;
     private String start_date;
     private String end_date;
+    private String description;
     private String image_url;
 
-
+   
 
     public Event() {}
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -58,6 +59,14 @@ public class Event {
 
     public void setEnd_date(String end_date) {
         this.end_date = end_date;
+    }
+    
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getImage_url() {

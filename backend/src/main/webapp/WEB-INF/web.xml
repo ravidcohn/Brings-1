@@ -15,7 +15,8 @@
             <param-name>services</param-name>
             <param-value>com.example.some_lie.backend.apis.RegistrationEndpoint,
                 com.example.some_lie.backend.apis.MessagingEndpoint,
-                com.example.some_lie.backend.apis.EventEndpoint</param-value>
+                com.example.some_lie.backend.apis.EventEndpoint,
+                com.example.some_lie.backend.apis.Event_Friend_Endpoint</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

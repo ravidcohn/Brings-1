@@ -1,6 +1,5 @@
 package brings_app;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,8 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 /**
  * Created by Ravid on 08/10/2015.
@@ -58,6 +55,7 @@ public class Registration extends AppCompatActivity {
         String confirm_password = et_rg_confirm_password_ui.getText().toString();
         if(mail.length()>0 && name.length()>0 && phone.length()>0 && password.length()>0 && confirm_password.length()>0) {
             if(password.equals(confirm_password)) {
+                /*
                 new Registration_AsyncTask(this).execute(mail,name,phone,password,confirm_password);
                 ok = true;
                 db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
@@ -78,6 +76,7 @@ public class Registration extends AppCompatActivity {
                 db.execSQL("insert into Tasks values('" + KEY + "'," + task_id + ",'" + task + "','" + description + "','" + name + "');");
                 c.close();
                 db.close();
+                */
             }else {
                 Toast.makeText(getApplicationContext(), "password are not much", Toast.LENGTH_SHORT).show();
             }
