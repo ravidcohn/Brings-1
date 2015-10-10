@@ -1,8 +1,11 @@
 package com.example.some_lie.backend.models;
 
+import com.googlecode.objectify.annotation.Entity;
+
 /**
  * Created by Ravid on 09/10/2015.
  */
+@Entity
 public class Event_Friend {
     private String event_name;
     private String friend_name;
