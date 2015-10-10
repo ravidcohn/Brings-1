@@ -91,8 +91,8 @@ public class RegistrationEndpoint {
      * @return a list of Google Cloud Messaging registration Ids
      */
     @ApiMethod(name = "listDevices",httpMethod = "GET")
-    public CollectionResponse<RegistrationRecord> listDevices(@Named("count") int count, User user) throws UnauthorizedException {
-        EndpointUtil.throwIfNotAdmin(user);
+    public CollectionResponse<RegistrationRecord> listDevices(@Named("count") int count) throws UnauthorizedException {
+      //  EndpointUtil.throwIfNotAdmin(user);
         List<RegistrationRecord> records = ofy().load().type(RegistrationRecord.class).limit(count).list();
         return CollectionResponse.<RegistrationRecord>builder().setItems(records).build();
     }
