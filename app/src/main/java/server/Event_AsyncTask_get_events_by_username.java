@@ -6,7 +6,8 @@ import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.Event;
-import com.example.some_lie.backend.
+import com.example.some_lie.backend.brings.model.EventFriend;
+import com.example.some_lie.backend.brings.model.EventFriendCollection;
 
 /**
  * Created by Ravid on 26/09/2015.
@@ -27,7 +28,12 @@ private Context context;
 
         try {
 
-            ArrayList<Event_Friend> eventFriendArrayList = myApiService.get_events(params[0]).execute();
+            EventFriendCollection eventFriendCollection = myApiService.eventFriendGetEvents(params[0]).execute();
+            EventFriend eventFriend;
+            for(int i = 0;i<eventFriendCollection.size();i++){
+                eventFriend = eventFriendCollection.getItems().get(i);
+                eventFriend.getEventName();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

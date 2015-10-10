@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -63,14 +64,32 @@ public class EventEndpoint {
      * @throws NotFoundException if there is no {@code Event} with the provided ID.
      */
     @ApiMethod(
-            name = "get",
+            name = "Event_getEvent",
             path = "event/{id}",
             httpMethod = ApiMethod.HttpMethod.GET)
     public Event get(@Named("id") String id) throws NotFoundException {
-        logger.info("Getting Event with ID: " + id);
-        Event event = ofy().load().type(Event.class).id(id).now();
-        if (event == null) {
-            throw new NotFoundException("Could not find Event with ID: " + id);
+        String url = null;
+        Event event = new Event();
+        try {
+            Class.forName("com.mysql.jdbc.GoogleDriver");
+            url =
+                    "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
+
+            Connection conn = DriverManager.getConnection(url);
+
+            String query ="SELECT * FROM `Events_Friends` where Event_id ='"+id+"';";
+            ResultSet rs = conn.createStatement().executeQuery(query);
+            event.setId(rs.getString("id"));
+            event.setName(rs.getString("name"));
+            event.setLocation(rs.getString("location"));
+            event.setStart_date(rs.getString("start_date"));
+            event.setEnd_date(rs.getString("end_date"));
+            event.setDescription(rs.getString("description"));
+            event.setImage_url(rs.getString("image_path"));
+            rs.close();
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
         }
         return event;
     }

@@ -28,7 +28,7 @@ import javax.inject.Named;
                 packagePath = Constants.API_PACKAGE_PATH
         )
 )
-@ApiClass(resource = "event_friend",
+@ApiClass(resource = "eventFriend",
         clientIds = {
                 Constants.ANDROID_CLIENT_ID,
                 Constants.IOS_CLIENT_ID,
@@ -45,7 +45,7 @@ public class Event_Friend_Endpoint {
      * @param event The id of the object to be returned.
      * @return The <code>Event_Friend</code> associated with <code>id</code>.
      */
-    @ApiMethod(name = "get_friends", path="get_friends")
+    @ApiMethod(name = "Event_friend_getFriends", path="get_friends")
     public Event_Friend getEvent_Friend(@Named("event") String event) {
         // TODO: Implement this function
         logger.info("Calling getEvent_Friend method");
@@ -70,7 +70,7 @@ public class Event_Friend_Endpoint {
      * @param friend The object to be added.
      * @return The object to be added.
      */
-    @ApiMethod(name = "get_events", path="get_events")
+    @ApiMethod(name = "eventFriendGetEvents", path="get_events")
     public ArrayList<Event_Friend> get_events(@Named("friend") String friend) {
         String url = null;
         ArrayList<Event_Friend> eventFriendArrayList = new ArrayList<>();
@@ -84,7 +84,7 @@ public class Event_Friend_Endpoint {
             String query ="SELECT * FROM `Events_Friends` where Event_id ='"+friend+"';";
             ResultSet rs = conn.createStatement().executeQuery(query);
             while(rs.next()){
-                eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Freind_ID")));
+                eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Friend_ID")));
             }
             rs.close();
         } catch (Exception e) {

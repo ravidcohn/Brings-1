@@ -19,4 +19,12 @@ public class Event_Friend {
     public void setEvent_name(String event_name) {
         this.event_name = event_name;
     }
+
+    public String getFriend_name() {
+        return friend_name;
+    }
+
+    public void setFriend_name(String friend_name) {
+        this.friend_name = friend_name;
+    }
 }
