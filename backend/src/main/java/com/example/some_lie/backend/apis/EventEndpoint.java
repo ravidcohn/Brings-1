@@ -64,7 +64,7 @@ public class EventEndpoint {
      * @throws NotFoundException if there is no {@code Event} with the provided ID.
      */
     @ApiMethod(
-            name = "Event_getEvent",
+            name = "EventGetEvent",
             path = "event/{id}",
             httpMethod = ApiMethod.HttpMethod.GET)
     public Event get(@Named("id") String id) throws NotFoundException {
