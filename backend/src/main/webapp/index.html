@@ -104,7 +104,7 @@
           message = '(Empty message)';
         }
 
-        gapi.client.messaging.messagingEndpoint.sendMessage({'message': message}).execute(
+        gapi.client.brings.messagingEndpoint.sendMessage({'message': message}).execute(
           function(response) {
             var outputAlertDiv = document.getElementById('outputAlert');
             outputAlertDiv.style.visibility = 'visible';
