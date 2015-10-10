@@ -81,7 +81,7 @@ public class Event_Friend_Endpoint {
 
             Connection conn = DriverManager.getConnection(url);
 
-            String query ="SELECT * FROM `Events_Friends` where Event_id ='"+friend+"';";
+            String query ="SELECT * FROM `Events_Friends` where Friend_id ='"+friend+"';";
             ResultSet rs = conn.createStatement().executeQuery(query);
             while(rs.next()){
                 eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Friend_ID")));
