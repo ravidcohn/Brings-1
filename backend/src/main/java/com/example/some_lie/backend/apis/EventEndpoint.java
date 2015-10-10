@@ -66,7 +66,7 @@ public class EventEndpoint {
             name = "get",
             path = "event/{id}",
             httpMethod = ApiMethod.HttpMethod.GET)
-    public Event get(@Named("id") Long id) throws NotFoundException {
+    public Event get(@Named("id") String id) throws NotFoundException {
         logger.info("Getting Event with ID: " + id);
         Event event = ofy().load().type(Event.class).id(id).now();
         if (event == null) {
