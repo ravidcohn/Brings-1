@@ -58,8 +58,8 @@ public class RegistrationEndpoint {
      * @param regId The Google Cloud Messaging registration Id to add
      */
     @ApiMethod(name = "register",httpMethod = "POST")
-    public void registerDevice(@Named("regId") String regId, User user) throws UnauthorizedException {
-        EndpointUtil.throwIfNotAuthenticated(user);
+    public void registerDevice(@Named("regId") String regId){// throws UnauthorizedException {
+       // EndpointUtil.throwIfNotAuthenticated(user);
         if (findRecord(regId) != null) {
             log.info("Device " + regId + " already registered, skipping register");
             return;
