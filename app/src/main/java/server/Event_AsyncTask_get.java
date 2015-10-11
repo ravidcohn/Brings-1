@@ -25,7 +25,7 @@ private Context context;
             myApiService = CloudEndpointBuilderHelper.getEndpoints();
         }
         try {
-            Brings.EventGet event = myApiService.eventGet(params[0]);
+            Event event = myApiService.eventGet(params[0]).execute();
 
             EventFriendCollection eventFriendCollection = myApiService.eventFriendGetEvents(params[0]).execute();
 
