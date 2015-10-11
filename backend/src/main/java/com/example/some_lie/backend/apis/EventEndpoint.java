@@ -63,21 +63,14 @@ public class EventEndpoint {
      * @return the entity with the corresponding ID
      * @throws NotFoundException if there is no {@code Event} with the provided ID.
      */
-    @ApiMethod(
-            name = "EventGetEvent",
-            path = "event/{id}",
-            httpMethod = ApiMethod.HttpMethod.GET)
-    public Event get(@Named("id") String id) throws NotFoundException {
-        String url = null;
+    @ApiMethod( name = "EventGet",path = "EventGet")
+    public Event Get(@Named("id") String id) {
         Event event = new Event();
         try {
             Class.forName("com.mysql.jdbc.GoogleDriver");
-            url =
-                    "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
+            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
 
-            Connection conn = DriverManager.getConnection(url);
-
-            String query ="SELECT * FROM `Events_Friends` where Event_id ='"+id+"';";
+            String query ="SELECT * FROM `Events` where id ='"+id+"';";
             ResultSet rs = conn.createStatement().executeQuery(query);
             event.setId(rs.getString("id"));
             event.setName(rs.getString("name"));
@@ -86,6 +79,7 @@ public class EventEndpoint {
             event.setEnd_date(rs.getString("end_date"));
             event.setDescription(rs.getString("description"));
             event.setImage_url(rs.getString("image_path"));
+            event.setUpdate_time(rs.getString("update_time"));
             rs.close();
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
@@ -97,21 +91,12 @@ public class EventEndpoint {
     /**
      * Inserts a new {@code Event}.
      */
-    @ApiMethod(
-            name = "insert",
-            path = "event",
-            httpMethod = ApiMethod.HttpMethod.POST)
-    public Event insert(@Named("ID")String id, @Named("Name")String name, @Named("Place")String place, @Named("Start")String start, @Named("End")String end, @Named("Description")String description,@Named("ImagePath")String imagePath) {
-        String url = null;
-        Event d = new Event();
+    @ApiMethod(name = "EventInsert",path = "event")
+    public void Insert(@Named("ID")String id, @Named("Name")String name, @Named("Location")String location, @Named("Start")String start,
+                        @Named("End")String end, @Named("Description")String description,@Named("ImagePath")String imagePath,@Named("UpdateTime")String updateTime) {
         try {
             Class.forName("com.mysql.jdbc.GoogleDriver");
-            url =
-                    "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
-
-
-            //        d.setFrom(url);
-            Connection conn = DriverManager.getConnection(url);
+            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
             //String query = "CREATE TABLE `Test`(`from` VARCHAR(50),`to` VARCHAR(50),`message` VARCHAR(500));";
             //String query = "CREATE TABLE `Events`(`id` VARCHAR(50),`name` VARCHAR(50));";
             //String query2 = "insert into Events values('"+id+"','"+name+"');";
@@ -127,50 +112,46 @@ public class EventEndpoint {
                     "  PRIMARY KEY (`ID`)  COMMENT '');";
             conn.createStatement().execute(query);*/
 
-            String query ="INSERT INTO `Events` VALUES('"+id+"','" +name+"','" +place+ "','" +start+ "','"+end+"','"+description+"','"+imagePath+"');";
+            String query ="INSERT INTO `Events` VALUES('"+id+"','" +name+"','" +location+ "','" +start+ "','"+end+"','"+description+"','"+imagePath+"','"+updateTime+"');";
             //conn.createStatement().execute("DROP TABLE `Test`;");
             //boolean rs2 = conn.createStatement().execute(query);
             conn.createStatement().execute(query);
 
 
-            /*query ="CREATE TABLE IF NOT EXISTS `datdbase1`.`Events_Friends` (" +
-                    "  `Event_ID` VARCHAR(45) NOT NULL COMMENT ''," +
-                    "  `Friend_ID` VARCHAR(45) NOT NULL COMMENT '');";
-            conn.createStatement().execute(query);*/
-            query ="INSERT INTO `Events_Friends` VALUES('"+id+"','" +name+"');";
-            conn.createStatement().execute(query);
-
-            //boolean rs = conn.createStatement().execute(query2);
-
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String exceptionAsString = sw.toString();
-            d.setName("Error!: " + exceptionAsString);
+            //event.setName("Error!: " + exceptionAsString);
         }
-        return d;
     }
 
-
     /**
-     * Updates an existing {@code Event}.
      *
-     * @param id    the ID of the entity to be updated
-     * @param event the desired state of the entity
-     * @return the updated version of the entity
-     * @throws NotFoundException if the {@code id} does not correspond to an existing
-     *                           {@code Event}
+     * @param id
+     * @param name
+     * @param place
+     * @param start
+     * @param end
+     * @param description
+     * @param imagePath
+     * @param updateTime
      */
-    @ApiMethod(
-            name = "update",
-            path = "event/{id}",
-            httpMethod = ApiMethod.HttpMethod.PUT)
-    public Event update(@Named("id") Long id, Event event) throws NotFoundException {
-        // TODO: You should validate your ID parameter against your resource's ID here.
-        checkExists(id);
-        ofy().save().entity(event).now();
-        logger.info("Updated Event: " + event);
-        return ofy().load().entity(event).now();
+    @ApiMethod(name = "EventUpdate",path = "EventUpdate")
+    public void Update(@Named("ID")String id, @Named("Name")String name, @Named("Location")String location, @Named("Start")String start,
+                       @Named("End")String end, @Named("Description")String description,@Named("ImagePath")String imagePath,@Named("UpdateTime")String updateTime){
+        try {
+            Class.forName("com.mysql.jdbc.GoogleDriver");
+            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
+
+            String query ="UPDATE `datdbase1`.`Events` SET `name`='"+name+"',`location`='"+location+"'," +
+                    "`start_date`='"+start+"',`end_date`='"+end+"',`description`='"+description+"',`image_path`='"+imagePath+"',`Update_Time`='"+updateTime+"' WHERE `id`='"+id+"';";
+            conn.createStatement().execute(query);
+
+        }catch(Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+        }
     }
 
     /**
@@ -180,46 +161,20 @@ public class EventEndpoint {
      * @throws NotFoundException if the {@code id} does not correspond to an existing
      *                           {@code Event}
      */
-    @ApiMethod(
-            name = "remove",
-            path = "event/{id}",
-            httpMethod = ApiMethod.HttpMethod.DELETE)
-    public void remove(@Named("id") Long id) throws NotFoundException {
-        checkExists(id);
-        ofy().delete().type(Event.class).id(id).now();
-        logger.info("Deleted Event with ID: " + id);
-    }
-
-    /**
-     * List all entities.
-     *
-     * @param cursor used for pagination to determine which page to return
-     * @param limit  the maximum number of entries to return
-     * @return a response that encapsulates the result list and the next page token/cursor
-     */
-    @ApiMethod(
-            name = "list",
-            path = "event",
-            httpMethod = ApiMethod.HttpMethod.GET)
-    public CollectionResponse<Event> list(@Nullable @Named("cursor") String cursor, @Nullable @Named("limit") Integer limit) {
-        limit = limit == null ? DEFAULT_LIST_LIMIT : limit;
-        Query<Event> query = ofy().load().type(Event.class).limit(limit);
-        if (cursor != null) {
-            query = query.startAt(Cursor.fromWebSafeString(cursor));
-        }
-        QueryResultIterator<Event> queryIterator = query.iterator();
-        List<Event> eventList = new ArrayList<Event>(limit);
-        while (queryIterator.hasNext()) {
-            eventList.add(queryIterator.next());
-        }
-        return CollectionResponse.<Event>builder().setItems(eventList).setNextPageToken(queryIterator.getCursor().toWebSafeString()).build();
-    }
-
-    private void checkExists(Long id) throws NotFoundException {
+    @ApiMethod(name = "EventDelete",path = "EventDelete")
+    public void Delete(@Named("id") String id) {
         try {
-            ofy().load().type(Event.class).id(id).safe();
-        } catch (com.googlecode.objectify.NotFoundException e) {
-            throw new NotFoundException("Could not find Event with ID: " + id);
+            Class.forName("com.mysql.jdbc.GoogleDriver");
+            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
+
+            String query ="DELETE FROM `datdbase1`.`Events` WHERE `id`='"+id+"';";
+            conn.createStatement().execute(query);
+
+        }catch(Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
         }
     }
+
+
 }

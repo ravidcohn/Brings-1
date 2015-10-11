@@ -62,6 +62,11 @@ public final class Constants {
     public static final String API_PACKAGE_PATH = "";
 
     /**
+     * Database package path.
+     */
+    public static final String Database_PATH = "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
+
+    /**
      * Default constrictor, never called.
      */
     private Constants() { }

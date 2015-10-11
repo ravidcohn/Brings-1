@@ -16,8 +16,8 @@ public class Event {
     private String end_date;
     private String description;
     private String image_url;
+    private String update_time;
 
-   
 
     public Event() {}
 
@@ -75,6 +75,14 @@ public class Event {
 
     public void setImage_url(String image_url) {
         this.image_url = image_url;
+    }
+
+    public String getUpdate_time() {
+        return update_time;
+    }
+
+    public void setUpdate_time(String update_time) {
+        this.update_time = update_time;
     }
 
 

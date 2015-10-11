@@ -39,49 +39,110 @@ public class Event_Friend_Endpoint {
 
     private static final Logger logger = Logger.getLogger(Event_Friend_Endpoint.class.getName());
 
+
     /**
-     * This method gets the <code>Event_Friend</code> object associated with the specified <code>id</code>.
+     * This inserts a new <code>Event_Friend</code> object.
      *
-     * @param event The id of the object to be returned.
-     * @return The <code>Event_Friend</code> associated with <code>id</code>.
+     * @param Friend_ID The object to be added.
+     * @return The object to be added.
      */
-    @ApiMethod(name = "Event_friend_getFriends", path="get_friends")
-    public Event_Friend getEvent_Friend(@Named("event") String event) {
-        // TODO: Implement this function
-        logger.info("Calling getEvent_Friend method");
-        return null;
+    @ApiMethod(name = "EventFriendDeleteByFriend", path="EventFriendDeleteByFriend")
+    public void DeleteBy_Friend(@Named("Friend_ID")String Friend_ID) {
+        try {
+            Class.forName("com.mysql.jdbc.GoogleDriver");
+            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
+
+            String query ="DELETE FROM `datdbase1`.`Events_Friends` WHERE `Friend_ID`='"+Friend_ID+"';";
+            conn.createStatement().execute(query);
+
+        }catch(Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+        }
     }
 
     /**
      * This inserts a new <code>Event_Friend</code> object.
      *
-     * @param event_Friend The object to be added.
+     * @param Event_ID The object to be added.
      * @return The object to be added.
      */
-    @ApiMethod(name = "insertEvent_Friend")
-    public Event_Friend insertEvent_Friend(Event_Friend event_Friend) {
-        // TODO: Implement this function
-        logger.info("Calling insertEvent_Friend method");
-        return event_Friend;
+    @ApiMethod(name = "EventFriendDeleteByEvent", path="EventFriendDeleteByEvent")
+    public void DeleteBy_Event(@Named("Event_ID")String Event_ID) {
+        try {
+            Class.forName("com.mysql.jdbc.GoogleDriver");
+            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
+
+            String query ="DELETE FROM `datdbase1`.`Events_Friends` WHERE `Event_ID`='"+Event_ID+"';";
+            conn.createStatement().execute(query);
+
+        }catch(Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+        }
     }
+
+    /**
+     * This inserts a new <code>Event_Friend</code> object.
+     *
+     * @param Friend_ID The object to be added.
+     * @return The object to be added.
+     */
+    @ApiMethod(name = "EventFriendInsert", path = "EventFriendInsert")
+    public void Insert(@Named("Event_ID")String Event_ID,@Named("Friend_ID")String Friend_ID) {
+        try {
+            Class.forName("com.mysql.jdbc.GoogleDriver");
+            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
+
+            String query ="INSERT INTO `Events_Friends` VALUES('"+Event_ID+"','" +Friend_ID+"');";
+            conn.createStatement().execute(query);
+
+        }catch(Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+        }
+    }
+
     /**
      * This inserts a new <code>Event_Friend</code> object.
      *
      * @param friend The object to be added.
      * @return The object to be added.
      */
-    @ApiMethod(name = "eventFriendGetEvents", path="get_events")
-    public ArrayList<Event_Friend> get_events(@Named("friend") String friend) {
-        String url = null;
+    @ApiMethod(name = "EventFriendGetEvents", path="get_events")
+    public ArrayList<Event_Friend> GetEvents(@Named("friend") String friend) {
         ArrayList<Event_Friend> eventFriendArrayList = new ArrayList<>();
         try {
             Class.forName("com.mysql.jdbc.GoogleDriver");
-            url =
-                    "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
+            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
 
-            Connection conn = DriverManager.getConnection(url);
+            String query ="SELECT * FROM `Events_Friends` where Friend_ID ='"+friend+"';";
+            ResultSet rs = conn.createStatement().executeQuery(query);
+            while(rs.next()){
+                eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Friend_ID")));
+            }
+            rs.close();
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+        }
+        return eventFriendArrayList;
+    }
 
-            String query ="SELECT * FROM `Events_Friends` where Friend_id ='"+friend+"';";
+    /**
+     * This method gets the <code>Event_Friend</code> object associated with the specified <code>id</code>.
+     *
+     * @param event The id of the object to be returned.
+     * @return The <code>Event_Friend</code> associated with <code>id</code>.
+     */
+    @ApiMethod(name = "EventFriendGetFriends", path="get_friends")
+    public ArrayList<Event_Friend> GetFriends(@Named("event") String event) {
+        ArrayList<Event_Friend> eventFriendArrayList = new ArrayList<>();
+        try {
+            Class.forName("com.mysql.jdbc.GoogleDriver");
+            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
+
+            String query ="SELECT * FROM `Events_Friends` where Event_ID ='"+event+"';";
             ResultSet rs = conn.createStatement().executeQuery(query);
             while(rs.next()){
                 eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Friend_ID")));
