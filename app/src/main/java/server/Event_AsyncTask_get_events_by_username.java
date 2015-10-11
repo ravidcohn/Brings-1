@@ -29,9 +29,11 @@ private Context context;
 
             EventFriendCollection eventFriendCollection = myApiService.eventFriendGetEvents(params[0]).execute();
             EventFriend eventFriend;
+            Event event;
             for(int i = 0;i<eventFriendCollection.getItems().size();i++){
                 eventFriend = eventFriendCollection.getItems().get(i);
                 eventFriend.getEventName();
+                //event = myApiService.eventGetEvent();
             }
         } catch (Exception e) {
             e.printStackTrace();
