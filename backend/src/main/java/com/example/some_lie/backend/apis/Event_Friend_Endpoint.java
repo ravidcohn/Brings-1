@@ -2,6 +2,7 @@ package com.example.some_lie.backend.apis;
 
 import com.example.some_lie.backend.Constants;
 import com.example.some_lie.backend.models.Event_Friend;
+import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
@@ -49,12 +50,7 @@ public class Event_Friend_Endpoint {
     @ApiMethod(name = "EventFriendDeleteByFriend", path="EventFriendDeleteByFriend")
     public void DeleteBy_Friend(@Named("Friend_ID")String Friend_ID) {
         try {
-            Class.forName("com.mysql.jdbc.GoogleDriver");
-            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
-
-            String query ="DELETE FROM `datdbase1`.`Events_Friends` WHERE `Friend_ID`='"+Friend_ID+"';";
-            conn.createStatement().execute(query);
-
+            MySQL_Util.delete("Events_Friends", new String[]{"Friend_ID"}, new String[]{Friend_ID}, null);
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
@@ -70,12 +66,7 @@ public class Event_Friend_Endpoint {
     @ApiMethod(name = "EventFriendDeleteByEvent", path="EventFriendDeleteByEvent")
     public void DeleteBy_Event(@Named("Event_ID")String Event_ID) {
         try {
-            Class.forName("com.mysql.jdbc.GoogleDriver");
-            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
-
-            String query ="DELETE FROM `datdbase1`.`Events_Friends` WHERE `Event_ID`='"+Event_ID+"';";
-            conn.createStatement().execute(query);
-
+            MySQL_Util.delete("Events_Friends",new String[]{"Event_ID"}, new String[]{Event_ID},null);
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
@@ -91,11 +82,7 @@ public class Event_Friend_Endpoint {
     @ApiMethod(name = "EventFriendInsert", path = "EventFriendInsert")
     public void Insert(@Named("Event_ID")String Event_ID,@Named("Friend_ID")String Friend_ID) {
         try {
-            Class.forName("com.mysql.jdbc.GoogleDriver");
-            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
-
-            String query ="INSERT INTO `Events_Friends` VALUES('"+Event_ID+"','" +Friend_ID+"');";
-            conn.createStatement().execute(query);
+            MySQL_Util.insert("Events_Friends",new String[]{Event_ID,Friend_ID});
 
         }catch(Exception e){
             StringWriter sw = new StringWriter();
@@ -113,11 +100,7 @@ public class Event_Friend_Endpoint {
     public ArrayList<Event_Friend> GetEvents(@Named("friend") String friend) {
         ArrayList<Event_Friend> eventFriendArrayList = new ArrayList<>();
         try {
-            Class.forName("com.mysql.jdbc.GoogleDriver");
-            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
-
-            String query ="SELECT * FROM `Events_Friends` where Friend_ID ='"+friend+"';";
-            ResultSet rs = conn.createStatement().executeQuery(query);
+            ResultSet rs = MySQL_Util.select(null,"Events_Friends",new String[]{"Friend_ID"},new String[]{friend},null);
             while(rs.next()){
                 eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Friend_ID")));
             }
@@ -139,11 +122,7 @@ public class Event_Friend_Endpoint {
     public ArrayList<Event_Friend> GetFriends(@Named("event") String event) {
         ArrayList<Event_Friend> eventFriendArrayList = new ArrayList<>();
         try {
-            Class.forName("com.mysql.jdbc.GoogleDriver");
-            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
-
-            String query ="SELECT * FROM `Events_Friends` where Event_ID ='"+event+"';";
-            ResultSet rs = conn.createStatement().executeQuery(query);
+            ResultSet rs = MySQL_Util.select(null,"Events_Friends",new String[]{"Event_ID"}, new String[]{event},null);
             while(rs.next()){
                 eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Friend_ID")));
             }

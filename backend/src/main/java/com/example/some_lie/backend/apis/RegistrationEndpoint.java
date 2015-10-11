@@ -8,6 +8,7 @@ package com.example.some_lie.backend.apis;
 
 import com.example.some_lie.backend.models.RegistrationRecord;
 import com.example.some_lie.backend.utils.EndpointUtil;
+import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
@@ -69,12 +70,8 @@ public class RegistrationEndpoint {
 
         if (!checkIfUserExist(mail)) {
             try {
-                Class.forName("com.mysql.jdbc.GoogleDriver");
-                String url = "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
-                Connection conn = DriverManager.getConnection(url);
-
-                String query = "insert into `Users` values('" + mail + "','" + name + "','" + phone + "','" + password + "','"+regId+"');";
-                conn.createStatement().execute(query);
+                MySQL_Util.insert("Users", new String[]{mail, name, phone, password});
+                MySQL_Util.insert("UsersDevices", new String[]{mail, regId});
                 record.setRegistration_message("O.K");
             } catch (Exception e) {
                 StringWriter sw = new StringWriter();
@@ -91,12 +88,7 @@ public class RegistrationEndpoint {
     private boolean checkIfUserExist(String user) {
         boolean isUserExist = true;
         try {
-            Class.forName("com.mysql.jdbc.GoogleDriver");
-            String url = "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
-            Connection conn = DriverManager.getConnection(url);
-
-            String query = "select * from `Users` where `email` = '" + user + "' limit 1;";
-            ResultSet rs = conn.createStatement().executeQuery(query);
+            ResultSet rs = MySQL_Util.select(null,"Users",new String[]{"email"},new String[]{user},new int[]{1});
             if (!rs.next()) {
                 isUserExist = false;
             }
@@ -111,11 +103,7 @@ public class RegistrationEndpoint {
     private boolean checkIfUserExist(String user, String pass) {
         boolean isUserExist = true;
         try {
-            Class.forName("com.mysql.jdbc.GoogleDriver");
-            String url = "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
-            Connection conn = DriverManager.getConnection(url);
-            String query = "select * from `Users` where `email` = '" + user + "' and `password` = '" + pass + "' limit 1;";
-            ResultSet rs = conn.createStatement().executeQuery(query);
+            ResultSet rs = MySQL_Util.select(null,"Users",new String[]{"email","password"},new String[]{user,pass},new int[]{1});
             if (!rs.next()) {
                 isUserExist = false;
             }
@@ -134,44 +122,17 @@ public class RegistrationEndpoint {
     public RegistrationRecord unregisterDevice(@Named("mail") String mail, @Named("password") String password) {
         RegistrationRecord record = new RegistrationRecord();
         if (checkIfUserExist(mail, password)) {
-
             try {
-                Class.forName("com.mysql.jdbc.GoogleDriver");
-                String url = "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
-                Connection conn = DriverManager.getConnection(url);
-
-                String query = "delete * from `Users` where `email` = '" + mail + "' limit 1;";
-                conn.createStatement().execute(query);
+                MySQL_Util.delete("Users",new String[]{"email"},new String[]{mail},new int[]{1});
                 record.setRegistration_message("User was deleted");
 
             } catch (Exception e) {
                 StringWriter sw = new StringWriter();
                 e.printStackTrace(new PrintWriter(sw));
-                // record.setRegistration_message(sw.toString());
-                // log.info(sw.toString());
             }
         } else {
             record.setRegistration_message("email or password are wrong!");
         }
         return record;
     }
-
-    /**
-     * Return a collection of registered devices
-     *
-     * @param count The number of devices to list
-     * @return a list of Google Cloud Messaging registration Ids
-     */
-  /*
-    @ApiMethod(name = "listDevices",httpMethod = "GET")
-    public CollectionResponse<RegistrationRecord> listDevices(@Named("count") int count) throws UnauthorizedException {
-      //  EndpointUtil.throwIfNotAdmin(user);
-        List<RegistrationRecord> records = ofy().load().type(RegistrationRecord.class).limit(count).list();
-        return CollectionResponse.<RegistrationRecord>builder().setItems(records).build();
-    }
-
-    private RegistrationRecord findRecord(String regId) {
-        return ofy().load().type(RegistrationRecord.class).filter("regId", regId).first().now();
-    }
-*/
 }

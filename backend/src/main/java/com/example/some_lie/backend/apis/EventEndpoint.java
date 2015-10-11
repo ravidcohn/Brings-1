@@ -2,6 +2,7 @@ package com.example.some_lie.backend.apis;
 
 import com.example.some_lie.backend.Constants;
 import com.example.some_lie.backend.models.Event;
+import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
@@ -67,19 +68,17 @@ public class EventEndpoint {
     public Event Get(@Named("id") String id) {
         Event event = new Event();
         try {
-            Class.forName("com.mysql.jdbc.GoogleDriver");
-            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
-
-            String query ="SELECT * FROM `Events` where id ='"+id+"';";
-            ResultSet rs = conn.createStatement().executeQuery(query);
-            event.setId(rs.getString("id"));
-            event.setName(rs.getString("name"));
-            event.setLocation(rs.getString("location"));
-            event.setStart_date(rs.getString("start_date"));
-            event.setEnd_date(rs.getString("end_date"));
-            event.setDescription(rs.getString("description"));
-            event.setImage_url(rs.getString("image_path"));
-            event.setUpdate_time(rs.getString("update_time"));
+            ResultSet rs = MySQL_Util.select(null,"Events",new String[]{"id"}, new String[]{id},new int[]{1});
+            if(rs.next()) {
+                event.setId(rs.getString("id"));
+                event.setName(rs.getString("name"));
+                event.setLocation(rs.getString("location"));
+                event.setStart_date(rs.getString("start_date"));
+                event.setEnd_date(rs.getString("end_date"));
+                event.setDescription(rs.getString("description"));
+                event.setImage_url(rs.getString("image_path"));
+                event.setUpdate_time(rs.getString("update_time"));
+            }
             rs.close();
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
@@ -95,34 +94,12 @@ public class EventEndpoint {
     public void Insert(@Named("ID")String id, @Named("Name")String name, @Named("Location")String location, @Named("Start")String start,
                         @Named("End")String end, @Named("Description")String description,@Named("ImagePath")String imagePath,@Named("UpdateTime")String updateTime) {
         try {
-            Class.forName("com.mysql.jdbc.GoogleDriver");
-            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
-            //String query = "CREATE TABLE `Test`(`from` VARCHAR(50),`to` VARCHAR(50),`message` VARCHAR(500));";
-            //String query = "CREATE TABLE `Events`(`id` VARCHAR(50),`name` VARCHAR(50));";
-            //String query2 = "insert into Events values('"+id+"','"+name+"');";
-            //String query2 = "INSERT INTO `Events` VALUES ('"+id+"', '"+name+"');";
-            /*String query ="CREATE TABLE IF NOT EXISTS `datdbase1`.`Events` (" +
-                    "  `ID` VARCHAR(45) NOT NULL COMMENT ''," +
-                    "  `Name` VARCHAR(45) NOT NULL COMMENT ''," +
-                    "  `Place` VARCHAR(45) NOT NULL COMMENT ''," +
-                    "  `Start_DATE` VARCHAR(45) NOT NULL COMMENT ''," +
-                    "  `End_DATE` VARCHAR(45) NOT NULL COMMENT ''," +
-                    "  `Description` VARCHAR(45) NOT NULL COMMENT ''," +
-                    "  `imagePath` VARCHAR(45) NOT NULL COMMENT ''," +
-                    "  PRIMARY KEY (`ID`)  COMMENT '');";
-            conn.createStatement().execute(query);*/
-
-            String query ="INSERT INTO `Events` VALUES('"+id+"','" +name+"','" +location+ "','" +start+ "','"+end+"','"+description+"','"+imagePath+"','"+updateTime+"');";
-            //conn.createStatement().execute("DROP TABLE `Test`;");
-            //boolean rs2 = conn.createStatement().execute(query);
-            conn.createStatement().execute(query);
-
+           MySQL_Util.insert("Events",new String[]{id,name,location,start,end,description,imagePath,updateTime});
 
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String exceptionAsString = sw.toString();
-            //event.setName("Error!: " + exceptionAsString);
         }
     }
 
@@ -130,7 +107,6 @@ public class EventEndpoint {
      *
      * @param id
      * @param name
-     * @param place
      * @param start
      * @param end
      * @param description
@@ -141,12 +117,9 @@ public class EventEndpoint {
     public void Update(@Named("ID")String id, @Named("Name")String name, @Named("Location")String location, @Named("Start")String start,
                        @Named("End")String end, @Named("Description")String description,@Named("ImagePath")String imagePath,@Named("UpdateTime")String updateTime){
         try {
-            Class.forName("com.mysql.jdbc.GoogleDriver");
-            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
-
-            String query ="UPDATE `datdbase1`.`Events` SET `name`='"+name+"',`location`='"+location+"'," +
-                    "`start_date`='"+start+"',`end_date`='"+end+"',`description`='"+description+"',`image_path`='"+imagePath+"',`Update_Time`='"+updateTime+"' WHERE `id`='"+id+"';";
-            conn.createStatement().execute(query);
+            MySQL_Util.update("Events",new String[]{"name","location","start_date","end_date","description","image_path","Update_Time"},
+                    new String[]{name,location,start,end,description,imagePath,updateTime},
+                    new String[]{"id"}, new String[]{id});
 
         }catch(Exception e){
             StringWriter sw = new StringWriter();
@@ -164,12 +137,7 @@ public class EventEndpoint {
     @ApiMethod(name = "EventDelete",path = "EventDelete")
     public void Delete(@Named("id") String id) {
         try {
-            Class.forName("com.mysql.jdbc.GoogleDriver");
-            Connection conn = DriverManager.getConnection(Constants.Database_PATH);
-
-            String query ="DELETE FROM `datdbase1`.`Events` WHERE `id`='"+id+"';";
-            conn.createStatement().execute(query);
-
+            MySQL_Util.delete("Events",new String[]{"id"}, new String[]{id}, new int[]{1});
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
