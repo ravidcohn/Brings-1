@@ -21,6 +21,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -55,18 +56,13 @@ import static com.example.some_lie.backend.OfyService.ofy;
 )
 public class MessagingEndpoint {
     private static final Logger log = Logger.getLogger(MessagingEndpoint.class.getName());
-
     /**
      * Api Keys can be obtained from the google cloud console
      */
     private static final String API_KEY = System.getProperty("gcm.api.key");
 
-    /**
-     * Send to the first 10 devices (You can modify this to send to any number of devices or a specific device)
-     *
-     * @param message The message to send
-     */
-    public void sendMessage(@Named("message") String message) throws IOException {
+    //TODO improve this !!!!
+    public void sendMessage(@Named("message") String message, @Named("from") String from, @Named("to") String to) throws IOException {
         if (message == null || message.trim().length() == 0) {
             log.warning("Not sending message because it is empty");
             return;
@@ -76,42 +72,67 @@ public class MessagingEndpoint {
             message = message.substring(0, 1000) + "[...]";
         }
         Sender sender = new Sender(API_KEY);
-        Message msg = new Message.Builder().addData("message", message).build();
-        List<RegistrationRecord> records = ofy().load().type(RegistrationRecord.class).limit(10).list();
-        for (RegistrationRecord record : records) {
-            Result result = sender.send(msg, record.getRegId(), 5);
+        Message msg = new Message.Builder().addData("message", from + ": " + message).build();
+        String regId = checkIfUserExist(to);
+        if (!regId.equals("NOT FOUND")) {
+            Result result = sender.send(msg, regId, 5);
             if (result.getMessageId() != null) {
-                log.info("Message sent to " + record.getRegId());
                 String canonicalRegId = result.getCanonicalRegistrationId();
                 if (canonicalRegId != null) {
-                    // if the regId changed, we have to update the datastore
-                    log.info("Registration Id changed for " + record.getRegId() + " updating to " + canonicalRegId);
-                    record.setRegId(canonicalRegId);
-                    ofy().save().entity(record).now();
+                    update(to, canonicalRegId);
                 }
             } else {
-                String error = result.getErrorCodeName();
-                if (error.equals(Constants.ERROR_NOT_REGISTERED)) {
-                    log.warning("Registration Id " + record.getRegId() + " no longer registered with GCM, removing from datastore");
-                    // if the device is no longer registered with Gcm, remove it from the datastore
-                    ofy().delete().entity(record).now();
-                } else {
-                    log.warning("Error when sending message : " + error);
-                }
+                //TODO
             }
         }
+        else{
+            log.warning("NOT FOUND");
+        }
     }
+
+    private void update(String email, String RegId) {
+        try {
+            Class.forName("com.mysql.jdbc.GoogleDriver");
+            String url = "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
+            Connection conn = DriverManager.getConnection(url);
+            String query = "update `Users` set `reg_id` = '" + RegId + "' where `email` = '" + email + "';";
+            conn.createStatement().execute(query);
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+        }
+    }
+
+    private String checkIfUserExist(String user) {
+        String regID = "NOT FOUND";
+        try {
+            Class.forName("com.mysql.jdbc.GoogleDriver");
+            String url = "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
+            Connection conn = DriverManager.getConnection(url);
+
+            String query = "SELECT * FROM `Users` where `email` ='" + user + "' limit 1;";
+            ResultSet rs = conn.createStatement().executeQuery(query);
+            if (rs.next()) {
+                regID = rs.getString(5);
+            }
+            rs.close();
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+        }
+        return regID;
+    }
+
     private boolean legalMessage(String msg) {
         boolean ok = false;
-        if(msg.contains(" - ")) {
+        if (msg.contains(" - ")) {
             String content[] = msg.split(" - ");
-            if(content.length == 2) {
-                if (content[0].equals("M")){//message
+            if (content.length == 2) {
+                if (content[0].equals("M")) {//message
                     ok = true;
-                }
-                else if(content[0].equals("NE") || content[0].equals("UE")){//event
-                    String[] data =content[1].split(", ");
-                    if(data.length == 2){
+                } else if (content[0].equals("NE") || content[0].equals("UE")) {//event
+                    String[] data = content[1].split(", ");
+                    if (data.length == 2) {
                         ok = true;
                     }
                 }

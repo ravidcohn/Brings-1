@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String PROPERTY_REG_ID = "registrationId";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private Brings BringsApi;
-
     /**
      * Google Cloud Messaging API.
      */
@@ -82,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         tvSearch.setText("Search  ");
 
         setList();
+  /*
         if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
             regId = getRegistrationId(getApplicationContext());
@@ -96,8 +96,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             //Log.i(TAG, "No valid Google Play Services APK found.");
         }
-
+*/
     }
+
+
 
     /**
      * Gets the current registration ID for application on GCM service.
@@ -142,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(login);
         }
     }
+
 
     /**
      * @param applicationContext the Application context.
@@ -328,25 +331,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Sends the registration ID to your server over HTTP, so it can use
-     * GCM/HTTP or CCS to send messages to your app. Not needed for this
-     * demo since the device sends upstream messages to a server that echoes
-     * back the message using the 'from' address in the message.
-     */
-    private void sendRegistrationIdToBackend() {
-        try {
-            BringsApi.register(regId).execute();
-            // Persist the registration ID - no need to register again.
-            storeRegistrationId(getApplicationContext(), regId);
-        } catch (IOException e) {
-       /*     LOG.warning("Exception when sending registration ID to the "
-                    + "backend = "+ e.getMessage());
-         */   // If there is an error, we will try again to register the
-            // device with GCM the next time the MainActivity starts.
-        }
-    }
-
-    /**
      * Stores the registration ID and app versionCode in the application's
      * {@code SharedPreferences}.
      * @param applicationContext application's context.
@@ -410,39 +394,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
-        }
-    }
-
-    private class GcmAsyncRegister
-            extends AsyncTask<Void, Void, String> {
-        @Override
-        protected String doInBackground(final Void... params) {
-            String msg;
-            try {
-                if (gcm == null) {
-                    gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
-                }
-                regId = gcm.register(Constants.SENDER_ID);
-                msg = String.format(
-                        getString(R.string.gcmRegistrationSuccess), regId);
-
-                sendRegistrationIdToBackend();
-            } catch (IOException ex) {
-                // If there is an error, we will try again to register the
-                // device with GCM the next time the MainActivity starts.
-                msg = getString(R.string.gcmRegistrationError);
-            }
-            return msg;
-        }
-
-        @Override
-        protected void onPostExecute(final String msg) {
-            Toast toast = Toast
-                    .makeText(getApplicationContext(),
-                            msg,
-                            Toast.LENGTH_LONG);
-            toast.show();
-     //       Log.i(TAG, msg);
         }
     }
 }
