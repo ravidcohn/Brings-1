@@ -35,13 +35,17 @@ private Context context;
     }
 
     @Override
-    protected void onPostExecute(Event result) {
+    protected Event onPostExecute(Event result) {
         //Toast.makeText(context,result.getMessage(),Toast.LENGTH_LONG).show();
         /*Toast.makeText(context,result.getFrom(),Toast.LENGTH_LONG).show();
-        */if(result != null) {
+        */
+        Event event = null;
+        if(result != null) {
+            event = new Event();
             Toast.makeText(context, "הודעה נשלחה", Toast.LENGTH_LONG).show();
         }else{
             Toast.makeText(context,"ההודעה לא נשלחה",Toast.LENGTH_LONG).show();
         }
+        return new Event();
     }
 }
