@@ -35,4 +35,5 @@ public class Event_Friend {
     public void setFriend_name(String friend_name) {
         this.friend_name = friend_name;
     }
+
 }
