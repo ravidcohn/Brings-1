@@ -6,16 +6,16 @@ import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.Event;
-import com.example.some_lie.backend.brings.model.EventFriend;
 import com.example.some_lie.backend.brings.model.EventFriendCollection;
+
 /**
  * Created by Ravid on 26/09/2015.
  */
-public class Event_AsyncTask_get_events_by_username extends AsyncTask<String, Void, Event> {
+public class Event_AsyncTask_get extends AsyncTask<String, Void, Event> {
 private static Brings myApiService = null;
 private Context context;
 
-    public Event_AsyncTask_get_events_by_username(Context context) {
+    public Event_AsyncTask_get(Context context) {
         this.context = context;
     }
 
@@ -24,9 +24,15 @@ private Context context;
         if(myApiService == null) { // Only do this once
             myApiService = CloudEndpointBuilderHelper.getEndpoints();
         }
-
         try {
+            EventFriendCollection eventFriendCollection = myApiService.eventFriendGetEvents(params[0]).execute();
 
+            Event event = myApiService.eventGet(params[0]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+            /*
             EventFriendCollection eventFriendCollection = myApiService.eventFriendGetEvents(params[0]).execute();
             EventFriend eventFriend;
             Brings.EventGetEvent event;
@@ -37,8 +43,9 @@ private Context context;
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        */
         return null;
+
     }
 
     @Override

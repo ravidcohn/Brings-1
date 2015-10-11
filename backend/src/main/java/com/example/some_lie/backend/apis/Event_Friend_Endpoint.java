@@ -52,7 +52,7 @@ public class Event_Friend_Endpoint {
             Class.forName("com.mysql.jdbc.GoogleDriver");
             Connection conn = DriverManager.getConnection(Constants.Database_PATH);
 
-            String query ="DELETE FROM `datdbase1`.`Events_Friends` WHERE `Event_ID`='"+Friend_ID+"';";
+            String query ="DELETE FROM `datdbase1`.`Events_Friends` WHERE `Friend_ID`='"+Friend_ID+"';";
             conn.createStatement().execute(query);
 
         }catch(Exception e){
@@ -88,7 +88,7 @@ public class Event_Friend_Endpoint {
      * @param Friend_ID The object to be added.
      * @return The object to be added.
      */
-    @ApiMethod(name = "EventFriendInsert")
+    @ApiMethod(name = "EventFriendInsert", path = "EventFriendInsert")
     public void Insert(@Named("Event_ID")String Event_ID,@Named("Friend_ID")String Friend_ID) {
         try {
             Class.forName("com.mysql.jdbc.GoogleDriver");
@@ -116,7 +116,7 @@ public class Event_Friend_Endpoint {
             Class.forName("com.mysql.jdbc.GoogleDriver");
             Connection conn = DriverManager.getConnection(Constants.Database_PATH);
 
-            String query ="SELECT * FROM `Events_Friends` where Friend_id ='"+friend+"';";
+            String query ="SELECT * FROM `Events_Friends` where Friend_ID ='"+friend+"';";
             ResultSet rs = conn.createStatement().executeQuery(query);
             while(rs.next()){
                 eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Friend_ID")));
@@ -142,7 +142,7 @@ public class Event_Friend_Endpoint {
             Class.forName("com.mysql.jdbc.GoogleDriver");
             Connection conn = DriverManager.getConnection(Constants.Database_PATH);
 
-            String query ="SELECT * FROM `Events_Friends` where Event_id ='"+event+"';";
+            String query ="SELECT * FROM `Events_Friends` where Event_ID ='"+event+"';";
             ResultSet rs = conn.createStatement().executeQuery(query);
             while(rs.next()){
                 eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Friend_ID")));

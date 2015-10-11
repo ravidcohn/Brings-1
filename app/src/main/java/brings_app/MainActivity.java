@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import server.CloudEndpointBuilderHelper;
-import server.Event_AsyncTask_get_events_by_username;
+import server.Event_AsyncTask_get;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         login();
-        new Event_AsyncTask_get_events_by_username(this).execute("a");
+        new Event_AsyncTask_get(this).execute("aa");
         BringsApi = CloudEndpointBuilderHelper.getEndpoints();
         users_names = new ArrayList<>();
         IDS = new ArrayList<>();

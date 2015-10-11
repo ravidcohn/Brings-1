@@ -63,10 +63,7 @@ public class EventEndpoint {
      * @return the entity with the corresponding ID
      * @throws NotFoundException if there is no {@code Event} with the provided ID.
      */
-    @ApiMethod(
-            name = "EventGet",
-            path = "event/{id}",
-            httpMethod = ApiMethod.HttpMethod.GET)
+    @ApiMethod( name = "EventGet",path = "EventGet")
     public Event Get(@Named("id") String id) {
         Event event = new Event();
         try {
@@ -94,11 +91,8 @@ public class EventEndpoint {
     /**
      * Inserts a new {@code Event}.
      */
-    @ApiMethod(
-            name = "EventInsert",
-            path = "event",
-            httpMethod = ApiMethod.HttpMethod.POST)
-    public void Insert(@Named("ID")String id, @Named("Name")String name, @Named("Place")String place, @Named("Start")String start,
+    @ApiMethod(name = "EventInsert",path = "event")
+    public void Insert(@Named("ID")String id, @Named("Name")String name, @Named("Location")String location, @Named("Start")String start,
                         @Named("End")String end, @Named("Description")String description,@Named("ImagePath")String imagePath,@Named("UpdateTime")String updateTime) {
         try {
             Class.forName("com.mysql.jdbc.GoogleDriver");
@@ -118,7 +112,7 @@ public class EventEndpoint {
                     "  PRIMARY KEY (`ID`)  COMMENT '');";
             conn.createStatement().execute(query);*/
 
-            String query ="INSERT INTO `Events` VALUES('"+id+"','" +name+"','" +place+ "','" +start+ "','"+end+"','"+description+"','"+imagePath+"','"+updateTime+"');";
+            String query ="INSERT INTO `Events` VALUES('"+id+"','" +name+"','" +location+ "','" +start+ "','"+end+"','"+description+"','"+imagePath+"','"+updateTime+"');";
             //conn.createStatement().execute("DROP TABLE `Test`;");
             //boolean rs2 = conn.createStatement().execute(query);
             conn.createStatement().execute(query);
@@ -143,18 +137,15 @@ public class EventEndpoint {
      * @param imagePath
      * @param updateTime
      */
-    @ApiMethod(
-            name = "EventUpdate",
-            path = "event/{id}",
-            httpMethod = ApiMethod.HttpMethod.PUT)
-    public void Update(@Named("ID")String id, @Named("Name")String name, @Named("Place")String location, @Named("Start")String start,
+    @ApiMethod(name = "EventUpdate",path = "EventUpdate")
+    public void Update(@Named("ID")String id, @Named("Name")String name, @Named("Location")String location, @Named("Start")String start,
                        @Named("End")String end, @Named("Description")String description,@Named("ImagePath")String imagePath,@Named("UpdateTime")String updateTime){
         try {
             Class.forName("com.mysql.jdbc.GoogleDriver");
             Connection conn = DriverManager.getConnection(Constants.Database_PATH);
 
-            String query ="UPDATE `datdbase1`.`Events` SET `name`='"+name+"', `location`='"+location+"'," +
-                    " `start_date`='"+start+"', `end_date`='"+end+"', `description`='"+description+"', `image_path`='"+imagePath+"', `Update_Time`='"+updateTime+"' WHERE `id`='"+id+"';";
+            String query ="UPDATE `datdbase1`.`Events` SET `name`='"+name+"',`location`='"+location+"'," +
+                    "`start_date`='"+start+"',`end_date`='"+end+"',`description`='"+description+"',`image_path`='"+imagePath+"',`Update_Time`='"+updateTime+"' WHERE `id`='"+id+"';";
             conn.createStatement().execute(query);
 
         }catch(Exception e){
@@ -170,16 +161,13 @@ public class EventEndpoint {
      * @throws NotFoundException if the {@code id} does not correspond to an existing
      *                           {@code Event}
      */
-    @ApiMethod(
-            name = "EventDelete",
-            path = "event/{id}",
-            httpMethod = ApiMethod.HttpMethod.DELETE)
+    @ApiMethod(name = "EventDelete",path = "EventDelete")
     public void Delete(@Named("id") String id) {
         try {
             Class.forName("com.mysql.jdbc.GoogleDriver");
             Connection conn = DriverManager.getConnection(Constants.Database_PATH);
 
-            String query ="DELETE FROM `datdbase1`.`Events` WHERE `Event_ID`='"+id+"';";
+            String query ="DELETE FROM `datdbase1`.`Events` WHERE `id`='"+id+"';";
             conn.createStatement().execute(query);
 
         }catch(Exception e){

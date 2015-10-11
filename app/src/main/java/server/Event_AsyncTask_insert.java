@@ -2,15 +2,13 @@ package server;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.Brings;
-import com.example.some_lie.backend.brings.model.Event;
 
 /**
  * Created by Ravid on 25/09/2015.
  */
-public class Event_AsyncTask_insert extends AsyncTask<String, Void, Event> {
+public class Event_AsyncTask_insert extends AsyncTask<String, Void, Void> {
     private static Brings myApiService = null;
     private Context context;
 
@@ -19,13 +17,13 @@ public class Event_AsyncTask_insert extends AsyncTask<String, Void, Event> {
     }
 
     @Override
-    protected Event doInBackground(String... params) {
+    protected Void doInBackground(String... params) {
         if(myApiService == null) { // Only do this once
                        myApiService = CloudEndpointBuilderHelper.getEndpoints();
         }
 
         try {
-            return myApiService.insert(params[0],params[1],params[2],params[3],params[4],params[5],params[6]).execute();
+            myApiService.eventInsert(params[0],params[1],params[2],params[3],params[4],params[5],params[6],params[7]).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -33,14 +31,6 @@ public class Event_AsyncTask_insert extends AsyncTask<String, Void, Event> {
         return null;
     }
 
-    @Override
-    protected void onPostExecute(Event result) {
-        //Toast.makeText(context,result.getMessage(),Toast.LENGTH_LONG).show();
-        /*Toast.makeText(context,result.getFrom(),Toast.LENGTH_LONG).show();
-        */if(result != null) {
-            Toast.makeText(context, "הודעה נשלחה", Toast.LENGTH_LONG).show();
-        }else{
-            Toast.makeText(context,"ההודעה לא נשלחה",Toast.LENGTH_LONG).show();
-        }
-    }
 }
+
+
