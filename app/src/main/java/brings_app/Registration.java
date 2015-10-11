@@ -1,5 +1,6 @@
 package brings_app;
 
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -37,13 +38,19 @@ public class Registration extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-               /* boolean ok = saveData();
+                boolean ok = saveData();
                 if (ok) {
+                    SharedPreferences.Editor editor = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE).edit();
+                    editor.putString("USER","R-USER");
+                    editor.putString("Name", et_rg_mail_ui.getText().toString());
+                    editor.putString("Pass", et_rg_password_ui.getText().toString());
+                    editor.commit();
                     finish();
-                }*/
+                }
             }
 
         });
+
     }
 
     private boolean saveData(){
@@ -55,6 +62,7 @@ public class Registration extends AppCompatActivity {
         String confirm_password = et_rg_confirm_password_ui.getText().toString();
         if(mail.length()>0 && name.length()>0 && phone.length()>0 && password.length()>0 && confirm_password.length()>0) {
             if(password.equals(confirm_password)) {
+                ok = true;
                 /*
                 new Registration_AsyncTask(this).execute(mail,name,phone,password,confirm_password);
                 ok = true;
@@ -83,6 +91,7 @@ public class Registration extends AppCompatActivity {
         }else {
             Toast.makeText(getApplicationContext(), "All fields should be filed", Toast.LENGTH_SHORT).show();
         }
+
         return ok;
     }
 
