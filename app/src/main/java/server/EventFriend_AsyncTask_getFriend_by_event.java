@@ -13,6 +13,11 @@ import com.example.some_lie.backend.brings.model.EventFriendCollection;
 public class EventFriend_AsyncTask_getFriend_by_event  extends AsyncTask<String, Void, EventFriendCollection> {
     private static Brings myApiService = null;
     private Context context;
+    private EventFriendCollection eventFriendCollection;
+
+    public EventFriendCollection getEventFriendCollection() {
+        return eventFriendCollection;
+    }
 
     public EventFriend_AsyncTask_getFriend_by_event(Context context) {
         this.context = context;
@@ -40,6 +45,7 @@ public class EventFriend_AsyncTask_getFriend_by_event  extends AsyncTask<String,
         /*Toast.makeText(context,result.getFrom(),Toast.LENGTH_LONG).show();
         */
         if (result != null) {
+            eventFriendCollection = result;
             Toast.makeText(context, "הודעה נשלחה", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(context, "ההודעה לא נשלחה", Toast.LENGTH_LONG).show();
