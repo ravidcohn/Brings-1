@@ -8,6 +8,7 @@ import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.Event;
 import com.example.some_lie.backend.brings.model.EventFriendCollection;
 
+
 /**
  * Created by Ravid on 26/09/2015.
  */
@@ -25,7 +26,7 @@ private Context context;
             myApiService = CloudEndpointBuilderHelper.getEndpoints();
         }
         try {
-            Brings.EventGet event = myApiService.eventGet(params[0]);
+            Event event = myApiService.eventGet(params[0]).execute();
 
             EventFriendCollection eventFriendCollection = myApiService.eventFriendGetEvents(params[0]).execute();
 

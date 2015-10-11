@@ -8,7 +8,7 @@ import com.example.some_lie.backend.brings.Brings;
 /**
  * Created by Ravid on 11/10/2015.
  */
-public class Event_AsyncTask_update   extends AsyncTask<String, Void, Void> {
+public class Event_AsyncTask_update extends AsyncTask<String, Void, Void> {
     private static Brings myApiService = null;
     private Context context;
 

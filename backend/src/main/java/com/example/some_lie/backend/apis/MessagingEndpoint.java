@@ -7,6 +7,7 @@
 package com.example.some_lie.backend.apis;
 
 import com.example.some_lie.backend.models.RegistrationRecord;
+import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.android.gcm.server.Constants;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Result;
@@ -73,47 +74,39 @@ public class MessagingEndpoint {
         }
         Sender sender = new Sender(API_KEY);
         Message msg = new Message.Builder().addData("message", from + ": " + message).build();
-        String regId = checkIfUserExist(to);
-        if (!regId.equals("NOT FOUND")) {
-            Result result = sender.send(msg, regId, 5);
-            if (result.getMessageId() != null) {
-                String canonicalRegId = result.getCanonicalRegistrationId();
-                if (canonicalRegId != null) {
-                    update(to, canonicalRegId);
+        ArrayList<String> regId = checkIfUserExist(to);
+        for (String id: regId) {
+            if (!id.equals("NOT FOUND")) {
+                Result result = sender.send(msg, id, 5);
+                if (result.getMessageId() != null) {
+                    String canonicalRegId = result.getCanonicalRegistrationId();
+                    if (canonicalRegId != null) {
+                        update(to,id,canonicalRegId);
+                    }
+                } else {
+                    //TODO
                 }
             } else {
-                //TODO
+                log.warning("NOT FOUND");
             }
-        }
-        else{
-            log.warning("NOT FOUND");
         }
     }
 
-    private void update(String email, String RegId) {
+    private void update(String email, String prevId, String RegId) {
         try {
-            Class.forName("com.mysql.jdbc.GoogleDriver");
-            String url = "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
-            Connection conn = DriverManager.getConnection(url);
-            String query = "update `Users` set `reg_id` = '" + RegId + "' where `email` = '" + email + "';";
-            conn.createStatement().execute(query);
+            MySQL_Util.update("UsersDevices", new String[]{"reg_id"}, new String[]{RegId}, new String[]{"email", "reg_id"}, new String[]{email, prevId});
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
         }
     }
 
-    private String checkIfUserExist(String user) {
-        String regID = "NOT FOUND";
+    private ArrayList<String> checkIfUserExist(String user) {
+        ArrayList<String> regID = new ArrayList<>();
         try {
-            Class.forName("com.mysql.jdbc.GoogleDriver");
-            String url = "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
-            Connection conn = DriverManager.getConnection(url);
-
-            String query = "SELECT * FROM `Users` where `email` ='" + user + "' limit 1;";
-            ResultSet rs = conn.createStatement().executeQuery(query);
-            if (rs.next()) {
-                regID = rs.getString(5);
+            ResultSet rs = MySQL_Util.select(null,"UsersDevices",new String[]{"email"},new String[]{user},null);
+            while (rs.next()) {
+                regID.add(rs.getString(2));
             }
             rs.close();
         } catch (Exception e) {

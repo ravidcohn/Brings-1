@@ -66,6 +66,7 @@ public final class Constants {
      */
     public static final String Database_PATH = "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
 
+    public static final String sqlClassName = "com.mysql.jdbc.GoogleDriver";
     /**
      * Default constrictor, never called.
      */
