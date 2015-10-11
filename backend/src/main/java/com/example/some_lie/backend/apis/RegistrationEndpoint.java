@@ -16,6 +16,11 @@ import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.users.User;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -54,34 +59,101 @@ public class RegistrationEndpoint {
 
     /**
      * Register a device to the backend
-     *
-     * @param regId The Google Cloud Messaging registration Id to add
      */
-    @ApiMethod(name = "register",httpMethod = "POST")
-    public void registerDevice(@Named("regId") String regId){// throws UnauthorizedException {
-       // EndpointUtil.throwIfNotAuthenticated(user);
-        if (findRecord(regId) != null) {
-            log.info("Device " + regId + " already registered, skipping register");
-            return;
-        }
+
+    @ApiMethod(name = "Register", httpMethod = "POST")
+    public RegistrationRecord registerDevice(@Named("mail") String mail, @Named("name") String name, @Named("phone") String phone
+            , @Named("password") String password, @Named("regId") String regId) {// throws UnauthorizedException {
+        // EndpointUtil.throwIfNotAuthenticated(user);
         RegistrationRecord record = new RegistrationRecord();
-        record.setRegId(regId);
-        ofy().save().entity(record).now();
+
+        if (!checkIfUserExist(mail)) {
+            try {
+                Class.forName("com.mysql.jdbc.GoogleDriver");
+                String url = "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
+                Connection conn = DriverManager.getConnection(url);
+
+                String query = "insert into `Users` values('" + mail + "','" + name + "','" + phone + "','" + password + "','"+regId+"');";
+                conn.createStatement().execute(query);
+                record.setRegistration_message("O.K");
+            } catch (Exception e) {
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                record.setRegistration_message(sw.toString());
+            }
+
+        } else {
+            record.setRegistration_message("User alrady exist!");
+        }
+        return record;
+    }
+
+    private boolean checkIfUserExist(String user) {
+        boolean isUserExist = true;
+        try {
+            Class.forName("com.mysql.jdbc.GoogleDriver");
+            String url = "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
+            Connection conn = DriverManager.getConnection(url);
+
+            String query = "select * from `Users` where `email` = '" + user + "' limit 1;";
+            ResultSet rs = conn.createStatement().executeQuery(query);
+            if (!rs.next()) {
+                isUserExist = false;
+            }
+            rs.close();
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+        }
+        return isUserExist;
+    }
+
+    private boolean checkIfUserExist(String user, String pass) {
+        boolean isUserExist = true;
+        try {
+            Class.forName("com.mysql.jdbc.GoogleDriver");
+            String url = "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
+            Connection conn = DriverManager.getConnection(url);
+            String query = "select * from `Users` where `email` = '" + user + "' and `password` = '" + pass + "' limit 1;";
+            ResultSet rs = conn.createStatement().executeQuery(query);
+            if (!rs.next()) {
+                isUserExist = false;
+            }
+            rs.close();
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+        }
+        return isUserExist;
     }
 
     /**
      * Unregister a device from the backend
-     *
-     * @param regId The Google Cloud Messaging registration Id to remove
      */
-    @ApiMethod(name = "Unregister",httpMethod = "DELETE")
-    public void unregisterDevice(@Named("regId") String regId) {
-        RegistrationRecord record = findRecord(regId);
-        if (record == null) {
-            log.info("Device " + regId + " not registered, skipping unregister");
-            return;
+    @ApiMethod(name = "Unregister", httpMethod = "DELETE")
+    public RegistrationRecord unregisterDevice(@Named("mail") String mail, @Named("password") String password) {
+        RegistrationRecord record = new RegistrationRecord();
+        if (checkIfUserExist(mail, password)) {
+
+            try {
+                Class.forName("com.mysql.jdbc.GoogleDriver");
+                String url = "jdbc:google:mysql://encoded-keyword-106406:test/datdbase1?user=root";
+                Connection conn = DriverManager.getConnection(url);
+
+                String query = "delete * from `Users` where `email` = '" + mail + "' limit 1;";
+                conn.createStatement().execute(query);
+                record.setRegistration_message("User was deleted");
+
+            } catch (Exception e) {
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                // record.setRegistration_message(sw.toString());
+                // log.info(sw.toString());
+            }
+        } else {
+            record.setRegistration_message("email or password are wrong!");
         }
-        ofy().delete().entity(record).now();
+        return record;
     }
 
     /**
@@ -90,6 +162,7 @@ public class RegistrationEndpoint {
      * @param count The number of devices to list
      * @return a list of Google Cloud Messaging registration Ids
      */
+  /*
     @ApiMethod(name = "listDevices",httpMethod = "GET")
     public CollectionResponse<RegistrationRecord> listDevices(@Named("count") int count) throws UnauthorizedException {
       //  EndpointUtil.throwIfNotAdmin(user);
@@ -100,5 +173,5 @@ public class RegistrationEndpoint {
     private RegistrationRecord findRecord(String regId) {
         return ofy().load().type(RegistrationRecord.class).filter("regId", regId).first().now();
     }
-
+*/
 }

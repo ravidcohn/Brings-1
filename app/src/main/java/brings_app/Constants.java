@@ -17,17 +17,17 @@ public final class Constants {
      * Substitute you own sender ID here. This is the project number you got
      * from the API Console, as described in "Getting Started."
      */
-    static final String SENDER_ID = BuildConfig.SENDER_ID;
+    public static final String SENDER_ID = BuildConfig.SENDER_ID;
 
     /**
      * Web client ID from Google Cloud console.
      */
-    static final String WEB_CLIENT_ID = BuildConfig.WEB_CLIENT_ID;
+    public static final String WEB_CLIENT_ID = BuildConfig.WEB_CLIENT_ID;
 
     /**
      * The web client ID from Google Cloud Console.
      */
-    static final String AUDIENCE_ANDROID_CLIENT_ID =
+    public static final String AUDIENCE_ANDROID_CLIENT_ID =
             "server:client_id:" + WEB_CLIENT_ID;
 
     /**

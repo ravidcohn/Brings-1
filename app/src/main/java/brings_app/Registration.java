@@ -11,17 +11,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import server.RegistrationAsyncResponse;
+import server.Registration_AsyncTask;
+
 /**
  * Created by Ravid on 08/10/2015.
  */
-public class Registration extends AppCompatActivity {
+public class Registration extends AppCompatActivity  implements RegistrationAsyncResponse {
     private EditText et_rg_mail_ui;
     private EditText et_rg_your_name_ui;
     private EditText et_rg_phone_ui;
     private EditText et_rg_password_ui;
     private EditText et_rg_confirm_password_ui;
     private Button bt_rg_register_ui;
-    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,23 +40,28 @@ public class Registration extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                boolean ok = saveData();
-                if (ok) {
-                    SharedPreferences.Editor editor = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE).edit();
-                    editor.putString("USER","R-USER");
-                    editor.putString("Name", et_rg_mail_ui.getText().toString());
-                    editor.putString("Pass", et_rg_password_ui.getText().toString());
-                    editor.commit();
-                    finish();
-                }
+               saveData();
             }
 
         });
 
     }
 
-    private boolean saveData(){
-        boolean ok = false;
+    public void processFinish(String output){
+        if(output.equals("O.K")) {
+            SharedPreferences.Editor editor = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE).edit();
+            editor.putString("USER", "R-USER");
+            editor.putString("Name", et_rg_mail_ui.getText().toString());
+            editor.putString("Pass", et_rg_password_ui.getText().toString());
+            editor.commit();
+            finish();
+        }
+        else{
+            Toast.makeText(getApplicationContext(),output,Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void saveData(){
         String mail = et_rg_mail_ui.getText().toString();
         String name = et_rg_your_name_ui.getText().toString();
         String phone = et_rg_phone_ui.getText().toString();
@@ -62,29 +69,7 @@ public class Registration extends AppCompatActivity {
         String confirm_password = et_rg_confirm_password_ui.getText().toString();
         if(mail.length()>0 && name.length()>0 && phone.length()>0 && password.length()>0 && confirm_password.length()>0) {
             if(password.equals(confirm_password)) {
-                ok = true;
-                /*
-                new Registration_AsyncTask(this).execute(mail,name,phone,password,confirm_password);
-                ok = true;
-                db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
-                int task_id = 0;
-                ArrayList<Integer> allIDS = new ArrayList<>();
-                Cursor c = db.rawQuery("select * from Tasks where ID = '" + KEY + "';", null);
-                while (c.moveToNext()) {
-                    int t_id = c.getInt(1);
-                    allIDS.add(t_id);
-                }
-                while (allIDS.contains(task_id)) {
-                    task_id++;
-                }
-                String task = et_nt_task_ui.getText().toString();
-                String description = et_nt_description_ui.getText().toString();
-                String name = "";
-
-                db.execSQL("insert into Tasks values('" + KEY + "'," + task_id + ",'" + task + "','" + description + "','" + name + "');");
-                c.close();
-                db.close();
-                */
+                new Registration_AsyncTask(this,this).execute(mail,name,phone,password);
             }else {
                 Toast.makeText(getApplicationContext(), "password are not much", Toast.LENGTH_SHORT).show();
             }
@@ -92,7 +77,6 @@ public class Registration extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "All fields should be filed", Toast.LENGTH_SHORT).show();
         }
 
-        return ok;
     }
 
 
