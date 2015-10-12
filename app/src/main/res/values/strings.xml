@@ -19,6 +19,7 @@
     <string name="bt_cancel_ui">Cancel</string>
 
 
+
     <string name="tv_yes_title">Yes:</string>
     <string name="tv_maybe_title">Maybe: </string>
     <string name="tv_no_title">No: </string>
@@ -41,8 +42,7 @@
 
     <string name="gcmRegistrationError">An error occurred during
         registration. Trying again later</string>
-    <string name="gcmRegistrationSuccess">Device registered, registration
-        ID= %1s</string>
+    <string name="gcmRegistrationSuccess">Device registered, registrationID= %1s</string>
 
     <string name="tv_mail_title">Mail</string>
     <string name="tv_your_name_title">Name</string>
@@ -50,5 +50,13 @@
     <string name="tv_password_title">Password</string>
     <string name="tv_confirm_password_title">Confirm Password</string>
     <string name="bt_register_title">Register</string>
+
+    <string name="b_login_login">Log In</string>
+    <string name="b_login_register">Register</string>
+    <string name="checkbox_login">Remember me</string>
+    <string name="tv_login_password">Password</string>
+    <string name="tv_login_name">Email / Phone</string>
+
+
 
 </resources>

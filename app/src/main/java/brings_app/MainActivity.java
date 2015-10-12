@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        login();
         new Event_AsyncTask_get(this).execute("aa");
         BringsApi = CloudEndpointBuilderHelper.getEndpoints();
         users_names = new ArrayList<>();
@@ -124,22 +123,6 @@ public class MainActivity extends AppCompatActivity {
             return "";
         }
         return registrationId;
-    }
-
-    private void login() {
-
-
-        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        String restoredText = prefs.getString("USER", null);
-        if (restoredText != null) {
-            String name = prefs.getString("Name", "No name defined");//"No name defined" is the default value.
-            String pass = prefs.getString("Pass", "No name defined");
-            //TODO get updates from server
-        }
-        else{
-            Intent login = new Intent(this, Registration.class);
-            startActivity(login);
-        }
     }
 
 
