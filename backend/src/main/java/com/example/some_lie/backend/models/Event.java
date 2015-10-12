@@ -19,7 +19,19 @@ public class Event {
     private String update_time;
 
 
+
     public Event() {}
+
+    public Event(String id, String name, String location, String start_date, String end_date, String description, String image_url, String update_time) {
+        this.id = id;
+        this.name = name;
+        this.location = location;
+        this.start_date = start_date;
+        this.end_date = end_date;
+        this.description = description;
+        this.image_url = image_url;
+        this.update_time = update_time;
+    }
 
     public String getId() {
         return id;
