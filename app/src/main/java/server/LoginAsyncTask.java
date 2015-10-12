@@ -10,15 +10,15 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import brings_app.Constants;
 
 /**
- * Created by pinhas on 11/10/2015.
+ * Created by pinhas on 12/10/2015.
  */
-public class Registration_AsyncTask extends AsyncTask<String, Void, RegistrationRecord> {
+public class LoginAsyncTask extends AsyncTask<String, Void, RegistrationRecord> {
     private static Brings myApiService = null;
     private ServerAsyncResponse delegate;
     private GoogleCloudMessaging gcm;
     private Context context;
 
-    public Registration_AsyncTask(ServerAsyncResponse delegate, Context context) {
+    public LoginAsyncTask(ServerAsyncResponse delegate, Context context) {
         this.delegate = delegate;
         this.context = context;
     }
@@ -30,12 +30,12 @@ public class Registration_AsyncTask extends AsyncTask<String, Void, Registration
         }
         try {
             String msg = "";
-               if (gcm == null) {
-                    gcm = GoogleCloudMessaging.getInstance(context);
-                }
-                String regId = gcm.register(Constants.SENDER_ID);
+            if (gcm == null) {
+                gcm = GoogleCloudMessaging.getInstance(context);
+            }
+            String regId = gcm.register(Constants.SENDER_ID);
 
-            return myApiService.register(params[0], params[1], params[2], params[3], regId).execute();
+            return myApiService.authentication(params[0], params[1], regId).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -46,8 +46,9 @@ public class Registration_AsyncTask extends AsyncTask<String, Void, Registration
     protected void onPostExecute(RegistrationRecord result) {
         String message = "Cannot connect the server.. please try again later";
         if(result != null) {
-            message = result.getMessage();
+            message = "O.K";
         }
         delegate.processFinish(message);
     }
 }
+

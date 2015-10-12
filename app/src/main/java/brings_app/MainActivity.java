@@ -25,8 +25,6 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.some_lie.backend.brings.Brings;
-import com.example.some_lie.backend.brings.model.Event;
-import com.example.some_lie.backend.brings.model.EventFriendCollection;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -34,7 +32,6 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.util.ArrayList;
 
 import server.CloudEndpointBuilderHelper;
-import server.EventFriend_AsyncTask_getEvent_by_friend;
 import server.Event_AsyncTask_get;
 
 public class MainActivity extends AppCompatActivity {
@@ -68,13 +65,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Event_AsyncTask_get event_asyncTask_get = (Event_AsyncTask_get) new Event_AsyncTask_get(this).execute("aa");
-        EventFriend_AsyncTask_getEvent_by_friend eventFriend_asyncTask_getEvent_by_friend = (EventFriend_AsyncTask_getEvent_by_friend) new EventFriend_AsyncTask_getEvent_by_friend(this).execute("a");
-        Event event = event_asyncTask_get.getEvent();
-        event = ((Event_AsyncTask_get) new Event_AsyncTask_get(this).execute("aa")).getEvent();
-        EventFriendCollection eventFriendCollection = eventFriend_asyncTask_getEvent_by_friend.getEventFriendCollection();
-        eventFriendCollection =  ((EventFriend_AsyncTask_getEvent_by_friend) new EventFriend_AsyncTask_getEvent_by_friend(this).execute("a")).getEventFriendCollection();
-        login();
+        new Event_AsyncTask_get(this).execute("aa");
         BringsApi = CloudEndpointBuilderHelper.getEndpoints();
         users_names = new ArrayList<>();
         IDS = new ArrayList<>();
@@ -132,22 +123,6 @@ public class MainActivity extends AppCompatActivity {
             return "";
         }
         return registrationId;
-    }
-
-    private void login() {
-
-
-        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        String restoredText = prefs.getString("USER", null);
-        if (restoredText != null) {
-            String name = prefs.getString("Name", "No name defined");//"No name defined" is the default value.
-            String pass = prefs.getString("Pass", "No name defined");
-            //TODO get updates from server
-        }
-        else{
-            Intent login = new Intent(this, Registration.class);
-            startActivity(login);
-        }
     }
 
 

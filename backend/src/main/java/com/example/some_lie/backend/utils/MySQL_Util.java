@@ -91,7 +91,7 @@ public class MySQL_Util {
         }
         query += "from `" + table + "` ";
         if (where_columns != null) {
-            int end = where_columns.length;
+            int end = where_columns.length -1;
             query += "where ";
             for (int i = 0; i < end; i++) {
                 query += "`" + where_columns[i] + "` = '" + where_values[i] + "' and ";

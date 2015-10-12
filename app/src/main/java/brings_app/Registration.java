@@ -1,7 +1,7 @@
 package brings_app;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -11,13 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import server.RegistrationAsyncResponse;
+import server.ServerAsyncResponse;
 import server.Registration_AsyncTask;
 
 /**
  * Created by Ravid on 08/10/2015.
  */
-public class Registration extends AppCompatActivity  implements RegistrationAsyncResponse {
+public class Registration extends AppCompatActivity  implements ServerAsyncResponse {
     private EditText et_rg_mail_ui;
     private EditText et_rg_your_name_ui;
     private EditText et_rg_phone_ui;
@@ -54,6 +54,8 @@ public class Registration extends AppCompatActivity  implements RegistrationAsyn
             editor.putString("Name", et_rg_mail_ui.getText().toString());
             editor.putString("Pass", et_rg_password_ui.getText().toString());
             editor.commit();
+            Intent mainActivity = new Intent(this, MainActivity.class);
+            startActivity(mainActivity);
             finish();
         }
         else{
