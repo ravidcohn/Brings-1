@@ -71,7 +71,9 @@ public class MainActivity extends AppCompatActivity {
         Event_AsyncTask_get event_asyncTask_get = (Event_AsyncTask_get) new Event_AsyncTask_get(this).execute("aa");
         EventFriend_AsyncTask_getEvent_by_friend eventFriend_asyncTask_getEvent_by_friend = (EventFriend_AsyncTask_getEvent_by_friend) new EventFriend_AsyncTask_getEvent_by_friend(this).execute("a");
         Event event = event_asyncTask_get.getEvent();
+        event = ((Event_AsyncTask_get) new Event_AsyncTask_get(this).execute("aa")).getEvent();
         EventFriendCollection eventFriendCollection = eventFriend_asyncTask_getEvent_by_friend.getEventFriendCollection();
+        eventFriendCollection =  ((EventFriend_AsyncTask_getEvent_by_friend) new EventFriend_AsyncTask_getEvent_by_friend(this).execute("a")).getEventFriendCollection();
         login();
         BringsApi = CloudEndpointBuilderHelper.getEndpoints();
         users_names = new ArrayList<>();
