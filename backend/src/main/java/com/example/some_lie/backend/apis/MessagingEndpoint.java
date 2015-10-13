@@ -6,30 +6,23 @@
 
 package com.example.some_lie.backend.apis;
 
-import com.example.some_lie.backend.models.RegistrationRecord;
 import com.example.some_lie.backend.utils.MySQL_Util;
-import com.google.android.gcm.server.Constants;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
+import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
-import com.google.appengine.repackaged.com.google.storage.onestore.v3.proto2api.OnestoreEntity;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
-
-import static com.example.some_lie.backend.OfyService.ofy;
 
 /**
  * An endpoint to send messages to devices registered with the backend
@@ -63,7 +56,8 @@ public class MessagingEndpoint {
     private static final String API_KEY = System.getProperty("gcm.api.key");
 
     //TODO improve this !!!!
-    public void sendMessage(@Named("message") String message, @Named("from") String from, @Named("to") String to) throws IOException {
+    @ApiMethod( name = "SendMessage",path = "SendMessage")
+    public void sendMessage( @Named("from") String from,@Named("message") String message,@Named("to") String to) throws IOException {
         if (message == null || message.trim().length() == 0) {
             log.warning("Not sending message because it is empty");
             return;

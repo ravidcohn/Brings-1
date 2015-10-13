@@ -33,16 +33,3 @@ public class Event_AsyncTask_delete  extends AsyncTask<String, Void, Void> {
 
 }
 
-/*
-    @Override
-    protected void onPostExecute(Event result) {
-        //Toast.makeText(context,result.getMessage(),Toast.LENGTH_LONG).show();
-        /*Toast.makeText(context,result.getFrom(),Toast.LENGTH_LONG).show();
-
-    if(result != null) {
-        Toast.makeText(context, "הודעה נשלחה", Toast.LENGTH_LONG).show();
-    }else{
-        Toast.makeText(context,"ההודעה לא נשלחה",Toast.LENGTH_LONG).show();
-    }
-}
-*/

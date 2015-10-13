@@ -12,12 +12,14 @@ public class Event_Friend {
     long id;
     private String event_name;
     private String friend_name;
+    private String attending;
 
     public Event_Friend(){}
 
-    public Event_Friend(String event_name, String friend_name) {
+    public Event_Friend(String event_name, String friend_name, String attending) {
         this.event_name = event_name;
         this.friend_name = friend_name;
+        this.attending = attending;
     }
 
     public String getEvent_name() {
@@ -34,6 +36,14 @@ public class Event_Friend {
 
     public void setFriend_name(String friend_name) {
         this.friend_name = friend_name;
+    }
+
+    public String getAttending() {
+        return attending;
+    }
+
+    public void setAttending(String attending) {
+        this.attending = attending;
     }
 
 }

@@ -77,7 +77,7 @@ public class newEvent extends AppCompatActivity {
                     String end = tv_ne_end_ui.getText().toString();
                     String description = tv_ne_description_ui.getText().toString();
                     new Event_AsyncTask_insert(context).execute(key, name, place, start, end, description, imagePath, Update_Time);
-                    new EventFriend_AsyncTask_insert(context).execute(key,USERNAME);
+                    new EventFriend_AsyncTask_insert(context).execute(key,USERNAME,"yes");
                     Bundle b = new Bundle();
                     b.putString("KEY", key);
                  //   b.putString("USERNAME",USERNAME);
@@ -121,7 +121,8 @@ public class newEvent extends AppCompatActivity {
             String description = tv_ne_description_ui.getText().toString();
             Date time = Calendar.getInstance().getTime();
             Update_Time = time.toString();
-            db.execSQL("insert into Events values('" + USERNAME + " - " + id + "','" + name + "','" + place + "','" + start + "','" + end + "','" + description + "','" + imagePath + "','" + Update_Time + "');");
+            db.execSQL("insert into Events values('" + key + "','" + name + "','" + place + "','" + start + "','" + end + "','" + description + "','" + imagePath + "','" + Update_Time + "');");
+            db.execSQL("insert into Attending values('" + key + "','" + USERNAME + "');");
             c.close();
             db.close();
         }

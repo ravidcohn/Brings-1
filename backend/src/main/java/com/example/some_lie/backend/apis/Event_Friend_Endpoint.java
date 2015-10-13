@@ -10,8 +10,6 @@ import com.google.api.server.spi.config.ApiNamespace;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -80,9 +78,9 @@ public class Event_Friend_Endpoint {
      * @return The object to be added.
      */
     @ApiMethod(name = "EventFriendInsert", path = "EventFriendInsert")
-    public void Insert(@Named("Event_ID")String Event_ID,@Named("Friend_ID")String Friend_ID) {
+    public void Insert(@Named("AEvent_ID")String Event_ID,@Named("BFriend_ID")String Friend_ID,@Named("CAttending")String attending) {
         try {
-            MySQL_Util.insert("Events_Friends",new String[]{Event_ID,Friend_ID});
+            MySQL_Util.insert("Events_Friends",new String[]{Event_ID,Friend_ID,attending});
 
         }catch(Exception e){
             StringWriter sw = new StringWriter();
@@ -102,7 +100,7 @@ public class Event_Friend_Endpoint {
         try {
             ResultSet rs = MySQL_Util.select(null,"Events_Friends",new String[]{"Friend_ID"},new String[]{friend},null);
             while(rs.next()){
-                eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Friend_ID")));
+                eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Friend_ID"),rs.getString("Attending")));
             }
             rs.close();
         } catch (Exception e) {
@@ -124,7 +122,7 @@ public class Event_Friend_Endpoint {
         try {
             ResultSet rs = MySQL_Util.select(null,"Events_Friends",new String[]{"Event_ID"}, new String[]{event},null);
             while(rs.next()){
-                eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Friend_ID")));
+                eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Friend_ID"),rs.getString("Attending")));
             }
             rs.close();
         } catch (Exception e) {
