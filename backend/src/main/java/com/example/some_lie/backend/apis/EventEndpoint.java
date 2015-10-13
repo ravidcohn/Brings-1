@@ -7,25 +7,14 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
-import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.NotFoundException;
-import com.google.appengine.api.datastore.Cursor;
-import com.google.appengine.api.datastore.QueryResultIterator;
-import com.googlecode.objectify.cmd.Query;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
-import javax.annotation.Nullable;
 import javax.inject.Named;
-
-import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
  * WARNING: This generated code is intended as a sample or starting point for using a
@@ -90,9 +79,9 @@ public class EventEndpoint {
     /**
      * Inserts a new {@code Event}.
      */
-    @ApiMethod(name = "EventInsert",path = "event")
-    public void Insert(@Named("ID")String id, @Named("Name")String name, @Named("Location")String location, @Named("Start")String start,
-                        @Named("End")String end, @Named("Description")String description,@Named("ImagePath")String imagePath,@Named("UpdateTime")String updateTime) {
+    @ApiMethod(name = "EventInsert",path = "EventInsert")
+    public void Insert(@Named("AID")String id, @Named("BName")String name, @Named("CLocation")String location, @Named("DStart")String start,
+                        @Named("EEnd")String end, @Named("FDescription")String description,@Named("GImagePath")String imagePath,@Named("HUpdateTime")String updateTime) {
         try {
            MySQL_Util.insert("Events",new String[]{id,name,location,start,end,description,imagePath,updateTime});
 
@@ -114,8 +103,8 @@ public class EventEndpoint {
      * @param updateTime
      */
     @ApiMethod(name = "EventUpdate",path = "EventUpdate")
-    public void Update(@Named("ID")String id, @Named("Name")String name, @Named("Location")String location, @Named("Start")String start,
-                       @Named("End")String end, @Named("Description")String description,@Named("ImagePath")String imagePath,@Named("UpdateTime")String updateTime){
+    public void Update(@Named("AID")String id, @Named("BName")String name, @Named("CLocation")String location, @Named("DStart")String start,
+                       @Named("EEnd")String end, @Named("FDescription")String description,@Named("GImagePath")String imagePath,@Named("HUpdateTime")String updateTime){
         try {
             MySQL_Util.update("Events",new String[]{"name","location","start_date","end_date","description","image_path","Update_Time"},
                     new String[]{name,location,start,end,description,imagePath,updateTime},

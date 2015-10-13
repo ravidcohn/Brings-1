@@ -25,6 +25,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.some_lie.backend.brings.Brings;
+import com.example.some_lie.backend.brings.model.Event;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -32,7 +33,8 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.util.ArrayList;
 
 import server.CloudEndpointBuilderHelper;
-import server.Event_AsyncTask_get;
+import server.EventFriend_AsyncTask_delete_by_event;
+import server.Event_AsyncTask_delete;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String PROPERTY_REG_ID = "registrationId";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private Brings BringsApi;
+    private Event event;
     /**
      * Google Cloud Messaging API.
      */
@@ -65,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new Event_AsyncTask_get(this).execute("aa");
+        //new Event_AsyncTask_get(this,this).execute("aa");
         BringsApi = CloudEndpointBuilderHelper.getEndpoints();
         users_names = new ArrayList<>();
         IDS = new ArrayList<>();
@@ -159,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
         db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
         //db.execSQL("DROP TABLE Events");
-        db.execSQL("create table if not exists Events(ID varchar NOT NULL primary key,Name varchar NOT NULL,Place VARCHAR NOT NULL,Start DATE not null,End Date not null,Description varchar,imagePath varchar)");
+        db.execSQL("create table if not exists Events(ID varchar NOT NULL primary key,Name varchar NOT NULL,Place VARCHAR NOT NULL,Start DATE not null,End Date not null,Description varchar,imagePath varchar,Update_Time VARCHAR NOT NULL)");
         Cursor c = db.rawQuery("select * from Events;", null);
         while (c.moveToNext()) {
             String[] s = c.getString(0).split(" - ");
@@ -272,6 +275,8 @@ public class MainActivity extends AppCompatActivity {
                                 db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
                                 String key = users_names.get(pos) + " - " + IDS.get(pos);
                                 db.execSQL("delete from Events where ID = '" + key + "';");
+                                new Event_AsyncTask_delete(context).execute(key);
+                                new EventFriend_AsyncTask_delete_by_event(context).execute(key);
                                 setList();
                                 db.close();
                             }
@@ -376,4 +381,5 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
 }

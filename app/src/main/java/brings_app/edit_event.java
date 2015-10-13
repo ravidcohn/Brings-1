@@ -20,7 +20,10 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+
+import server.Event_AsyncTask_update;
 
 /**
  * Created by pinhas on 08/09/2015.
@@ -40,7 +43,8 @@ public class edit_event extends AppCompatActivity {
     private int ID;
     private String KEY;
     private String imagePath = "";
-    private String USERNAME = "user 1";//TODO
+    private String Update_Time;
+    //private String USERNAME = "user 1";//TODO
 
 
     @Override
@@ -135,10 +139,14 @@ public class edit_event extends AppCompatActivity {
             String start = et_ee_start_ui.getText().toString();
             String end = et_ee_end_ui.getText().toString();
             String description = et_ee_description_ui.getText().toString();
-            db.execSQL("update Events set Name = '" + name + "', place = '" + place + "', start = '" + start + "', end = '" + end + "', description = '" + description+ "', imagePath = '" + imagePath + "' where ID = '" + KEY + "';");
+            Date time = Calendar.getInstance().getTime();
+            Update_Time = time.toString();
+            db.execSQL("update Events set Name = '" + name + "', place = '" + place + "', start = '" + start + "', end = '" + end + "', description = '" + description+ "', imagePath = '" + imagePath + "', Update_Time = '" + Update_Time+"' where ID = '" + KEY + "';");
  //           db.execSQL("update into Events values('" + USERNAME + " - " + id + "','" + name + "','" + place + "','" + start + "','" + end + "','" + description + "','"+imagePath+"');");
             //c.close();
             db.close();
+            new Event_AsyncTask_update(this).execute(KEY, name, place, start, end, description, imagePath, Update_Time);
+
         }
         return ok;
     }

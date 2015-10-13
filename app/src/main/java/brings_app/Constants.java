@@ -4,8 +4,6 @@ package brings_app;
  * Created by pinhas on 28/09/2015.
  */
 
-import brings_app.BuildConfig;
-
 /**
  * API Keys, Client Ids and Audience Ids for accessing APIs and configuring
  * Cloud Endpoints. When you deploy your solution, you need to use your own API
@@ -46,4 +44,8 @@ public final class Constants {
      * Default constructor, never called.
      */
     private Constants() { }
+
+    public static String User_Name;
+    public static String Password;
+
 }

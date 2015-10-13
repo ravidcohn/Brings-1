@@ -22,8 +22,10 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
+import server.EventFriend_AsyncTask_insert;
 import server.Event_AsyncTask_insert;
 
 /**
@@ -42,7 +44,8 @@ public class newEvent extends AppCompatActivity {
     private SQLiteDatabase db;
     private int ID;
     private String imagePath = "";
-    private String USERNAME = "user 1";//TODO
+    private String Update_Time;
+    private String USERNAME = Constants.User_Name;//TODO
 
 
     @Override
@@ -73,9 +76,10 @@ public class newEvent extends AppCompatActivity {
                     String start = tv_ne_start_ui.getText().toString();
                     String end = tv_ne_end_ui.getText().toString();
                     String description = tv_ne_description_ui.getText().toString();
-                    new Event_AsyncTask_insert(context).execute(key, name, place, start, end, description, imagePath);
+                    new Event_AsyncTask_insert(context).execute(key, name, place, start, end, description, imagePath, Update_Time);
+                    new EventFriend_AsyncTask_insert(context).execute(key,USERNAME);
                     Bundle b = new Bundle();
-                    b.putString("KEY", USERNAME+" - "+ID);
+                    b.putString("KEY", key);
                  //   b.putString("USERNAME",USERNAME);
                     tabs2.putExtras(b);
                         // startActivity(tabs);
@@ -115,8 +119,9 @@ public class newEvent extends AppCompatActivity {
             String start = tv_ne_start_ui.getText().toString();
             String end = tv_ne_end_ui.getText().toString();
             String description = tv_ne_description_ui.getText().toString();
-
-            db.execSQL("insert into Events values('" + USERNAME +" - " +id+"','" + name + "','" + place + "','" + start + "','" + end + "','" + description + "','"+imagePath+"');");
+            Date time = Calendar.getInstance().getTime();
+            Update_Time = time.toString();
+            db.execSQL("insert into Events values('" + USERNAME + " - " + id + "','" + name + "','" + place + "','" + start + "','" + end + "','" + description + "','" + imagePath + "','" + Update_Time + "');");
             c.close();
             db.close();
         }
