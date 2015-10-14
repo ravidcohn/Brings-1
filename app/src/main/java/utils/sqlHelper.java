@@ -149,7 +149,7 @@ public final class sqlHelper {
     }
     public static void createALLTabels(){
             SQLiteDatabase db = getConnection();
-            db.execSQL("create table if not exists "+Constants.Table_Events+"Events(ID varchar NOT NULL primary key,Name varchar NOT NULL,Place VARCHAR NOT NULL,Start DATE not null,End Date not null,Description varchar,imagePath varchar,Update_Time VARCHAR NOT NULL)");
+            db.execSQL("create table if not exists "+Constants.Table_Events+"(ID varchar NOT NULL primary key,Name varchar NOT NULL,Place VARCHAR NOT NULL,Start DATE not null,End Date not null,Description varchar,imagePath varchar,Update_Time VARCHAR NOT NULL)");
             db.execSQL("create table if not exists "+Constants.Table_Tasks+"(ID varchar NOT NULL,TaskNumber varchar NOT NULL,task VARCHAR NOT NULL,description NOT NULL,how NOT NULL)");
             db.execSQL("create table if not exists "+Constants.Table_Events_Friends+"(ID varchar NOT NULL,FriendName varchar NOT NULL)");
             db.execSQL("create table if not exists "+Constants.Table_Friends+"(Name varchar NOT NULL,Phone varchar NOT NULL,email varchar,regester varchar NOT NULL )");
