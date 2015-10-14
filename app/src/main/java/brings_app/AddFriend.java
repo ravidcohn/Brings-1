@@ -1,7 +1,6 @@
 package brings_app;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -47,7 +46,7 @@ public class AddFriend extends AppCompatActivity {
             public void onClick(View v) {
                 boolean ok = saveData();
                 if (ok) {
-                    new SendMessage_AsyncTask(context).execute(Constants.User_Name,"new event|"+KEY,name);
+                    new SendMessage_AsyncTask(context).execute(Constants.User_Name,Constants.New_Event + KEY,name);
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "only description can by empty..", Toast.LENGTH_SHORT).show();
@@ -62,7 +61,7 @@ public class AddFriend extends AppCompatActivity {
         if(input.getText().length() > 0) {
             ok = true;
             name = input.getText().toString();
-            sqlHelper.insert("Attending",new String[]{KEY,name});
+            sqlHelper.insert("Attending", new String[]{KEY, name});
         }
         return ok;
     }

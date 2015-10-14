@@ -1,6 +1,5 @@
 package brings_app;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -14,8 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.model.Event;
-
-import java.util.ArrayList;
 
 import server.LoginAsyncTask;
 import server.ServerAsyncResponse;

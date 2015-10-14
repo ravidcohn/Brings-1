@@ -50,5 +50,12 @@ public final class Constants {
 
     public static String User_Name;
     public static String Password;
+    public final static String New_Event = "New_Event|";
+    public final static String Table_Events = "Events";
+    public final static String Table_Tasks = "Tasks";
+    public final static String Table_Events_Friends = "Events_Friends";
+    public final static String Table_Friends = "Friends";
+
+
 
 }
