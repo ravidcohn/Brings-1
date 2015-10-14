@@ -36,6 +36,7 @@ import server.CloudEndpointBuilderHelper;
 import server.EventFriend_AsyncTask_delete_by_event;
 import server.Event_AsyncTask_delete;
 import utils.bitmapHelper;
+import utils.sqlHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,13 +49,13 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton ibAdd;
     private TextView tvSearch;
     private SearchView search;
-    private SQLiteDatabase db;
     private static ArrayList<String> users_names;
     private static ArrayList<Integer> IDS;
     private static final String PROPERTY_REG_ID = "registrationId";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private Brings BringsApi;
     private Event event;
+
     /**
      * Google Cloud Messaging API.
      */
@@ -161,17 +162,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void sql() {
 
-        db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
-        //db.execSQL("DROP TABLE Events");
-        db.execSQL("create table if not exists Events(ID varchar NOT NULL primary key,Name varchar NOT NULL,Place VARCHAR NOT NULL,Start DATE not null,End Date not null,Description varchar,imagePath varchar,Update_Time VARCHAR NOT NULL)");
-        Cursor c = db.rawQuery("select * from Events;", null);
-        while (c.moveToNext()) {
-            String[] s = c.getString(0).split(" - ");
+
+        ArrayList<String>[] sqlresult = sqlHelper.select(null, "Events", null, null, null);
+        for (String str : sqlresult[0]){
+            String[] s = str.split(" - ");
             users_names.add(s[0]);
             IDS.add(Integer.parseInt(s[1]));
         }
-        c.close();
-        db.close();
 
     }
 
@@ -273,13 +270,11 @@ public class MainActivity extends AppCompatActivity {
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
                                 String key = users_names.get(pos) + " - " + IDS.get(pos);
-                                db.execSQL("delete from Events where ID = '" + key + "';");
+                                sqlHelper.delete("Events", new String[]{"ID"}, new String[]{key}, new int[]{1});
                                 new Event_AsyncTask_delete(context).execute(key);
                                 new EventFriend_AsyncTask_delete_by_event(context).execute(key);
                                 setList();
-                                db.close();
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -349,15 +344,10 @@ public class MainActivity extends AppCompatActivity {
             ImageView iv = (ImageView) convertView.findViewById(R.id.ivPic);
             TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
             TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
-
-            db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
-            Cursor c = db.rawQuery("select * from Events where ID = '" + users_names.get(position) + " - " + IDS.get(position) + "';", null);
-            c.moveToFirst();
-            tvName.setText(c.getString(1));
-            tvDate.setText(c.getString(3));
-            iv.setImageBitmap(bitmapHelper.decodeSampledBitmapFromFile(c.getString(6), 100, 100));
-            c.close();
-            db.close();
+            ArrayList<String>[] dbResult = sqlHelper.select(null, "Events", new String[]{"ID"}, new String[]{users_names.get(position) + " - " + IDS.get(position)}, new int[]{1});
+            tvName.setText(dbResult[1].get(0));
+            tvDate.setText(dbResult[3].get(0));
+            iv.setImageBitmap(bitmapHelper.decodeSampledBitmapFromFile(dbResult[6].get(0), 100, 100));
 
             return convertView;
         }

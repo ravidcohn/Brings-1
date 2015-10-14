@@ -56,8 +56,8 @@ public class Registration extends AppCompatActivity  implements ServerAsyncRespo
             editor.putString("Name", et_rg_mail_ui.getText().toString());
             editor.putString("Pass", et_rg_password_ui.getText().toString());
             editor.commit();
-            Intent mainActivity = new Intent(this, MainActivity.class);
-            startActivity(mainActivity);
+            Intent login = new Intent(this, login.class);
+            startActivity(login);
             finish();
         }
         else{

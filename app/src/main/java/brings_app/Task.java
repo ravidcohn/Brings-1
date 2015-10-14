@@ -8,6 +8,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
+import utils.sqlHelper;
+
 /**
  * Created by pinhas on 08/09/2015.
  */
@@ -18,8 +22,8 @@ public class Task extends AppCompatActivity {
     private String KEY;
     private int ID;
     private SQLiteDatabase db;
-    private String task;
-    private String description;
+  //  private String task;
+  //  private String description;
 
 
     @Override
@@ -31,15 +35,11 @@ public class Task extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
         KEY = b.getString("KEY");
         ID = b.getInt("taskID");
-        String path = "/data/data/some_lie.brings/databases/_edata";
-        db =  SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-        //Cursor c = db.rawQuery("select * from Events where ID = '" + USERNAME + " - " + ID + "';", null);
-        Cursor c = db.rawQuery("select * from Tasks where ID = '" + KEY + "' and TaskNumber = "+ID+";", null);
-        c.moveToFirst();
-        tv_et_task_info.setText(c.getString(2));
-        tv_et_description_info.setText(c.getString(3));
-        c.close();
-        db.close();
+
+        ArrayList<String>[] db = sqlHelper.select(null,"Tasks",new String[]{"ID","TaskNumber"},new String[]{KEY,ID+""},new int[]{1});
+        tv_et_task_info.setText(db[2].get(0));
+        tv_et_description_info.setText(db[3].get(0));
+
     }
 
 

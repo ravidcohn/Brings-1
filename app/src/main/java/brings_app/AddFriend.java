@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import server.SendMessage_AsyncTask;
 import utils.Constants;
+import utils.sqlHelper;
 
 /**
  * Created by pinhas on 19/09/2015.
@@ -23,7 +24,6 @@ public class AddFriend extends AppCompatActivity {
     private TextView Name;
     private EditText input;
     private Button add;
-    private SQLiteDatabase db;
     private String KEY;
     private String name;
 
@@ -61,11 +61,8 @@ public class AddFriend extends AppCompatActivity {
         boolean ok = false;
         if(input.getText().length() > 0) {
             ok = true;
-            db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
-
             name = input.getText().toString();
-            db.execSQL("insert into Attending values('" + KEY + "','" + name + "');");
-            db.close();
+            sqlHelper.insert("Attending",new String[]{KEY,name});
         }
         return ok;
     }

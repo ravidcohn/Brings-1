@@ -29,6 +29,7 @@ import server.EventFriend_AsyncTask_insert;
 import server.Event_AsyncTask_insert;
 import utils.Constants;
 import utils.bitmapHelper;
+import utils.sqlHelper;
 
 /**
  * Created by pinhas on 08/09/2015.
@@ -43,7 +44,6 @@ public class newEvent extends AppCompatActivity {
     private ImageView iv_ne_pic_ui;
     private Button bt_ne_pic_ui;
     private Button bt_ne_create_event_ui;
-    private SQLiteDatabase db;
     private int ID;
     private String imagePath = "";
     private String Update_Time;
@@ -102,13 +102,11 @@ public class newEvent extends AppCompatActivity {
         boolean ok = false;
         if(tv_ne_name_ui.getText().length() > 0 && tv_ne_place_ui.length() > 0 && tv_ne_start_ui.length() > 0 && tv_ne_end_ui.length() > 0) {
             ok = true;
-            db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
             int id = 0;
             String key = USERNAME + " - "+id;
             ArrayList<String> allIDS = new ArrayList<>();
-            Cursor c = db.rawQuery("select * from Events;", null);
-            while (c.moveToNext()){
-                String t_id = c.getString(0);
+            ArrayList<String>[] dbResult = sqlHelper.select(null,"Events",null,null,null);
+            for (String t_id : dbResult[0]){
                 allIDS.add(t_id);
             }
             while (allIDS.contains(key)){
@@ -123,10 +121,8 @@ public class newEvent extends AppCompatActivity {
             String description = tv_ne_description_ui.getText().toString();
             Date time = Calendar.getInstance().getTime();
             Update_Time = time.toString();
-            db.execSQL("insert into Events values('" + key + "','" + name + "','" + place + "','" + start + "','" + end + "','" + description + "','" + imagePath + "','" + Update_Time + "');");
-            db.execSQL("insert into Attending values('" + key + "','" + USERNAME + "');");
-            c.close();
-            db.close();
+            sqlHelper.insert("Events",new String[]{key,name,place,start,end,description,imagePath,Update_Time});
+            sqlHelper.insert("Attending", new String[]{key,USERNAME});
         }
         return ok;
     }

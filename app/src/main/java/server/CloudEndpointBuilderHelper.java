@@ -28,7 +28,6 @@ import com.google.api.client.http.HttpRequestInitializer;
 import java.io.IOException;
 
 import utils.Constants;
-import brings_app.SignInActivity;
 
 /**
  * Allows configuring Cloud Endpoint builders to support authenticated calls, as
@@ -81,7 +80,11 @@ final public class CloudEndpointBuilderHelper {
      */
     static HttpRequestInitializer getRequestInitializer() {
         if (Constants.SIGN_IN_REQUIRED) {
-            return SignInActivity.getCredential();
+            return new HttpRequestInitializer() {
+                @Override
+                public void initialize(final HttpRequest arg0) {
+                }
+            };//SignInActivity.getCredential();
         } else {
             return new HttpRequestInitializer() {
                 @Override

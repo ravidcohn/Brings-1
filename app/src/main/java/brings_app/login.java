@@ -1,5 +1,6 @@
 package brings_app;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -10,12 +11,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.model.Event;
+
+import java.util.ArrayList;
 
 import server.LoginAsyncTask;
 import server.ServerAsyncResponse;
 import utils.Constants;
+import utils.sqlHelper;
 
 /**
  * Created by pinhas on 11/10/2015.
@@ -32,6 +37,8 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        sqlHelper.setContext(this);
+        sqlHelper.createALLTabels();
         login();
         tvName = (TextView) findViewById(R.id.tv_login_name);
         tvPass = (TextView) findViewById(R.id.tv_login_password);
@@ -69,12 +76,22 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
 
     private void getFriends(){
 
-        Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null,null, null);
-        while (phones.moveToNext() )
+        Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null, null, null);
+        int count = 0;
+        while (emails.moveToNext() )
         {
-            String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+          //  String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+        //    String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            String email = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+            String name2 = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME));
+            if(name2 != null)
+            Toast.makeText(this,name2+": "+email,Toast.LENGTH_LONG).show();
+
         }
+        //Toast.makeText(this,count+"",Toast.LENGTH_LONG).show();
+
+
         phones.close();
     }
 

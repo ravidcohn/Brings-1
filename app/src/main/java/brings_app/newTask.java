@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import utils.sqlHelper;
+
 /**
  * Created by pinhas on 08/09/2015.
  */
@@ -21,7 +23,6 @@ public class newTask extends AppCompatActivity {
     private EditText et_nt_task_ui;
     private EditText et_nt_description_ui;
     private Button bt_nt_create_task_ui;
-    private SQLiteDatabase db;
     private String imagePath = "";
     private String USERNAME = "user 1";//TODO
     private String KEY;
@@ -31,9 +32,9 @@ public class newTask extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_task);
-        et_nt_task_ui = (EditText)findViewById(R.id.et_nt_task_ui);
-        et_nt_description_ui = (EditText)findViewById(R.id.et_nt_description_ui);
-        bt_nt_create_task_ui = (Button)findViewById(R.id.bt_nt_create_task_ui);
+        et_nt_task_ui = (EditText) findViewById(R.id.et_nt_task_ui);
+        et_nt_description_ui = (EditText) findViewById(R.id.et_nt_description_ui);
+        bt_nt_create_task_ui = (Button) findViewById(R.id.bt_nt_create_task_ui);
         Bundle b = getIntent().getExtras();
 
         //ID = b.getInt("ID");
@@ -54,28 +55,23 @@ public class newTask extends AppCompatActivity {
         });
     }
 
-    private boolean saveData(){
+    private boolean saveData() {
         boolean ok = false;
-        if(et_nt_task_ui.getText().length() > 0) {
+        if (et_nt_task_ui.getText().length() > 0) {
             ok = true;
-            db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
             int task_id = 0;
             ArrayList<Integer> allIDS = new ArrayList<>();
-            Cursor c = db.rawQuery("select * from Tasks where ID = '"+KEY+"';", null);
-            while (c.moveToNext()){
-                int t_id = c.getInt(1);
-                allIDS.add(t_id);
+            ArrayList<String>[] dbResult = sqlHelper.select(null, "Tasks", new String[]{"ID"}, new String[]{KEY}, null);
+            for (String t_id : dbResult[0]) {
+                allIDS.add(Integer.parseInt(t_id));
             }
-            while (allIDS.contains(task_id)){
+            while (allIDS.contains(task_id)) {
                 task_id++;
             }
             String task = et_nt_task_ui.getText().toString();
             String description = et_nt_description_ui.getText().toString();
             String name = "";
-
-            db.execSQL("insert into Tasks values('"+KEY+"',"+task_id+",'" + task + "','" + description + "','" + name + "');");
-            c.close();
-            db.close();
+            sqlHelper.insert("Tasks", new String[]{KEY, task_id + "", task, description, name});
         }
         return ok;
     }

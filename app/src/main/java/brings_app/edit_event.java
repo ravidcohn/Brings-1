@@ -25,6 +25,7 @@ import java.util.Locale;
 
 import server.Event_AsyncTask_update;
 import utils.bitmapHelper;
+import utils.sqlHelper;
 
 /**
  * Created by pinhas on 08/09/2015.
@@ -40,7 +41,6 @@ public class edit_event extends AppCompatActivity {
     private ImageButton ib_ee_pic_ui;
     private Button bt_ee_save_ui;
     private Button bt_ee_cancel_ui;
-    private SQLiteDatabase db;
     private int ID;
     private String KEY;
     private String imagePath = "";
@@ -119,22 +119,7 @@ public class edit_event extends AppCompatActivity {
         boolean ok = false;
         if(et_ee_name_ui.getText().length() > 0 && et_ee_place_ui.length() > 0 && et_ee_start_ui.length() > 0 && et_ee_end_ui.length() > 0) {
             ok = true;
-            db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
-            int id = ID;
-            //String key = USERNAME + " - "+id;
-            /*
-            ArrayList<String> allIDS = new ArrayList<>();
-            Cursor c = db.rawQuery("select * from Events;", null);
-            while (c.moveToNext()){
-                String t_id = c.getString(0);
-                allIDS.add(t_id);
-            }
-            while (allIDS.contains(key)){
-                id++;
-                key = USERNAME + " - "+id;
-            }
-            ID = id;
-            */
+
             String name = et_ee_name_ui.getText().toString();
             String place = et_ee_place_ui.getText().toString();
             String start = et_ee_start_ui.getText().toString();
@@ -142,10 +127,7 @@ public class edit_event extends AppCompatActivity {
             String description = et_ee_description_ui.getText().toString();
             Date time = Calendar.getInstance().getTime();
             Update_Time = time.toString();
-            db.execSQL("update Events set Name = '" + name + "', place = '" + place + "', start = '" + start + "', end = '" + end + "', description = '" + description+ "', imagePath = '" + imagePath + "', Update_Time = '" + Update_Time+"' where ID = '" + KEY + "';");
- //           db.execSQL("update into Events values('" + USERNAME + " - " + id + "','" + name + "','" + place + "','" + start + "','" + end + "','" + description + "','"+imagePath+"');");
-            //c.close();
-            db.close();
+            sqlHelper.update("Events",new String[]{"Name","place","start","end","description","imagePath","Update_Time"},new String[]{name,place,start,end,description,imagePath,Update_Time},new String[]{"ID"},new String[]{KEY});
             new Event_AsyncTask_update(this).execute(KEY, name, place, start, end, description, imagePath, Update_Time);
 
         }
@@ -271,7 +253,7 @@ public class edit_event extends AppCompatActivity {
                 String picturePath = c.getString(columnIndex);
                 c.close();
                 imagePath = picturePath;
-                Bitmap thumbnail =  bitmapHelper.decodeSampledBitmapFromFile(picturePath, 100, 100);//(BitmapFactory.decodeFile(picturePath));
+                Bitmap thumbnail =  bitmapHelper.decodeSampledBitmapFromFile(picturePath, 100, 100);
                 ib_ee_pic_ui.setImageBitmap(thumbnail);
             }
             else{
