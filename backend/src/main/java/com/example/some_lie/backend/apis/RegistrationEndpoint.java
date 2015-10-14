@@ -7,27 +7,18 @@
 package com.example.some_lie.backend.apis;
 
 import com.example.some_lie.backend.models.RegistrationRecord;
-import com.example.some_lie.backend.utils.EndpointUtil;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
-import com.google.api.server.spi.response.CollectionResponse;
-import com.google.api.server.spi.response.UnauthorizedException;
-import com.google.appengine.api.users.User;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
-
-import static com.example.some_lie.backend.OfyService.ofy;
 
 /**
  * A registration endpoint class we are exposing for a device's GCM registration id on the backend
@@ -80,7 +71,7 @@ public class RegistrationEndpoint {
             }
 
         } else {
-            record.setRegistration_message("User alrady exist!");
+            record.setRegistration_message("User already exist!");
         }
     //    record.setRegistration_message(isExist);
         return record;
