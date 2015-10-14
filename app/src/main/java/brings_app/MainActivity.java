@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -35,6 +33,7 @@ import java.util.ArrayList;
 import server.CloudEndpointBuilderHelper;
 import server.EventFriend_AsyncTask_delete_by_event;
 import server.Event_AsyncTask_delete;
+import utils.Constants;
 import utils.bitmapHelper;
 import utils.sqlHelper;
 
@@ -163,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
     private void sql() {
 
 
-        ArrayList<String>[] sqlresult = sqlHelper.select(null, "Events", null, null, null);
+        ArrayList<String>[] sqlresult = sqlHelper.select(null, Constants.Table_Events, null, null, null);
         for (String str : sqlresult[0]){
             String[] s = str.split(" - ");
             users_names.add(s[0]);
@@ -271,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 String key = users_names.get(pos) + " - " + IDS.get(pos);
-                                sqlHelper.delete("Events", new String[]{"ID"}, new String[]{key}, new int[]{1});
+                                sqlHelper.delete(Constants.Table_Events, new String[]{"ID"}, new String[]{key}, new int[]{1});
                                 new Event_AsyncTask_delete(context).execute(key);
                                 new EventFriend_AsyncTask_delete_by_event(context).execute(key);
                                 setList();
@@ -344,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
             ImageView iv = (ImageView) convertView.findViewById(R.id.ivPic);
             TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
             TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
-            ArrayList<String>[] dbResult = sqlHelper.select(null, "Events", new String[]{"ID"}, new String[]{users_names.get(position) + " - " + IDS.get(position)}, new int[]{1});
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events, new String[]{"ID"}, new String[]{users_names.get(position) + " - " + IDS.get(position)}, new int[]{1});
             tvName.setText(dbResult[1].get(0));
             tvDate.setText(dbResult[3].get(0));
             iv.setImageBitmap(bitmapHelper.decodeSampledBitmapFromFile(dbResult[6].get(0), 100, 100));

@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -105,7 +104,7 @@ public class newEvent extends AppCompatActivity {
             int id = 0;
             String key = USERNAME + " - "+id;
             ArrayList<String> allIDS = new ArrayList<>();
-            ArrayList<String>[] dbResult = sqlHelper.select(null,"Events",null,null,null);
+            ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Events,null,null,null);
             for (String t_id : dbResult[0]){
                 allIDS.add(t_id);
             }
@@ -121,8 +120,8 @@ public class newEvent extends AppCompatActivity {
             String description = tv_ne_description_ui.getText().toString();
             Date time = Calendar.getInstance().getTime();
             Update_Time = time.toString();
-            sqlHelper.insert("Events",new String[]{key,name,place,start,end,description,imagePath,Update_Time});
-            sqlHelper.insert("Attending", new String[]{key,USERNAME});
+            sqlHelper.insert(Constants.Table_Events,new String[]{key,name,place,start,end,description,imagePath,Update_Time});
+            sqlHelper.insert(Constants.Table_Events_Friends, new String[]{key,USERNAME});
         }
         return ok;
     }
