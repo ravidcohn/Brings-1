@@ -61,7 +61,9 @@ public class AddFriend extends AppCompatActivity {
         if(input.getText().length() > 0) {
             ok = true;
             name = input.getText().toString();
-            sqlHelper.insert(Constants.Table_Events_Friends, new String[]{KEY, name});
+            if(sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID","Friend_ID"},new String[]{KEY,name},null).length==0){
+                sqlHelper.insert(Constants.Table_Events_Friends, new String[]{KEY, name});
+            }
         }
         return ok;
     }
