@@ -27,6 +27,8 @@ public final class sqlHelper {
         }
 
         public static void update(String table_name, String[] set_columns, String[] set_values, String[] where_columns, String[] where_values){
+            clean(set_values);
+            clean(where_values);
             String query = "update `" + table_name + "` set ";
             int end = set_columns.length - 1;
             for (int i = 0; i < end; i++) {
@@ -46,6 +48,7 @@ public final class sqlHelper {
         }
 
         public static void insert(String table_name, String[] values){
+            clean(values);
             String query = "insert into `" + table_name + "` values('";
             int end = values.length - 1;
             for (int i = 0; i < end; i++) {
@@ -59,6 +62,7 @@ public final class sqlHelper {
         }
 
         public static void delete(String table, String[] where_columns, String[] where_values, int[] limit){
+            clean(where_values);
             int end = where_columns.length - 1;
             String query = "delete from `" + table + "` where ";
             for (int i = 0; i < end; i++) {
@@ -89,7 +93,7 @@ public final class sqlHelper {
          * @return
          */
         public static ArrayList<String>[] select(String[] what, String table, String[] where_columns, String[] where_values, int[] limit){
-
+            clean(where_values);
             String query = "select ";
             if (what == null) {
                 query += "* ";
@@ -135,9 +139,17 @@ public final class sqlHelper {
             return result;
         }
 
-        public static void createALLTabels(){
+
+    private static void clean(String[] values) {
+        if(values != null)
+        for (int i = 0; i < values.length; i++) {
+            if(values[i] != null)
+            values[i] = values[i].replaceAll("\'","\'\'");
+        }
+    }
+    public static void createALLTabels(){
             SQLiteDatabase db = getConnection();
-            db.execSQL("create table if not exists "+Constants.Table_Events+"Events(ID varchar NOT NULL primary key,Name varchar NOT NULL,Place VARCHAR NOT NULL,Start DATE not null,End Date not null,Description varchar,imagePath varchar,Update_Time VARCHAR NOT NULL)");
+            db.execSQL("create table if not exists "+Constants.Table_Events+"(ID varchar NOT NULL primary key,Name varchar NOT NULL,Place VARCHAR NOT NULL,Start DATE not null,End Date not null,Description varchar,imagePath varchar,Update_Time VARCHAR NOT NULL)");
             db.execSQL("create table if not exists "+Constants.Table_Tasks+"(ID varchar NOT NULL,TaskNumber varchar NOT NULL,task VARCHAR NOT NULL,description NOT NULL,how NOT NULL)");
             db.execSQL("create table if not exists "+Constants.Table_Events_Friends+"(ID varchar NOT NULL,FriendName varchar NOT NULL)");
             db.execSQL("create table if not exists "+Constants.Table_Friends+"(Name varchar NOT NULL,Phone varchar NOT NULL,email varchar,regester varchar NOT NULL )");

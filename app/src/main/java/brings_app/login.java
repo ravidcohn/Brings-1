@@ -85,7 +85,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
             String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             list = sqlHelper.select(null,"Friends",new String[]{"Name","Phone"}, new String[]{name, phone},new int[]{1});
-            if(list[0].isEmpty()){
+            if(list == null){
                 sqlHelper.insert("Friends",new String[]{name,phone,"","NO"});
             }
             ph.add(phone);
