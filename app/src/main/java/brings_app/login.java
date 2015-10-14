@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.model.Event;
 
+import java.util.ArrayList;
+
 import server.LoginAsyncTask;
 import server.ServerAsyncResponse;
 import server.cheackFriendsRegistrationAsyncTask;
