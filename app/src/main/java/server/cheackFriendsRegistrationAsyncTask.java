@@ -30,7 +30,7 @@ public class cheackFriendsRegistrationAsyncTask extends AsyncTask<ArrayList<Stri
         }
         try {
             this.phones = params[0];
-            return myApiService.checkfriendsRegistration(phones, Constants.Password, Constants.User_Name).execute();
+            return myApiService.checkfriendsRegistration(Constants.Password, phones, Constants.User_Name).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
