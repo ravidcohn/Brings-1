@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.some_lie.backend.brings.model.Event;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import server.LoginAsyncTask;
 import server.ServerAsyncResponse;
@@ -79,16 +80,20 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null, null, null);
         ArrayList<String>[] list;
+        HashMap<String,String> data = new HashMap<>();
         ArrayList<String> ph = new ArrayList<>();
         while (phones.moveToNext() )
         {
             String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            list = sqlHelper.select(null,"Friends",new String[]{"Name","Phone"}, new String[]{name, phone},new int[]{1});
-            if(list == null){
-                sqlHelper.insert("Friends",new String[]{name,phone,"","NO"});
+            if(data.get(name) == null) {
+                data.put(name, phone);
+                list = sqlHelper.select(null, "Friends", new String[]{"Name", "Phone"}, new String[]{name, phone}, new int[]{1});
+                if (list == null) {
+                    sqlHelper.insert("Friends", new String[]{name, phone, "", "NO"});
+                }
+                ph.add(phone);
             }
-            ph.add(phone);
           //  String email = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
          //   String name2 = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME));
          //   if(name2 != null)
