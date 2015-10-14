@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import server.CloudEndpointBuilderHelper;
 import server.EventFriend_AsyncTask_delete_by_event;
 import server.Event_AsyncTask_delete;
+import utils.bitmapHelper;
 
 public class MainActivity extends AppCompatActivity {
 

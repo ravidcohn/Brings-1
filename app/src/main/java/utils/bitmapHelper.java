@@ -1,4 +1,4 @@
-package brings_app;
+package utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

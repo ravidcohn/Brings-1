@@ -15,6 +15,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
+import utils.Constants;
+
 /**
  * Activity that allows the user to select the account they want to use to sign
  * in. The class also implements integration with Google Play Services and

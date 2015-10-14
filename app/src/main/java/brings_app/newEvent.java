@@ -27,6 +27,8 @@ import java.util.Locale;
 
 import server.EventFriend_AsyncTask_insert;
 import server.Event_AsyncTask_insert;
+import utils.Constants;
+import utils.bitmapHelper;
 
 /**
  * Created by pinhas on 08/09/2015.

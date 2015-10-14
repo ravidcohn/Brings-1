@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import server.Event_AsyncTask_update;
+import utils.bitmapHelper;
 
 /**
  * Created by pinhas on 08/09/2015.

@@ -1,8 +1,10 @@
-package brings_app;
+package utils;
 
 /**
  * Created by pinhas on 28/09/2015.
  */
+
+import brings_app.BuildConfig;
 
 /**
  * API Keys, Client Ids and Audience Ids for accessing APIs and configuring
