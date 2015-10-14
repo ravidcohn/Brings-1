@@ -27,8 +27,8 @@ public class GcmIntentService extends IntentService{
     @Override
     protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
-        String message;
-        String action;
+        String message = "";
+        String action = "";
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         // The getMessageType() intent parameter must be the intent you received
         // in your BroadcastReceiver.
@@ -38,12 +38,19 @@ public class GcmIntentService extends IntentService{
             // Since we're not using two way messaging, this is all we really to check for
             if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 Logger.getLogger("GCM_RECEIVED").log(Level.INFO, extras.toString());
-                //showToast(extras.getString("message"));
-                action = extras.getString("message").split("\\|")[0];
-                message = extras.getString("message").split("\\|")[1];
+                if(extras.getString("message").split("\\|").length>1) {
+                    action = extras.getString("message").split("\\|")[0];
+                    message = extras.getString("message").split("\\|")[1];
+                }
                 switch (action){
-                    case Constants.New_Event:
+                    case Constants.New_Event: {
                         EventHelper.get_Event(this, action, message);
+                        break;
+                    }
+                    default: {
+                        showToast(extras.getString("message"));
+                        break;
+                    }
                 }
             }
         }
