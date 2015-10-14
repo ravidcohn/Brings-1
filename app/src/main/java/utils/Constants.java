@@ -48,6 +48,7 @@ public final class Constants {
      */
     private Constants() { }
 
+    public static String User_nickName;
     public static String User_Name;
     public static String Password;
     public final static String New_Event = "New_Event";

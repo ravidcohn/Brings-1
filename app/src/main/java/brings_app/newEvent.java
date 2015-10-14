@@ -121,7 +121,7 @@ public class newEvent extends AppCompatActivity {
             Date time = Calendar.getInstance().getTime();
             Update_Time = time.toString();
             sqlHelper.insert(Constants.Table_Events,new String[]{key,name,place,start,end,description,imagePath,Update_Time});
-            sqlHelper.insert(Constants.Table_Events_Friends, new String[]{key,USERNAME,Constants.Yes});
+            sqlHelper.insert(Constants.Table_Events_Friends, new String[]{key,Constants.User_nickName,Constants.Yes});
         }
         return ok;
     }
