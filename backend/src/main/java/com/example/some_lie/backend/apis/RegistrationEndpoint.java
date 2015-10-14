@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -67,8 +68,8 @@ public class RegistrationEndpoint {
             , @Named("password") String password, @Named("regId") String regId) {// throws UnauthorizedException {
         // EndpointUtil.throwIfNotAuthenticated(user);
         RegistrationRecord record = new RegistrationRecord();
-        String isExist = checkIfUserExist(mail);
-        if (isExist.equals("O.K")) {
+        boolean isExist = checkIfUserExist(mail);
+        if (isExist) {
             try {
                 MySQL_Util.insert("Users", new String[]{mail, name, phone, password});
                 MySQL_Util.insert("UsersDevices", new String[]{mail, regId});
@@ -86,21 +87,49 @@ public class RegistrationEndpoint {
         return record;
     }
 
-    private String checkIfUserExist(String user) {
-        String debug = "O.K";
-        boolean isUserExist = true;
+    @ApiMethod(name = "CheckfriendsRegistration", path="CheckfriendsRegistration",httpMethod = "POST")
+    public RegistrationRecord[] CheckfriendsRegistration(@Named("user") String user,@Named("pass") String pass, @Named("phones") ArrayList<String> mail){
+        if(!checkIfUserExist(user,pass)){
+            return null;
+        }
+        RegistrationRecord[] result = new RegistrationRecord[mail.size()];
+        for (int i = 0; i < mail.size(); i++) {
+            String exist = checkIfUserExistByPhone(mail.get(i));
+            result[i].setMail(exist);
+        }
+        return result;
+    }
+
+    private String checkIfUserExistByPhone(String user) {
+        String isUserExist = "";
         try {
-            ResultSet rs = MySQL_Util.select(null,"Users",new String[]{"email"},new String[]{user},new int[]{1});
-            if (!rs.next()) {
-                isUserExist = false;
+            ResultSet rs = MySQL_Util.select(null,"Users",new String[]{"phone"},new String[]{user},new int[]{1});
+            if (rs.next()) {
+                isUserExist = rs.getString(1);
             }
             rs.close();
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
-            debug = sw.toString();
         }
-        return debug;//isUserExist;
+        return isUserExist;
+    }
+
+    private boolean checkIfUserExist(String user) {
+      //  String debug = "O.K";
+        boolean isUserExist = false;
+        try {
+            ResultSet rs = MySQL_Util.select(null,"Users",new String[]{"email"},new String[]{user},new int[]{1});
+            if (rs.next()) {
+                isUserExist = true;
+            }
+            rs.close();
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+        //    debug = sw.toString();
+        }
+        return isUserExist;
     }
 
     private boolean checkIfUserExist(String user, String pass) {

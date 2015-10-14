@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.model.Event;
 
+import java.util.ArrayList;
+
 import server.ServerAsyncResponse;
 import server.Registration_AsyncTask;
 

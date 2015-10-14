@@ -23,7 +23,7 @@ public class SendMessage_AsyncTask extends AsyncTask<String, Void, Void> {
         }
 
         try {
-            myApiService.sendMessage(params[0],params[1],params[2]);
+            myApiService.sendMessage(params[0],params[1],params[2]).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }

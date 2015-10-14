@@ -80,8 +80,8 @@ public class EventEndpoint {
      * Inserts a new {@code Event}.
      */
     @ApiMethod(name = "EventInsert",path = "EventInsert")
-    public void Insert(@Named("AID")String id, @Named("BName")String name, @Named("CLocation")String location, @Named("DStart")String start,
-                        @Named("EEnd")String end, @Named("FDescription")String description,@Named("GImagePath")String imagePath,@Named("HUpdateTime")String updateTime) {
+    public void Insert(@Named("id")String id, @Named("name")String name, @Named("location")String location, @Named("start")String start,
+                        @Named("end")String end, @Named("description")String description,@Named("imagePath")String imagePath,@Named("updateTime")String updateTime) {
         try {
            MySQL_Util.insert("Events",new String[]{id,name,location,start,end,description,imagePath,updateTime});
 

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import server.LoginAsyncTask;
 import server.ServerAsyncResponse;
+import server.cheackFriendsRegistrationAsyncTask;
 import utils.Constants;
 import utils.sqlHelper;
 
@@ -78,21 +79,25 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
 
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null, null, null);
-        int count = 0;
-        while (emails.moveToNext() )
+        ArrayList<String>[] list;
+        ArrayList<String> ph = new ArrayList<>();
+        while (phones.moveToNext() )
         {
-          //  String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-        //    String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            String email = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-            String name2 = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME));
-            if(name2 != null)
-            Toast.makeText(this,name2+": "+email,Toast.LENGTH_LONG).show();
-
+            String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            list = sqlHelper.select(null,"Friends",new String[]{"Name","Phone"}, new String[]{name, phone},new int[]{1});
+            if(list[0].isEmpty()){
+                sqlHelper.insert("Friends",new String[]{name,phone,"","NO"});
+            }
+            ph.add(phone);
+          //  String email = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+         //   String name2 = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME));
+         //   if(name2 != null)
+        //    Toast.makeText(this,name2+": "+email,Toast.LENGTH_LONG).show();
         }
         //Toast.makeText(this,count+"",Toast.LENGTH_LONG).show();
-
-
         phones.close();
+        new cheackFriendsRegistrationAsyncTask(this).execute(ph);
     }
 
     @Override
@@ -110,4 +115,5 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
     @Override
     public void EventProcessFinish(Event output) {
     }
+
 }
