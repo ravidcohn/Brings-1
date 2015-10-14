@@ -1,7 +1,5 @@
 package brings_app;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -13,6 +11,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import utils.Constants;
 import utils.sqlHelper;
 
 /**
@@ -61,7 +60,7 @@ public class newTask extends AppCompatActivity {
             ok = true;
             int task_id = 0;
             ArrayList<Integer> allIDS = new ArrayList<>();
-            ArrayList<String>[] dbResult = sqlHelper.select(null, "Tasks", new String[]{"ID"}, new String[]{KEY}, null);
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Tasks, new String[]{"ID"}, new String[]{KEY}, null);
             for (String t_id : dbResult[0]) {
                 allIDS.add(Integer.parseInt(t_id));
             }
@@ -71,7 +70,7 @@ public class newTask extends AppCompatActivity {
             String task = et_nt_task_ui.getText().toString();
             String description = et_nt_description_ui.getText().toString();
             String name = "";
-            sqlHelper.insert("Tasks", new String[]{KEY, task_id + "", task, description, name});
+            sqlHelper.insert(Constants.Table_Tasks, new String[]{KEY, task_id + "", task, description, name});
         }
         return ok;
     }
