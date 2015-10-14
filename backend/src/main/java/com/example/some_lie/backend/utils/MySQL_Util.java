@@ -59,7 +59,7 @@ public class MySQL_Util {
             query += "`" + where_columns[i] + "` = '" + where_values[i] + "' and ";
         }
         query += "`" + where_columns[end] + "` = '" + where_values[end] + "' ";
-        if (limit != null) {
+        if (false){//if (limit != null) {
             query += "limit ";
             end = limit.length - 1;
             for (int i = 0; i < end; i++) {

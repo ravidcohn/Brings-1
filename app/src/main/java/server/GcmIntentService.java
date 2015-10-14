@@ -42,8 +42,14 @@ public class GcmIntentService extends IntentService{
                 action = extras.getString("message").split("\\|")[0];
                 message = extras.getString("message").split("\\|")[1];
                 switch (action){
-                    case Constants.New_Event:
+                    case Constants.New_Event: {
                         EventHelper.get_Event(this, action, message);
+                        break;
+                    }
+                    default: {
+                        showToast(extras.getString("message"));
+                        break;
+                    }
                 }
             }
         }

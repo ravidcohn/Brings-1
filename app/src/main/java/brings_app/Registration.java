@@ -56,6 +56,7 @@ public class Registration extends AppCompatActivity  implements ServerAsyncRespo
             SharedPreferences.Editor editor = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE).edit();
             editor.putString("USER", "R-USER");
             editor.putString("Name", et_rg_mail_ui.getText().toString());
+            editor.putString("nickName", et_rg_your_name_ui.getText().toString());
             editor.putString("Pass", et_rg_password_ui.getText().toString());
             editor.commit();
             Intent login = new Intent(this, login.class);

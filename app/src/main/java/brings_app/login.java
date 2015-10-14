@@ -65,6 +65,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         SharedPreferences prefs = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE);
         String restoredText = prefs.getString("USER", null);
         if (restoredText != null) {
+            Constants.User_nickName = prefs.getString("nickName", "No name defined");
             Constants.User_Name = prefs.getString("Name", "No name defined");//"No name defined" is the default value.
             Constants.Password = prefs.getString("Pass", "No name defined");
             getFriends();

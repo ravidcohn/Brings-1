@@ -194,11 +194,11 @@ public class SlidingTabs extends Fragment {
             TextView start = (TextView) view.findViewById(R.id.tv_em_start_ui);
             TextView end = (TextView) view.findViewById(R.id.tv_em_end_ui);
             TextView description = (TextView) view.findViewById(R.id.tv_em_description_ui);
-            name.setText(dbResult[0].get(0));
-            place.setText(dbResult[1].get(0));
-            start.setText(dbResult[2].get(0));
-            end.setText(dbResult[3].get(0));
-            description.setText(dbResult[4].get(0));
+            name.setText(dbResult[1].get(0));
+            place.setText(dbResult[2].get(0));
+            start.setText(dbResult[3].get(0));
+            end.setText(dbResult[4].get(0));
+            description.setText(dbResult[5].get(0));
             }
         private void setAttendingTab(final View view){
             ImageButton addFriend = (ImageButton) view.findViewById(R.id.ib_ea_add_friend);
@@ -361,7 +361,7 @@ public class SlidingTabs extends Fragment {
         private void sqlTodo() {
             final Context context = getActivity().getApplicationContext();
             ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Tasks, new String[]{"ID"}, new String[]{KEY}, null);
-            for (String val: dbResult[0]){
+            for (String val: dbResult[1]){
                 Tasks_keys.add(Integer.parseInt(val));
             }
         }
@@ -370,7 +370,7 @@ public class SlidingTabs extends Fragment {
         private void sqlAttending() {
             final Context context = getActivity().getApplicationContext();
             ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID"},new String[]{KEY},null);
-            for (String val : dbResult[0]){
+            for (String val : dbResult[1]){
                 members_keys.add(val);
             }
         }
@@ -401,9 +401,9 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
         CheckBox task_do = (CheckBox) convertView.findViewById(R.id.cb_etd_list_item_task);
 
         ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Tasks,new String[]{"ID"},new String[]{KEY},null);
-        task_tit.setText(dbResult[1].get(position));
-        task_friend.setText(dbResult[2].get(position));
-        if (dbResult[3].get(position).equals("")) {
+        task_tit.setText(dbResult[2].get(position));
+        task_friend.setText(dbResult[3].get(position));
+        if (dbResult[4].get(position).equals("")) {
             task_do.setChecked(false);
         } else {
             task_do.setChecked(true);
@@ -462,7 +462,7 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
         });
 
         ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID"},new String[]{KEY},null);
-        name.setText(dbResult[0].get(position));
+        name.setText(dbResult[1].get(position));
 
         return convertView;
     }
