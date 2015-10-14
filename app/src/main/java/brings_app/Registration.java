@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.some_lie.backend.brings.model.Event;
+
 import server.ServerAsyncResponse;
 import server.Registration_AsyncTask;
 
@@ -61,6 +63,10 @@ public class Registration extends AppCompatActivity  implements ServerAsyncRespo
         else{
             Toast.makeText(getApplicationContext(),output,Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void EventProcessFinish(Event output) {
     }
 
     private void saveData(){

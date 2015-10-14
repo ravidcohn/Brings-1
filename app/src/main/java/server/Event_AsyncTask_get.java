@@ -13,14 +13,11 @@ import com.example.some_lie.backend.brings.model.Event;
 public class Event_AsyncTask_get extends AsyncTask<String, Void, Event> {
     private static Brings myApiService = null;
     private Context context;
-    private Event event;
+    private ServerAsyncResponse delegate;
 
-    public Event getEvent() {
-        return event;
-    }
-
-    public Event_AsyncTask_get(Context context) {
+    public Event_AsyncTask_get(ServerAsyncResponse delegate,Context context) {
         this.context = context;
+        this.delegate = delegate;
     }
 
     @Override
@@ -29,8 +26,7 @@ public class Event_AsyncTask_get extends AsyncTask<String, Void, Event> {
             myApiService = CloudEndpointBuilderHelper.getEndpoints();
         }
         try {
-            return myApiService.eventGet(params[0]).execute();
-
+           return myApiService.eventGet(params[0]).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -45,10 +41,10 @@ public class Event_AsyncTask_get extends AsyncTask<String, Void, Event> {
         /*Toast.makeText(context,result.getFrom(),Toast.LENGTH_LONG).show();
         */
         if(result != null) {
-            event = result;
             Toast.makeText(context, "הודעה נשלחה", Toast.LENGTH_LONG).show();
         }else{
             Toast.makeText(context,"ההודעה לא נשלחה",Toast.LENGTH_LONG).show();
         }
+        delegate.EventProcessFinish(result);
     }
 }

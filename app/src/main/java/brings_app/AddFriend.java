@@ -1,5 +1,6 @@
 package brings_app;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import server.SendMessage_AsyncTask;
+
 /**
  * Created by pinhas on 19/09/2015.
  */
@@ -21,6 +24,8 @@ public class AddFriend extends AppCompatActivity {
     private Button add;
     private SQLiteDatabase db;
     private String KEY;
+    private String name;
+
 
 
     @Override
@@ -31,6 +36,8 @@ public class AddFriend extends AppCompatActivity {
         input = (EditText)findViewById(R.id.et_addFriend);
         add = (Button)findViewById(R.id.bt_addFriend);
         Bundle b = getIntent().getExtras();
+        final Context context = this;
+
 
         KEY = b.getString("KEY");
         add.setOnClickListener(new View.OnClickListener() {
@@ -39,6 +46,7 @@ public class AddFriend extends AppCompatActivity {
             public void onClick(View v) {
                 boolean ok = saveData();
                 if (ok) {
+                    new SendMessage_AsyncTask(context).execute(Constants.User_Name,"new event|"+KEY,name);
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "only description can by empty..", Toast.LENGTH_SHORT).show();
@@ -54,8 +62,8 @@ public class AddFriend extends AppCompatActivity {
             ok = true;
             db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
 
-            String name = input.getText().toString();
-            db.execSQL("insert into Attending values('"+KEY+"','" + name + "');");
+            name = input.getText().toString();
+            db.execSQL("insert into Attending values('" + KEY + "','" + name + "');");
             db.close();
         }
         return ok;

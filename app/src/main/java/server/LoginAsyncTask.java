@@ -46,7 +46,7 @@ public class LoginAsyncTask extends AsyncTask<String, Void, RegistrationRecord> 
     protected void onPostExecute(RegistrationRecord result) {
         String message = "Cannot connect the server.. please try again later";
         if(result != null) {
-            message = "O.K";
+            message = result.getMail();
         }
         delegate.processFinish(message);
     }
