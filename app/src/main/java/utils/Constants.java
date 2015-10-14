@@ -55,6 +55,8 @@ public final class Constants {
     public final static String Table_Tasks = "Tasks";
     public final static String Table_Events_Friends = "Events_Friends";
     public final static String Table_Friends = "Friends";
+    public final static String Yes = "Yes";
+    public final static String No = "No";
 
 
 

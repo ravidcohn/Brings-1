@@ -78,7 +78,7 @@ public class newEvent extends AppCompatActivity {
                     String end = tv_ne_end_ui.getText().toString();
                     String description = tv_ne_description_ui.getText().toString();
                     new Event_AsyncTask_insert(context).execute(key, name, place, start, end, description, imagePath, Update_Time);
-                    new EventFriend_AsyncTask_insert(context).execute(key,USERNAME,"yes");
+                    new EventFriend_AsyncTask_insert(context).execute(key,USERNAME,Constants.Yes);
                     Bundle b = new Bundle();
                     b.putString("KEY", key);
                  //   b.putString("USERNAME",USERNAME);
