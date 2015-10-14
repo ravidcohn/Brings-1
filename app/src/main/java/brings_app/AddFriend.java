@@ -46,7 +46,7 @@ public class AddFriend extends AppCompatActivity {
             public void onClick(View v) {
                 boolean ok = saveData();
                 if (ok) {
-                    new SendMessage_AsyncTask(context).execute(Constants.User_Name,Constants.New_Event + KEY,name);
+                    new SendMessage_AsyncTask(context).execute(Constants.User_Name,Constants.New_Event+"|"+ KEY,name);
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "only description can by empty..", Toast.LENGTH_SHORT).show();

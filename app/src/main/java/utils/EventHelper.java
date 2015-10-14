@@ -11,7 +11,9 @@ import server.ServerAsyncResponse;
  * Created by Ravid on 14/10/2015.
  */
 public class EventHelper implements ServerAsyncResponse{
-    public static void get_Event(Context context,String message){
+    private static String Action;
+    public static void get_Event(Context context,String action,String message){
+        Action = action;
         new Event_AsyncTask_get((ServerAsyncResponse) context,context).execute(message);
     }
 
@@ -30,7 +32,9 @@ public class EventHelper implements ServerAsyncResponse{
         String description = output.getDescription();
         String image_path = output.getImageUrl();
         String update_time = output.getUpdateTime();
-        sqlHelper.insert(Constants.Table_Events,new String[]{id,name,location,start_date,end_date,description,image_path,update_time});
+        if(Action.equals(Constants.New_Event)) {
+            sqlHelper.insert(Constants.Table_Events, new String[]{id, name, location, start_date, end_date, description, image_path, update_time});
+        }
 
     }
 }

@@ -43,7 +43,7 @@ public class GcmIntentService extends IntentService{
                 message = extras.getString("message").split("\\|")[1];
                 switch (action){
                     case Constants.New_Event:
-                        EventHelper.get_Event(this, message);
+                        EventHelper.get_Event(this, action, message);
                 }
             }
         }
