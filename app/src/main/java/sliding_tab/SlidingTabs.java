@@ -43,6 +43,8 @@ import brings_app.AddFriend;
 import brings_app.R;
 import brings_app.Task;
 import brings_app.newTask;
+import utils.Constants;
+import utils.sqlHelper;
 
 public class SlidingTabs extends Fragment {
 
@@ -114,8 +116,6 @@ public class SlidingTabs extends Fragment {
      */
     class SamplePagerAdapter extends PagerAdapter {
 
-        private SQLiteDatabase db;
-        final private String path = "/data/data/some_lie.brings/databases/_edata";
         private String KEY = "";
         ArrayList<Integer> Tasks_keys = new ArrayList<>();
         ArrayList<String> members_keys = new ArrayList<>();
@@ -188,22 +188,18 @@ public class SlidingTabs extends Fragment {
             return view;
         }
         private void setMainTab(View view){
-            db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-            Cursor c = db.rawQuery("select * from Events where ID = '" + KEY + "';", null);
-            c.moveToFirst();
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events,new String[]{"ID"},new String[]{KEY},new int[]{1});
             TextView name = (TextView) view.findViewById(R.id.tv_em_name_ui);
             TextView place = (TextView) view.findViewById(R.id.tv_em_place_ui);
             TextView start = (TextView) view.findViewById(R.id.tv_em_start_ui);
             TextView end = (TextView) view.findViewById(R.id.tv_em_end_ui);
             TextView description = (TextView) view.findViewById(R.id.tv_em_description_ui);
-            name.setText(c.getString(1));
-            place.setText(c.getString(2));
-            start.setText(c.getString(3));
-            end.setText(c.getString(4));
-            description.setText(c.getString(5));
-            c.close();
-            db.close();
-        }
+            name.setText(dbResult[0].get(0));
+            place.setText(dbResult[1].get(0));
+            start.setText(dbResult[2].get(0));
+            end.setText(dbResult[3].get(0));
+            description.setText(dbResult[4].get(0));
+            }
         private void setAttendingTab(final View view){
             ImageButton addFriend = (ImageButton) view.findViewById(R.id.ib_ea_add_friend);
             addFriend.setOnClickListener(new View.OnClickListener() {
@@ -256,7 +252,7 @@ public class SlidingTabs extends Fragment {
 
             final Context context = getActivity();
             ListView listview = (ListView) view.findViewById(R.id.lvAttending);
-            StableArrayAdapterAttending adapter = new StableArrayAdapterAttending(getActivity() ,db ,members_keys ,path ,KEY);
+            StableArrayAdapterAttending adapter = new StableArrayAdapterAttending(getActivity()  ,members_keys ,KEY);
             listview.setAdapter(adapter);
 
             listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -273,11 +269,9 @@ public class SlidingTabs extends Fragment {
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
                                     String task_key = members_keys.get(pos);
-                                    db.execSQL("delete from Attending where ID = '" + KEY + "' and member = '" + task_key + "';");
+                                    sqlHelper.delete(Constants.Table_Events_Friends, new String[]{"Event_ID", "Friend_ID"}, new String[]{KEY, task_key}, new int[]{1});
                                     setAttendinglist(view);
-                                    db.close();
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -306,7 +300,7 @@ public class SlidingTabs extends Fragment {
             listview.setClickable(true);
             final Intent task = new Intent(getActivity().getApplicationContext(), Task.class);
 
-            StableArrayAdapterTodo adapter = new StableArrayAdapterTodo(getActivity().getApplicationContext(),db,Tasks_keys,path,KEY);
+            StableArrayAdapterTodo adapter = new StableArrayAdapterTodo(getActivity().getApplicationContext(),Tasks_keys,KEY);
             listview.setAdapter(adapter);
 
             listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -323,11 +317,9 @@ public class SlidingTabs extends Fragment {
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
                                     int task_key = Tasks_keys.get(pos);
-                                    db.execSQL("delete from Tasks where ID = '" + KEY + "' and TaskNumber = " + task_key + ";");//task_key
+                                    sqlHelper.delete(Constants.Table_Tasks, new String[]{"ID", "TaskNumber"}, new String[]{KEY, task_key + ""}, new int[]{1});
                                     setTodoList(rootView);
-                                    db.close();
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -368,34 +360,19 @@ public class SlidingTabs extends Fragment {
 
         private void sqlTodo() {
             final Context context = getActivity().getApplicationContext();
-            db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-            //db.execSQL("DROP TABLE Events");
-            db.execSQL("create table if not exists Tasks(ID varchar NOT NULL,TaskNumber number NOT NULL,Task varchar NOT NULL,Description varchar, Name varchar)");
-            Cursor c = db.rawQuery("select * from Tasks where ID = '" + KEY + "';", null);
-            //    Cursor c = db.rawQuery("select * from Tasks;",null);
-            while (c.moveToNext()) {
-                //Toast.makeText(getContext(),c.getString(0)+" "+c.getString(1)+" "+c.getString(2)+" "+c.getString(3),Toast.LENGTH_LONG).show();
-
-                int task_key = c.getInt(1);
-                Tasks_keys.add(task_key);
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Tasks, new String[]{"ID"}, new String[]{KEY}, null);
+            for (String val: dbResult[0]){
+                Tasks_keys.add(Integer.parseInt(val));
             }
-            c.close();
-            db.close();
         }
 
 
         private void sqlAttending() {
             final Context context = getActivity().getApplicationContext();
-            db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-            db.execSQL("create table if not exists Attending(ID varchar NOT NULL,member varchar NOT NULL)");
-            Cursor c = db.rawQuery("select * from Attending where ID = '" + KEY + "';", null);
-            //    Cursor c = db.rawQuery("select * from Tasks;",null);
-            while (c.moveToNext()) {
-                String task_key = c.getString(1);
-                members_keys.add(task_key);
+            ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID"},new String[]{KEY},null);
+            for (String val : dbResult[0]){
+                members_keys.add(val);
             }
-            c.close();
-            db.close();
         }
 
     }
@@ -405,15 +382,12 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
 
     private Context context;
     private String path;
-    private SQLiteDatabase db;
     private ArrayList<Integer> Tasks_keys;
     private String KEY;
 
-    public StableArrayAdapterTodo(Context context, SQLiteDatabase db, ArrayList<Integer> Tasks_keys, String path, String KEY) {
+    public StableArrayAdapterTodo(Context context, ArrayList<Integer> Tasks_keys, String KEY) {
         this.context = context;
-        this.db = db;
         this.Tasks_keys = Tasks_keys;
-        this.path = path;
         this.KEY = KEY;
     }
 
@@ -426,18 +400,14 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
         TextView task_friend = (TextView) convertView.findViewById(R.id.tv_etd_list_item_frind_tit);
         CheckBox task_do = (CheckBox) convertView.findViewById(R.id.cb_etd_list_item_task);
 
-        db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-        Cursor c = db.rawQuery("select * from Tasks where ID = '" + KEY + "';", null);
-        c.moveToPosition(position);
-        task_tit.setText(c.getString(2));
-        task_friend.setText(c.getString(3));
-        if (c.getString(4).equals("")) {
+        ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Tasks,new String[]{"ID"},new String[]{KEY},null);
+        task_tit.setText(dbResult[1].get(position));
+        task_friend.setText(dbResult[2].get(position));
+        if (dbResult[3].get(position).equals("")) {
             task_do.setChecked(false);
         } else {
             task_do.setChecked(true);
         }
-        c.close();
-        db.close();
 
         return convertView;
     }
@@ -468,16 +438,12 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
 class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickListener {
 
     private Context context;
-    private String path;
-    private SQLiteDatabase db;
     private ArrayList<String> members_keys;
     private String KEY;
 
-    public StableArrayAdapterAttending(Context context, SQLiteDatabase db, ArrayList<String> members_keys, String path, String KEY) {
+    public StableArrayAdapterAttending(Context context, ArrayList<String> members_keys, String KEY) {
         this.context = context;
-        this.db = db;
         this.members_keys = members_keys;
-        this.path = path;
         this.KEY = KEY;
     }
 
@@ -492,17 +458,11 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
-                }
+            }
         });
 
-        db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-        db.execSQL("create table if not exists Attending(ID varchar NOT NULL,member varchar NOT NULL)");
-        Cursor c = db.rawQuery("select * from Attending where ID = '" + KEY + "';", null);
-        c.moveToPosition(position);
-        name.setText(c.getString(1));
-
-        c.close();
-        db.close();
+        ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID"},new String[]{KEY},null);
+        name.setText(dbResult[0].get(position));
 
         return convertView;
     }
