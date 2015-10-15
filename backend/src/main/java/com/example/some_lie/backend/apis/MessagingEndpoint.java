@@ -14,6 +14,7 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.google.appengine.repackaged.org.joda.time.LocalDateTime;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -58,30 +59,50 @@ public class MessagingEndpoint {
     //TODO improve this !!!!
     @ApiMethod( name = "SendMessage",path = "SendMessage")
     public void sendMessage( @Named("from") String from,@Named("message") String message,@Named("to") String to) throws IOException {
-        if (message == null || message.trim().length() == 0) {
-            log.warning("Not sending message because it is empty");
-            return;
-        }
-        // crop longer messages
-        if (message.length() > 1000) {
-            message = message.substring(0, 1000) + "[...]";
-        }
-        Sender sender = new Sender(API_KEY);
-        Message msg = new Message.Builder().addData("message", from + ": " + message).build();
-        ArrayList<String> regId = checkIfUserExist(to);
-        for (String id: regId) {
-            if (!id.equals("NOT FOUND")) {
-                Result result = sender.send(msg, id, 5);
-                if (result.getMessageId() != null) {
-                    String canonicalRegId = result.getCanonicalRegistrationId();
-                    if (canonicalRegId != null) {
-                        update(to,id,canonicalRegId);
+        try {
+            if (message == null || message.trim().length() == 0) {
+                log.warning("Not sending message because it is empty");
+                return;
+            }
+            // crop longer messages
+            if (message.length() > 1000) {
+                message = message.substring(0, 1000) + "[...]";
+            }
+            Sender sender = new Sender(API_KEY);
+            Message msg = new Message.Builder().addData("message", from + ": " + message).build();
+            ArrayList<String> regId = checkIfUserExist(to);
+            for (String id : regId) {
+                if (!id.equals("NOT FOUND")) {
+                    Result result = sender.send(msg, id, 5);
+                    if (result.getMessageId() != null) {
+                        String canonicalRegId = result.getCanonicalRegistrationId();
+                        if (canonicalRegId != null) {
+                            update(to, id, canonicalRegId);
+                        }
+                    } else {
+                        //TODO
                     }
                 } else {
-                    //TODO
+                    log.warning("NOT FOUND");
                 }
-            } else {
-                log.warning("NOT FOUND");
+            }
+        }catch(Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
             }
         }
     }
@@ -89,9 +110,24 @@ public class MessagingEndpoint {
     private void update(String email, String prevId, String RegId) {
         try {
             MySQL_Util.update("UsersDevices", new String[]{"reg_id"}, new String[]{RegId}, new String[]{"email", "reg_id"}, new String[]{email, prevId});
-        } catch (Exception e) {
+        } catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
@@ -103,9 +139,24 @@ public class MessagingEndpoint {
                 regID.add(rs.getString(2));
             }
             rs.close();
-        } catch (Exception e) {
+        }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
         return regID;
     }
