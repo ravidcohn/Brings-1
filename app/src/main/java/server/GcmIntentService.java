@@ -7,9 +7,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
+import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.Event;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,8 +23,12 @@ import utils.EventHelper;
  * Created by pinhas on 24/09/2015.
  */
 public class GcmIntentService extends IntentService implements ServerAsyncResponse{
+    private static Brings myApiService = null;
     public GcmIntentService() {
         super("GcmIntentService");
+        if (myApiService == null) { // Only do this once
+            myApiService = CloudEndpointBuilderHelper.getEndpoints();
+        }
     }
 
     @Override
@@ -45,8 +51,12 @@ public class GcmIntentService extends IntentService implements ServerAsyncRespon
                 }
                 switch (action){
                     case Constants.New_Event: {
-                        new Event_AsyncTask_get(this).execute(message);
-                        EventHelper.get_Event(this, action, message);
+                        try {
+                            Event result = myApiService.eventGet(message).execute();
+                            //TODO some shit..
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     }
                     default: {
