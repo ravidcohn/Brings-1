@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.model.Event;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -95,7 +94,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
 
             }
 
-            getFriends(regId,gcmUpdate);
+            //getFriends(regId,gcmUpdate);
             //TODO get updates from server
             Intent mainActivity = new Intent(this, MainActivity.class);
             startActivity(mainActivity);

@@ -34,4 +34,15 @@
         android:layout_alignParentEnd="true"
         android:layout_toRightOf="@+id/tv_addFriend"
         android:layout_toEndOf="@+id/tv_addFriend" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/et_addFriend2"
+        android:layout_below="@+id/et_addFriend"
+        android:layout_alignLeft="@+id/et_addFriend"
+        android:layout_alignStart="@+id/et_addFriend"
+        android:layout_marginTop="40dp" />
 </RelativeLayout>
