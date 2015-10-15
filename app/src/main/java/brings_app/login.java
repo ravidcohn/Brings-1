@@ -13,7 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.model.Event;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -33,6 +35,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
     private EditText etPass;
     private Button login;
     private Button register;
+    private GoogleCloudMessaging gcm;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,7 +71,31 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
             Constants.User_nickName = prefs.getString("nickName", "No name defined");
             Constants.User_Name = prefs.getString("Name", "No name defined");//"No name defined" is the default value.
             Constants.Password = prefs.getString("Pass", "No name defined");
-            getFriends();
+
+            if (gcm == null) {
+                gcm = GoogleCloudMessaging.getInstance(this);
+            }
+            String regId = null;
+            try {
+                regId = gcm.register(Constants.SENDER_ID);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String gcmUpdate = null;
+            if(regId != null) {
+                gcmUpdate = prefs.getString("GCM","NO Value");
+                if(gcmUpdate != regId){
+                    SharedPreferences.Editor editor = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE).edit();
+                    editor.putString("GCM", regId);
+                    editor.apply();
+                }
+                else{
+                    gcmUpdate = null;
+                }
+
+            }
+
+            getFriends(regId,gcmUpdate);
             //TODO get updates from server
             Intent mainActivity = new Intent(this, MainActivity.class);
             startActivity(mainActivity);
@@ -76,7 +103,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         }
     }
 
-    private void getFriends(){
+    private void getFriends(String gcmUpdate, String oldGCM){
 
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null, null, null);
@@ -86,12 +113,12 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         while (phones.moveToNext() )
         {
             String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("-","").replaceAll(" ","");
             if(data.get(name) == null) {
                 data.put(name, phone);
-                list = sqlHelper.select(null, "Friends", new String[]{"Name", "Phone"}, new String[]{name, phone}, new int[]{1});
-                if (list == null) {
-                    sqlHelper.insert("Friends", new String[]{name, phone, "", "NO"});
+                list = sqlHelper.select(null, Constants.Table_Friends, new String[]{"Name", "Phone"}, new String[]{name, phone}, new int[]{1});
+                if (list[0].isEmpty()) {
+                    sqlHelper.insert(Constants.Table_Friends, new String[]{name, phone, "", Constants.No});
                 }
                 ph.add(phone);
             }
@@ -102,7 +129,13 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         }
         //Toast.makeText(this,count+"",Toast.LENGTH_LONG).show();
         phones.close();
-        new cheackFriendsRegistrationAsyncTask(this).execute(ph);
+        ArrayList<String> gu = null;
+        if(gcmUpdate != null) {
+            gu = new ArrayList<>();
+            gu.add(gcmUpdate);
+            gu.add(oldGCM);
+        }
+        new cheackFriendsRegistrationAsyncTask(this).execute(ph,gu);
     }
 
     @Override

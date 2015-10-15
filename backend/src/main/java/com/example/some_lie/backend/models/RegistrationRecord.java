@@ -25,6 +25,11 @@ public class RegistrationRecord {
     public RegistrationRecord() {
     }
 
+    public RegistrationRecord(String email, String phone) {
+        mail = email;
+        this.phone = phone;
+    }
+
     public String getMail() {
         return mail;
     }

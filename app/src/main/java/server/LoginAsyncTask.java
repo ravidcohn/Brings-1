@@ -1,12 +1,14 @@
 package server;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.RegistrationRecord;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import brings_app.MainActivity;
 import utils.Constants;
 
 /**
@@ -34,7 +36,9 @@ public class LoginAsyncTask extends AsyncTask<String, Void, RegistrationRecord> 
                 gcm = GoogleCloudMessaging.getInstance(context);
             }
             String regId = gcm.register(Constants.SENDER_ID);
-
+            SharedPreferences.Editor editor = context.getSharedPreferences(MainActivity.MY_PREFS_NAME, context.MODE_PRIVATE).edit();
+            editor.putString("GCM", regId);
+            editor.commit();
             return myApiService.authentication(params[0], params[1], regId).execute();
         } catch (Exception e) {
             e.printStackTrace();
