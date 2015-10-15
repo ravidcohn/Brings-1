@@ -58,7 +58,7 @@ public class AddFriend extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean ok = saveData();
-                new SendMessage_AsyncTask(context).execute("h", Constants.New_Event + "|" + KEY, "ravidcohn@gmail.com");
+                //new SendMessage_AsyncTask(context).execute("h", Constants.New_Event + "|" + KEY, "ravidcohn@gmail.com");
                 if (ok) {
                     new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.New_Event + "|" + KEY, email);
                     finish();
