@@ -77,6 +77,8 @@ public class RegistrationEndpoint {
                 if(phone.charAt(0) == '0'){
                     _phone = "+972"+phone.substring(1);
                 }
+                _phone = _phone.replaceAll("-","");
+                _phone = _phone.replaceAll(" ","");
                 MySQL_Util.insert("Users", new String[]{mail, name, _phone, password});
                 ResultSet rs = MySQL_Util.select(new String[]{"reg_id"}, "UsersDevices",new String[]{"email"},new String[]{mail},new int[]{1});
                 boolean done = false;
@@ -131,7 +133,8 @@ public class RegistrationEndpoint {
             if(phone.charAt(0) == '0'){
                 phone = "+972"+user.substring(1);
             }
-
+            phone = phone.replaceAll("-","");
+            phone = phone.replaceAll(" ","");
             ResultSet rs = MySQL_Util.select(null,"Users",new String[]{"phone"},new String[]{phone},new int[]{1});
             if (rs.next()) {
                 isUserExist = rs.getString(1);

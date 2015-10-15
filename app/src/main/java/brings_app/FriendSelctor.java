@@ -78,7 +78,6 @@ public class FriendSelctor extends AppCompatActivity{
             convertView = inflater.inflate(R.layout.friend_item_list, null);
 
             TextView tvName = (TextView) convertView.findViewById(R.id.tvFriendItemList);
-            tvName.setTextSize(20);
             tvName.setText(friends[0].get(position));
             if(friends[3].get(position).equals(Constants.Yes)) {
                 tvName.setBackgroundColor(Color.GREEN);
