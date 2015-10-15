@@ -16,13 +16,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import utils.Constants;
-import utils.EventHelper;
 
 
 /**
  * Created by pinhas on 24/09/2015.
  */
-public class GcmIntentService extends IntentService implements ServerAsyncResponse{
+public class GcmIntentService extends IntentService{
     private static Brings myApiService = null;
     public GcmIntentService() {
         super("GcmIntentService");
@@ -53,6 +52,8 @@ public class GcmIntentService extends IntentService implements ServerAsyncRespon
                     case Constants.New_Event: {
                         try {
                             Event result = myApiService.eventGet(message).execute();
+                            result.getId();
+
                             //TODO some shit..
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -78,13 +79,4 @@ public class GcmIntentService extends IntentService implements ServerAsyncRespon
         });
     }
 
-    @Override
-    public void processFinish(String output) {
-
-    }
-
-    @Override
-    public void EventProcessFinish(Event output) {
-
-    }
 }
