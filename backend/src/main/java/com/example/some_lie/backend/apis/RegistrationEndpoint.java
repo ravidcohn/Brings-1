@@ -7,6 +7,7 @@
 package com.example.some_lie.backend.apis;
 
 import com.example.some_lie.backend.models.RegistrationRecord;
+import com.example.some_lie.backend.models.friendsList;
 import com.example.some_lie.backend.utils.EndpointUtil;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
@@ -106,7 +107,7 @@ public class RegistrationEndpoint {
      }
 
     @ApiMethod(name = "CheckfriendsRegistration", path="CheckfriendsRegistration",httpMethod = "POST")
-    public RegistrationRecord[] CheckfriendsRegistration(@Named("user") String user,@Named("pass") String pass
+    public friendsList CheckfriendsRegistration(@Named("user") String user,@Named("pass") String pass
             , @Named("phones") ArrayList<String> mail,@Named("new_reg_id") String new_reg_id,@Named("old_reg_id") String old_reg_id){
         if(!checkIfUserExist(user,pass)){
             return null;
@@ -124,7 +125,9 @@ public class RegistrationEndpoint {
             result[i] = new RegistrationRecord();
             result[i].setMail(exist);
         }
-        return result;
+        friendsList list = new friendsList();
+        list.setList(result);
+        return list;
     }
 
     private String checkIfUserExistByPhone(String user) {
