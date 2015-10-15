@@ -36,6 +36,7 @@
         <activity android:name=".Task" />
         <activity android:name=".AddFriend" />
         <activity android:name=".Registration" />
+        <activity android:name=".FriendSelctor" />
         <receiver
             android:name="server.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
