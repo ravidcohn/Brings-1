@@ -88,7 +88,7 @@ public class GcmIntentService extends IntentService{
         String[] result = new String[8];
         try {
             event = myApiService.eventGet(event_id).execute();
-            result[0] = "a"+event.getId();
+            result[0] = event.getId();
             result[1] = event.getName();
             result[2] = event.getLocation();
             result[3] = event.getStartDate();
