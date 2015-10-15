@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import utils.Constants;
+import utils.sqlHelper;
 
 
 /**
@@ -52,8 +53,15 @@ public class GcmIntentService extends IntentService{
                     case Constants.New_Event: {
                         try {
                             Event result = myApiService.eventGet(message).execute();
-                            result.getId();
-
+                            String name = result.getName();
+                            String id = result.getId();
+                            String location = result.getLocation();
+                            String start_date = result.getStartDate();
+                            String end_date = result.getEndDate();
+                            String description = result.getDescription();
+                            String image_path = result.getImageUrl();
+                            String update_time = result.getUpdateTime();
+                            sqlHelper.insert(Constants.Table_Events, new String[]{id, name, location, start_date, end_date, description, image_path, update_time});
                             //TODO some shit..
                         } catch (IOException e) {
                             e.printStackTrace();
