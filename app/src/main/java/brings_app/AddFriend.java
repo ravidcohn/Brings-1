@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import server.EventFriend_AsyncTask_insert;
 import server.SendMessage_AsyncTask;
 import utils.Constants;
 import utils.sqlHelper;
@@ -61,7 +62,6 @@ public class AddFriend extends AppCompatActivity {
             public void onClick(View v) {
                 email = input2.getText().toString();
                 boolean ok = saveData();
-                //new SendMessage_AsyncTask(context).execute("h", Constants.New_Event + "|" + KEY, "ravidcohn@gmail.com");
                 if (ok) {
                     new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.New_Event + "|" + KEY, email);
                     finish();
@@ -89,6 +89,7 @@ public class AddFriend extends AppCompatActivity {
             ArrayList<String>[] list = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID","Friend_ID"},new String[]{KEY,email},null);
             if(sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID","Friend_ID"},new String[]{KEY,email},null)[0].isEmpty()){
                 sqlHelper.insert(Constants.Table_Events_Friends, new String[]{KEY, email,Constants.No});
+                new EventFriend_AsyncTask_insert(this).execute(KEY, email, Constants.Yes);
                 ok = true;
             }
         }
