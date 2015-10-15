@@ -121,6 +121,7 @@ public class RegistrationEndpoint {
         RegistrationRecord[] result = new RegistrationRecord[mail.size()];
         for (int i = 0; i < mail.size(); i++) {
             String exist = checkIfUserExistByPhone(mail.get(i));
+            result[i] = new RegistrationRecord();
             result[i].setMail(exist);
         }
         return result;
