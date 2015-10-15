@@ -39,7 +39,7 @@ public class GcmIntentService extends IntentService{
             if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 Logger.getLogger("GCM_RECEIVED").log(Level.INFO, extras.toString());
                 if(extras.getString("message").split("\\|").length>1) {
-                    action = extras.getString("message").split("\\|")[0];
+                    action = extras.getString("message").split("\\|")[0].split(": ")[1];
                     message = extras.getString("message").split("\\|")[1];
                 }
                 switch (action){
