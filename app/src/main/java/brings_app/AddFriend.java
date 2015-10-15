@@ -63,10 +63,10 @@ public class AddFriend extends AppCompatActivity {
         if(input.getText().length() > 0) {
             name = input.getText().toString();
             ArrayList<String>[] list = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID","Friend_ID"},new String[]{KEY,name},null);
-            //if(sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID","Friend_ID"},new String[]{KEY,name},null)[0].isEmpty()){
+            if(sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID","Friend_ID"},new String[]{KEY,name},null)[0].isEmpty()){
                 sqlHelper.insert(Constants.Table_Events_Friends, new String[]{KEY, name,Constants.No});
                 ok = true;
-            //}
+            }
         }
         return ok;
     }
