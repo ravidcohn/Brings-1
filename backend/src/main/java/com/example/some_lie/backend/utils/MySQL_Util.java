@@ -11,10 +11,12 @@ import java.util.ArrayList;
  * Created by pinhas on 11/10/2015.
  */
 public class MySQL_Util {
-
+    private static Connection conn;
     private static Connection getConnection() throws Exception {
-        Class.forName(Constants.sqlClassName);
-        Connection conn = DriverManager.getConnection(Constants.Database_PATH);
+        if(conn == null) {
+            Class.forName(Constants.sqlClassName);
+            conn = DriverManager.getConnection(Constants.Database_PATH);
+        }
         return conn;
     }
 

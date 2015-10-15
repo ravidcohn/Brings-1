@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.example.some_lie.backend.brings.Brings;
-import com.example.some_lie.backend.brings.model.FriendsList;
+import com.example.some_lie.backend.brings.model.CollectionResponseRegistrationRecord;
 import com.example.some_lie.backend.brings.model.RegistrationRecord;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import utils.sqlHelper;
 /**
  * Created by pinhas on 14/10/2015.
  */
-public class cheackFriendsRegistrationAsyncTask extends AsyncTask<ArrayList<String>, Void, FriendsList> {
+public class cheackFriendsRegistrationAsyncTask extends AsyncTask<ArrayList<String>, Void, List<RegistrationRecord>> {
     private static Brings myApiService = null;
     private Context context;
     private ArrayList<String> phones;
@@ -25,7 +25,7 @@ public class cheackFriendsRegistrationAsyncTask extends AsyncTask<ArrayList<Stri
     }
 
     @Override
-    protected FriendsList doInBackground(ArrayList<String>... params) {
+    protected List<RegistrationRecord> doInBackground(ArrayList<String>... params) {
         if (myApiService == null) { // Only do this once
             myApiService = CloudEndpointBuilderHelper.getEndpoints();
         }
@@ -37,9 +37,8 @@ public class cheackFriendsRegistrationAsyncTask extends AsyncTask<ArrayList<Stri
                 old_regId = params[1].get(1);
             }
             this.phones = params[0];
-            String email = Constants.User_Name;
-            String pass = Constants.Password;
-            return myApiService.checkfriendsRegistration(new_regId, old_regId, Constants.Password, phones, Constants.User_Name).execute();
+            CollectionResponseRegistrationRecord result = myApiService.checkfriendsRegistration(new_regId, old_regId, Constants.Password, phones, Constants.User_Name).execute();
+            return result.getItems();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,11 +47,10 @@ public class cheackFriendsRegistrationAsyncTask extends AsyncTask<ArrayList<Stri
 
 
     @Override
-    protected void onPostExecute(FriendsList result) {
+    protected void onPostExecute(List<RegistrationRecord> result) {
         if (result != null) {
-            List<RegistrationRecord> list = result.getFriendsReg();
             for (int i = 0; i < result.size(); i++) {
-                sqlHelper.update("Friends",new String[]{"email","regester"},new String[]{list.get(i).getMail(),Constants.Yes},new String[]{"Phone"},new String[]{phones.get(i)});
+                sqlHelper.update("Friends",new String[]{"email","regester"},new String[]{result.get(i).getMail(),Constants.Yes},new String[]{"Phone"},new String[]{result.get(i).getPhone()});
             }
         }
     }
