@@ -9,9 +9,11 @@ import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.Event;
+import com.example.some_lie.backend.brings.model.EventFriendCollection;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,21 +53,13 @@ public class GcmIntentService extends IntentService{
                 }
                 switch (action){
                     case Constants.New_Event: {
-                        try {
-                            Event result = myApiService.eventGet(message).execute();
-                            String id = result.getId();
-                            String name = result.getName();
-                            String location = result.getLocation();
-                            String start_date = result.getStartDate();
-                            String end_date = result.getEndDate();
-                            String description = result.getDescription();
-                            String image_path = result.getImageUrl();
-                            String update_time = result.getUpdateTime();
-                            if(sqlHelper.select(null,Constants.Table_Events,new String[]{"ID"},new String[]{id},null)[0].isEmpty()){
-                                sqlHelper.insert(Constants.Table_Events, new String[]{id, name, location, start_date, end_date, description, image_path, update_time});
+                        String[] event = getEvent(message);
+                        ArrayList<String[]> allAttending = getAllAttending(message);
+                        if(sqlHelper.select(null,Constants.Table_Events,new String[]{"ID"},new String[]{event[0]},null)[0].isEmpty()){
+                            sqlHelper.insert(Constants.Table_Events, event);
+                            for(String[] attending:allAttending){
+                                sqlHelper.insert(Constants.Table_Events_Friends, attending);
                             }
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         }
                         break;
                     }
@@ -79,6 +73,7 @@ public class GcmIntentService extends IntentService{
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 
+
     protected void showToast(final String message) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -86,6 +81,40 @@ public class GcmIntentService extends IntentService{
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private String[] getEvent(String event_id){
+        Event event;
+        String[] result = new String[8];
+        try {
+            event = myApiService.eventGet(event_id).execute();
+            result[0] = "a"+event.getId();
+            result[1] = event.getName();
+            result[2] = event.getLocation();
+            result[3] = event.getStartDate();
+            result[4] = event.getEndDate();
+            result[5] = event.getDescription();
+            result[6] = event.getImageUrl();
+            result[7] = event.getUpdateTime();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private ArrayList<String[]> getAllAttending(String event_id) {
+        ArrayList<String[]>result = new ArrayList<>();
+        EventFriendCollection eventFriendCollection;
+        try {
+            eventFriendCollection = myApiService.eventFriendGetFriends(event_id).execute();
+            for(int i=0;i<eventFriendCollection.getItems().size();i++){
+                result.add(new String[]{eventFriendCollection.getItems().get(i).getEventName(),
+                        eventFriendCollection.getItems().get(i).getFriendName(),eventFriendCollection.getItems().get(i).getAttending()});
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 }

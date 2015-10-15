@@ -26,6 +26,7 @@ public class AddFriend extends AppCompatActivity {
 
     private TextView Name;
     private EditText input;
+    private EditText input2;
     private Button add;
     private String KEY;
     private String email;
@@ -37,6 +38,7 @@ public class AddFriend extends AppCompatActivity {
         setContentView(R.layout.add_friend);
         Name = (TextView)findViewById(R.id.tv_addFriend);
         input = (EditText)findViewById(R.id.et_addFriend);
+        input2 = (EditText)findViewById(R.id.et_addFriend2);
         add = (Button)findViewById(R.id.bt_addFriend);
         Bundle b = getIntent().getExtras();
         final Context context = this;
@@ -57,6 +59,7 @@ public class AddFriend extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                email = input2.getText().toString();
                 boolean ok = saveData();
                 //new SendMessage_AsyncTask(context).execute("h", Constants.New_Event + "|" + KEY, "ravidcohn@gmail.com");
                 if (ok) {
