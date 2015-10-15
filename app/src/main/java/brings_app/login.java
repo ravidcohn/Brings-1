@@ -116,9 +116,9 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
             String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             if(data.get(name) == null) {
                 data.put(name, phone);
-                list = sqlHelper.select(null, "Friends", new String[]{"Name", "Phone"}, new String[]{name, phone}, new int[]{1});
-                if (list == null) {
-                    sqlHelper.insert("Friends", new String[]{name, phone, "", Constants.No});
+                list = sqlHelper.select(null, Constants.Table_Friends, new String[]{"Name", "Phone"}, new String[]{name, phone}, new int[]{1});
+                if (list[0].isEmpty()) {
+                    sqlHelper.insert(Constants.Table_Friends, new String[]{name, phone, "", Constants.No});
                 }
                 ph.add(phone);
             }

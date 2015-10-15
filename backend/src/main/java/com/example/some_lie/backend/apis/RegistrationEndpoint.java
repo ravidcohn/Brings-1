@@ -73,7 +73,11 @@ public class RegistrationEndpoint {
         boolean isExist = checkIfUserExist(mail);
         if (!isExist) {
             try {
-                MySQL_Util.insert("Users", new String[]{mail, name, phone, password});
+                String _phone = phone;
+                if(phone.charAt(0) == '0'){
+                    _phone = "+972"+phone.substring(1);
+                }
+                MySQL_Util.insert("Users", new String[]{mail, name, _phone, password});
                 ResultSet rs = MySQL_Util.select(new String[]{"reg_id"}, "UsersDevices",new String[]{"email"},new String[]{mail},new int[]{1});
                 boolean done = false;
                 while(rs.next() && !done){
@@ -123,7 +127,12 @@ public class RegistrationEndpoint {
     private String checkIfUserExistByPhone(String user) {
         String isUserExist = "";
         try {
-            ResultSet rs = MySQL_Util.select(null,"Users",new String[]{"phone"},new String[]{user},new int[]{1});
+            String phone = user;
+            if(phone.charAt(0) == '0'){
+                phone = "+972"+user.substring(1);
+            }
+
+            ResultSet rs = MySQL_Util.select(null,"Users",new String[]{"phone"},new String[]{phone},new int[]{1});
             if (rs.next()) {
                 isUserExist = rs.getString(1);
             }
