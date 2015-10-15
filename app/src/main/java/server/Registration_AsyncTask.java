@@ -48,7 +48,7 @@ public class Registration_AsyncTask extends AsyncTask<String, Void, Registration
 
     @Override
     protected void onPostExecute(RegistrationRecord result) {
-        String message = "Cannot connect the server.. please try again later";
+        String message = "Registration_AsyncTask.onPostExecute: Cannot connect the server.. please try again later";
         if(result != null) {
             message = result.getMessage();
         }

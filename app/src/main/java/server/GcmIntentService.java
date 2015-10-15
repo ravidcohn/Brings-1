@@ -54,7 +54,7 @@ public class GcmIntentService extends IntentService{
                         try {
                             Event result = myApiService.eventGet(message).execute();
                             String name = result.getName();
-                            String id = result.getId();
+                            String id = "test";
                             String location = result.getLocation();
                             String start_date = result.getStartDate();
                             String end_date = result.getEndDate();
@@ -62,7 +62,6 @@ public class GcmIntentService extends IntentService{
                             String image_path = result.getImageUrl();
                             String update_time = result.getUpdateTime();
                             sqlHelper.insert(Constants.Table_Events, new String[]{id, name, location, start_date, end_date, description, image_path, update_time});
-                            //TODO some shit..
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
