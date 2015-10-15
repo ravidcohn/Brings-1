@@ -113,7 +113,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         while (phones.moveToNext() )
         {
             String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("-","").replaceAll(" ","");
             if(data.get(name) == null) {
                 data.put(name, phone);
                 list = sqlHelper.select(null, Constants.Table_Friends, new String[]{"Name", "Phone"}, new String[]{name, phone}, new int[]{1});

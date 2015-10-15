@@ -29,7 +29,7 @@ public class MySQL_Util {
             query += "`"+set_columns[i]+"` = '"+set_values[i]+ "',";
         }
         query += "`"+set_columns[end]+"` = '"+set_values[end]+ "' ";
-
+        query +="where ";
         end = where_columns.length - 1;
         for (int i = 0; i < end; i++) {
             query += "`" + where_columns[i] + "` = '" + where_values[i] + "' and ";
