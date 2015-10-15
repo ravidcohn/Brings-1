@@ -61,7 +61,7 @@ public class GcmIntentService extends IntentService{
                             String description = result.getDescription();
                             String image_path = result.getImageUrl();
                             String update_time = result.getUpdateTime();
-                            sqlHelper.insert(Constants.Table_Events, new String[]{id, name, location, start_date, end_date, description, image_path, update_time});
+                            sqlHelper.insert(Constants.Table_Events, new String[]{"test"+Math.random(), name, location, start_date, end_date, description, image_path, update_time});
                             //TODO some shit..
                         } catch (IOException e) {
                             e.printStackTrace();

@@ -13,6 +13,7 @@ import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
+import com.google.appengine.repackaged.org.joda.time.LocalDateTime;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -85,10 +86,24 @@ public class RegistrationEndpoint {
                     MySQL_Util.insert("UsersDevices", new String[]{mail, regId});
                 }
                 record.setRegistration_message("O.K");
-            } catch (Exception e) {
+            } catch(Exception e){
                 StringWriter sw = new StringWriter();
                 e.printStackTrace(new PrintWriter(sw));
-                record.setRegistration_message(sw.toString());
+                LocalDateTime now = LocalDateTime.now();
+                try {
+                    int year = now.getYear();
+                    int month = now.getMonthOfYear();
+                    int day = now.getDayOfMonth();
+                    int hour = now.getHourOfDay();
+                    int minute = now.getMinuteOfHour();
+                    int second = now.getSecondOfMinute();
+                    int millis = now.getMillisOfSecond();
+                    String date = day+"/"+month+"/"+year;
+                    String time = hour+":"+minute+":"+second+":"+millis;
+                    MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
             }
 
         } else {
@@ -101,25 +116,46 @@ public class RegistrationEndpoint {
     @ApiMethod(name = "CheckfriendsRegistration", path = "CheckfriendsRegistration", httpMethod = "POST")
     public CollectionResponse<RegistrationRecord> CheckfriendsRegistration(@Named("user") String user, @Named("pass") String pass
             , @Named("phones") ArrayList<String> phones, @Named("new_reg_id") String new_reg_id, @Named("old_reg_id") String old_reg_id) {
-        if (!checkIfUserExist(user, pass)) {
-            return null;
-        }
-        if (!new_reg_id.equals("!")) {
-            try {
-                MySQL_Util.update("UsersDevices", new String[]{"reg_id"}, new String[]{new_reg_id}, new String[]{"reg_id"}, new String[]{old_reg_id});
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            if (!checkIfUserExist(user, pass)) {
+                return null;
             }
-        }
-        List<RegistrationRecord> result = new ArrayList<>();
-        for (int i = 0; i < phones.size(); i++) {
-            String exist = checkIfUserExistByPhone(phones.get(i));
-            if (!exist.equals("")) {
-                result.add(new RegistrationRecord(exist,phones.get(i)));
+            if (!new_reg_id.equals("!")) {
+                try {
+                    MySQL_Util.update("UsersDevices", new String[]{"reg_id"}, new String[]{new_reg_id}, new String[]{"reg_id"}, new String[]{old_reg_id});
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }
+            List<RegistrationRecord> result = new ArrayList<>();
+            for (int i = 0; i < phones.size(); i++) {
+                String exist = checkIfUserExistByPhone(phones.get(i));
+                if (!exist.equals("")) {
+                    result.add(new RegistrationRecord(exist, phones.get(i)));
+                }
+            }
 
-        return CollectionResponse.<RegistrationRecord>builder().setItems(result).setNextPageToken(null).build();
+            return CollectionResponse.<RegistrationRecord>builder().setItems(result).setNextPageToken(null).build();
+        }catch(Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
+        return null;
     }
 
     private String checkIfUserExistByPhone(String user) {
@@ -136,10 +172,24 @@ public class RegistrationEndpoint {
                 isUserExist = rs.getString(1);
             }
             rs.close();
-        } catch (Exception e) {
+        } catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
-           // isUserExist = sw.toString();
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
         return isUserExist;
     }
@@ -152,9 +202,24 @@ public class RegistrationEndpoint {
                 isUserExist = true;
             }
             rs.close();
-        } catch (Exception e) {
+        }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
         return isUserExist;
     }
@@ -167,9 +232,24 @@ public class RegistrationEndpoint {
                 isUserExist = true;
             }
             rs.close();
-        } catch (Exception e) {
+        }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
         return isUserExist;
     }
@@ -207,9 +287,24 @@ public class RegistrationEndpoint {
                     MySQL_Util.insert("UsersDevices", new String[]{email, regId});
                 }
             }
-        } catch (Exception e) {
+        }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
         return record;
     }
@@ -220,17 +315,37 @@ public class RegistrationEndpoint {
     @ApiMethod(name = "Unregister", httpMethod = "DELETE")
     public RegistrationRecord unregisterDevice(@Named("mail") String mail, @Named("password") String password) {
         RegistrationRecord record = new RegistrationRecord();
-        if (checkIfUserExist(mail, password)) {
-            try {
-                MySQL_Util.delete("Users", new String[]{"email"}, new String[]{mail}, new int[]{1});
-                record.setRegistration_message("User was deleted");
+        try {
+            if (checkIfUserExist(mail, password)) {
+                try {
+                    MySQL_Util.delete("Users", new String[]{"email"}, new String[]{mail}, new int[]{1});
+                    record.setRegistration_message("User was deleted");
 
-            } catch (Exception e) {
-                StringWriter sw = new StringWriter();
-                e.printStackTrace(new PrintWriter(sw));
+                } catch (Exception e) {
+                    StringWriter sw = new StringWriter();
+                    e.printStackTrace(new PrintWriter(sw));
+                }
+            } else {
+                record.setRegistration_message("email or password are wrong!");
             }
-        } else {
-            record.setRegistration_message("email or password are wrong!");
+        }catch(Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
         return record;
     }

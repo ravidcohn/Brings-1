@@ -8,6 +8,7 @@ import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.NotFoundException;
+import com.google.appengine.repackaged.org.joda.time.LocalDateTime;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -72,6 +73,21 @@ public class EventEndpoint {
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
         return event;
     }
@@ -89,6 +105,21 @@ public class EventEndpoint {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String exceptionAsString = sw.toString();
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
@@ -113,6 +144,21 @@ public class EventEndpoint {
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
@@ -130,6 +176,21 @@ public class EventEndpoint {
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
