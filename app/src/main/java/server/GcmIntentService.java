@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
+import com.example.some_lie.backend.brings.model.Event;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.util.logging.Level;
@@ -19,7 +20,7 @@ import utils.EventHelper;
 /**
  * Created by pinhas on 24/09/2015.
  */
-public class GcmIntentService extends IntentService{
+public class GcmIntentService extends IntentService implements ServerAsyncResponse{
     public GcmIntentService() {
         super("GcmIntentService");
     }
@@ -44,7 +45,8 @@ public class GcmIntentService extends IntentService{
                 }
                 switch (action){
                     case Constants.New_Event: {
-                        new Event_AsyncTask_get().execute(message);//EventHelper.get_Event(this, action, message);
+                        new Event_AsyncTask_get(this).execute(message);
+                        EventHelper.get_Event(this, action, message);
                         break;
                     }
                     default: {
@@ -66,4 +68,13 @@ public class GcmIntentService extends IntentService{
         });
     }
 
+    @Override
+    public void processFinish(String output) {
+
+    }
+
+    @Override
+    public void EventProcessFinish(Event output) {
+
+    }
 }
