@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import server.CloudEndpointBuilderHelper;
 import server.EventFriend_AsyncTask_delete_by_event;
 import server.Event_AsyncTask_delete;
+import server.SendMessage_AsyncTask;
 import utils.Constants;
 import utils.bitmapHelper;
 import utils.sqlHelper;
@@ -255,9 +256,14 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 String key = users_names.get(pos) + " - " + IDS.get(pos);
+                                ArrayList<String>[] attendingArray = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{"Event_ID"}, new String[]{key}, null);
                                 sqlHelper.delete(Constants.Table_Events, new String[]{"ID"}, new String[]{key}, new int[]{1});
+                                sqlHelper.delete(Constants.Table_Events_Friends, new String[]{"Event_ID"}, new String[]{key}, null);
                                 new Event_AsyncTask_delete(context).execute(key);
                                 new EventFriend_AsyncTask_delete_by_event(context).execute(key);
+                                for(String to:attendingArray[1]) {
+                                    new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + key, to);
+                                }
                                 setList();
                             }
                         })

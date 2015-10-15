@@ -1,8 +1,6 @@
 package server;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.EventFriendCollection;
@@ -12,15 +10,11 @@ import com.example.some_lie.backend.brings.model.EventFriendCollection;
  */
 public class EventFriend_AsyncTask_getFriend_by_event  extends AsyncTask<String, Void, EventFriendCollection> {
     private static Brings myApiService = null;
-    private Context context;
-    private EventFriendCollection eventFriendCollection;
+    private ServerAsyncResponse delegate;
 
-    public EventFriendCollection getEventFriendCollection() {
-        return eventFriendCollection;
-    }
 
-    public EventFriend_AsyncTask_getFriend_by_event(Context context) {
-        this.context = context;
+    public EventFriend_AsyncTask_getFriend_by_event(ServerAsyncResponse delegate) {
+        this.delegate = delegate;
     }
 
     @Override
@@ -41,14 +35,6 @@ public class EventFriend_AsyncTask_getFriend_by_event  extends AsyncTask<String,
 
     @Override
     protected void onPostExecute(EventFriendCollection result) {
-        //Toast.makeText(context,result.getMessage(),Toast.LENGTH_LONG).show();
-        /*Toast.makeText(context,result.getFrom(),Toast.LENGTH_LONG).show();
-        */
-        if (result != null) {
-            eventFriendCollection = result;
-            Toast.makeText(context, "הודעה נשלחה", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(context, "ההודעה לא נשלחה", Toast.LENGTH_LONG).show();
-        }
+        delegate.EventFriendCollectionProcessFinish(result);
     }
 }
