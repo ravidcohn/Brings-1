@@ -7,29 +7,21 @@
 package com.example.some_lie.backend.apis;
 
 import com.example.some_lie.backend.models.RegistrationRecord;
-import com.example.some_lie.backend.models.friendsList;
-import com.example.some_lie.backend.utils.EndpointUtil;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
-import com.google.api.server.spi.response.UnauthorizedException;
-import com.google.appengine.api.users.User;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
-
-import static com.example.some_lie.backend.OfyService.ofy;
 
 /**
  * A registration endpoint class we are exposing for a device's GCM registration id on the backend
@@ -107,7 +99,7 @@ public class RegistrationEndpoint {
      }
 
     @ApiMethod(name = "CheckfriendsRegistration", path="CheckfriendsRegistration",httpMethod = "POST")
-    public friendsList CheckfriendsRegistration(@Named("user") String user,@Named("pass") String pass
+    public CollectionResponse<RegistrationRecord> CheckfriendsRegistration(@Named("user") String user,@Named("pass") String pass
             , @Named("phones") ArrayList<String> mail,@Named("new_reg_id") String new_reg_id,@Named("old_reg_id") String old_reg_id){
         if(!checkIfUserExist(user,pass)){
             return null;
@@ -119,15 +111,16 @@ public class RegistrationEndpoint {
                 e.printStackTrace();
             }
         }
-        RegistrationRecord[] result = new RegistrationRecord[mail.size()];
+        List<RegistrationRecord> result = new ArrayList<>();
         for (int i = 0; i < mail.size(); i++) {
             String exist = checkIfUserExistByPhone(mail.get(i));
-            result[i] = new RegistrationRecord();
-            result[i].setMail(exist);
+            RegistrationRecord rr = new RegistrationRecord();
+            rr.setMail(exist);
+            result.add(rr);
         }
-        friendsList list = new friendsList();
-        list.setList(result);
-        return list;
+
+
+        return CollectionResponse.<RegistrationRecord>builder().setItems(result).build();
     }
 
     private String checkIfUserExistByPhone(String user) {
