@@ -81,22 +81,7 @@ public class MainActivity extends AppCompatActivity {
         tvSearch.setText("Search  ");
 
         setList();
-  /*
-        if (checkPlayServices()) {
-            gcm = GoogleCloudMessaging.getInstance(this);
-            regId = getRegistrationId(getApplicationContext());
 
-            if (regId.isEmpty()) {
-              //  Log.i(TAG, "Not registered with GCM.");
-
-                // Register GCM id in the background
-                    new GcmAsyncRegister().execute();
-            //    new GcmRegistrationAsyncTask(this).execute();
-            }
-        } else {
-            //Log.i(TAG, "No valid Google Play Services APK found.");
-        }
-*/
     }
 
 
