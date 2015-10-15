@@ -42,7 +42,13 @@ public class tab extends AppCompatActivity {
     private void refresh(){
 
         transaction = getSupportFragmentManager().beginTransaction();
-        int from = fragment.getArguments().getInt("from");
+        int from = 0;
+        try{
+            from = fragment.getArguments().getInt("from");
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
         if(from == 1 || from == 2 ){
             cItem = from;
         }
