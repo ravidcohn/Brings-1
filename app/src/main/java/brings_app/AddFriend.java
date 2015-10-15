@@ -1,6 +1,8 @@
 package brings_app;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -26,8 +28,7 @@ public class AddFriend extends AppCompatActivity {
     private EditText input;
     private Button add;
     private String KEY;
-    private String name;
-
+    private String email;
 
 
     @Override
@@ -39,7 +40,17 @@ public class AddFriend extends AppCompatActivity {
         add = (Button)findViewById(R.id.bt_addFriend);
         Bundle b = getIntent().getExtras();
         final Context context = this;
+        email = "";
+        final Intent friendList = new Intent(this, FriendSelctor.class);
 
+        input.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(friendList,0);
+            }
+
+        });
 
         KEY = b.getString("KEY");
         add.setOnClickListener(new View.OnClickListener() {
@@ -48,7 +59,7 @@ public class AddFriend extends AppCompatActivity {
             public void onClick(View v) {
                 boolean ok = saveData();
                 if (ok) {
-                    new SendMessage_AsyncTask(context).execute(Constants.User_Name,Constants.New_Event+"|"+ KEY,name);
+                    new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.New_Event + "|" + KEY, email);
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "only description can by empty..", Toast.LENGTH_SHORT).show();
@@ -58,13 +69,22 @@ public class AddFriend extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Activity.RESULT_OK){
+            Bundle b = data.getExtras();
+            email = b.getString("email");
+            input.setText(b.getString("name"));
+        }
+    }
+
     private boolean saveData(){
         boolean ok = false;
-        if(input.getText().length() > 0) {
-            name = input.getText().toString();
-            ArrayList<String>[] list = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID","Friend_ID"},new String[]{KEY,name},null);
-            if(sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID","Friend_ID"},new String[]{KEY,name},null)[0].isEmpty()){
-                sqlHelper.insert(Constants.Table_Events_Friends, new String[]{KEY, name,Constants.No});
+        if(email.length() > 0) {
+            ArrayList<String>[] list = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID","Friend_ID"},new String[]{KEY,email},null);
+            if(sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID","Friend_ID"},new String[]{KEY,email},null)[0].isEmpty()){
+                sqlHelper.insert(Constants.Table_Events_Friends, new String[]{KEY, email,Constants.No});
                 ok = true;
             }
         }

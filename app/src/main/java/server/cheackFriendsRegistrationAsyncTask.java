@@ -36,7 +36,7 @@ public class cheackFriendsRegistrationAsyncTask extends AsyncTask<ArrayList<Stri
                 old_regId = params[1].get(1);
             }
             this.phones = params[0];
-            return myApiService.checkfriendsRegistration(new_regId,old_regId,Constants.Password, phones, Constants.User_Name).execute();
+            return myApiService.checkfriendsRegistration(new_regId, old_regId, Constants.Password, phones, Constants.User_Name).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,7 +48,7 @@ public class cheackFriendsRegistrationAsyncTask extends AsyncTask<ArrayList<Stri
     protected void onPostExecute(RegistrationRecordCollection result) {
         if (result != null) {
             for (int i = 0; i < result.size(); i++) {
-                sqlHelper.update("Friends",new String[]{"email","regester"},new String[]{result.getItems().get(i).getMail(),"YES"},new String[]{"Phone"},new String[]{phones.get(i)});
+                sqlHelper.update("Friends",new String[]{"email","regester"},new String[]{result.getItems().get(i).getMail(),Constants.Yes},new String[]{"Phone"},new String[]{phones.get(i)});
             }
         }
     }
