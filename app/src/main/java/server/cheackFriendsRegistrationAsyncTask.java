@@ -30,8 +30,8 @@ public class cheackFriendsRegistrationAsyncTask extends AsyncTask<ArrayList<Stri
             myApiService = CloudEndpointBuilderHelper.getEndpoints();
         }
         try {
-            String new_regId = "";
-            String old_regId = "";
+            String new_regId = "!";
+            String old_regId = "!";
             if(params[1] != null){
                 new_regId = params[1].get(0);
                 old_regId = params[1].get(1);

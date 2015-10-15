@@ -104,7 +104,7 @@ public class RegistrationEndpoint {
         if (!checkIfUserExist(user, pass)) {
             return null;
         }
-        if (!new_reg_id.equals("")) {
+        if (!new_reg_id.equals("!")) {
             try {
                 MySQL_Util.update("UsersDevices", new String[]{"reg_id"}, new String[]{new_reg_id}, new String[]{"reg_id"}, new String[]{old_reg_id});
             } catch (Exception e) {
