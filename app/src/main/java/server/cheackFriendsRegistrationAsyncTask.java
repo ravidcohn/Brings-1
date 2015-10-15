@@ -29,13 +29,15 @@ public class cheackFriendsRegistrationAsyncTask extends AsyncTask<ArrayList<Stri
             myApiService = CloudEndpointBuilderHelper.getEndpoints();
         }
         try {
-            String new_regId = null;
-            String old_regId = null;
+            String new_regId = "";
+            String old_regId = "";
             if(params[1] != null){
                 new_regId = params[1].get(0);
                 old_regId = params[1].get(1);
             }
             this.phones = params[0];
+            String email = Constants.User_Name;
+            String pass = Constants.Password;
             return myApiService.checkfriendsRegistration(new_regId, old_regId, Constants.Password, phones, Constants.User_Name).execute();
         } catch (Exception e) {
             e.printStackTrace();

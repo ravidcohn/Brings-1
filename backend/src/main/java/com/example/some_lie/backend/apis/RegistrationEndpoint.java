@@ -111,7 +111,7 @@ public class RegistrationEndpoint {
         if(!checkIfUserExist(user,pass)){
             return null;
         }
-        if(new_reg_id != null){
+        if(!new_reg_id.equals("")){
             try {
                 MySQL_Util.update("UsersDevices",new String[]{"reg_id"},new String[]{new_reg_id},new String[]{"reg_id"},new String[]{old_reg_id});
             } catch (Exception e) {
@@ -163,11 +163,11 @@ public class RegistrationEndpoint {
     }
 
     private boolean checkIfUserExist(String user, String pass) {
-        boolean isUserExist = true;
+        boolean isUserExist = false;
         try {
             ResultSet rs = MySQL_Util.select(null,"Users",new String[]{"email","password"},new String[]{user,pass},new int[]{1});
-            if (!rs.next()) {
-                isUserExist = false;
+            if (rs.next()) {
+                isUserExist = true;
             }
             rs.close();
         } catch (Exception e) {
