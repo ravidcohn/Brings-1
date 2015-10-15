@@ -44,7 +44,7 @@ public class GcmIntentService extends IntentService{
                 }
                 switch (action){
                     case Constants.New_Event: {
-                        EventHelper.get_Event(this, action, message);
+                        new Event_AsyncTask_get().execute(message);//EventHelper.get_Event(this, action, message);
                         break;
                     }
                     default: {

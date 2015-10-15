@@ -14,7 +14,7 @@ public class EventHelper implements ServerAsyncResponse{
     private static String Action;
     public static void get_Event(Context context,String action,String message){
         Action = action;
-        new Event_AsyncTask_get((ServerAsyncResponse) context,context).execute(message);
+        new Event_AsyncTask_get((ServerAsyncResponse) context).execute(message);
     }
 
     @Override
