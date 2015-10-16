@@ -8,7 +8,7 @@ import com.example.some_lie.backend.brings.model.EventFriendCollection;
 /**
  * Created by Ravid on 11/10/2015.
  */
-public class EventFriend_AsyncTask_getFriend_by_event  extends AsyncTask<String, Void, EventFriendCollection> {
+public class EventFriend_AsyncTask_getFriend_by_event extends AsyncTask<String, Void, EventFriendCollection> {
     private static Brings myApiService = null;
     private ServerAsyncResponse delegate;
 
@@ -24,13 +24,10 @@ public class EventFriend_AsyncTask_getFriend_by_event  extends AsyncTask<String,
         }
         try {
            return myApiService.eventFriendGetEvents(params[0]).execute();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return null;
-
     }
 
     @Override

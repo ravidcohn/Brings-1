@@ -266,7 +266,11 @@ public class RegistrationEndpoint {
                 rs.close();
                 email = user;
             } else {
-                rs = MySQL_Util.select(null, "Users", new String[]{"phone", "password"}, new String[]{user, pass}, new int[]{1});
+                String phone = user.replaceAll("-","").replaceAll(" ","");
+                if(phone.charAt(0) == '0'){
+                    phone = "+972"+phone.substring(1);
+                }
+                rs = MySQL_Util.select(null, "Users", new String[]{"phone", "password"}, new String[]{phone, pass}, new int[]{1});
                 if (rs.next()) {
                     email = rs.getString(1);
                     record = new RegistrationRecord();
