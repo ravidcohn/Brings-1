@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 String key = users_names.get(pos) + " - " + IDS.get(pos);
                                 ArrayList<String>[] attendingArray = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{"Event_ID"}, new String[]{key}, null);
-                                sqlHelper.delete(Constants.Table_Events, new String[]{"ID"}, new String[]{key}, new int[]{1});
+                                sqlHelper.delete(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{key}, new int[]{1});
                                 sqlHelper.delete(Constants.Table_Events_Friends, new String[]{"Event_ID"}, new String[]{key}, null);
                                 new Event_AsyncTask_delete(context).execute(key);
                                 new EventFriend_AsyncTask_delete_by_event(context).execute(key);
@@ -334,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
             ImageView iv = (ImageView) convertView.findViewById(R.id.ivPic);
             TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
             TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
-            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events, new String[]{"ID"}, new String[]{users_names.get(position) + " - " + IDS.get(position)}, new int[]{1});
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{users_names.get(position) + " - " + IDS.get(position)}, new int[]{1});
             tvName.setText(dbResult[1].get(0));
             tvDate.setText(dbResult[3].get(0));
             iv.setImageBitmap(bitmapHelper.decodeSampledBitmapFromFile(dbResult[6].get(0), 100, 100));
