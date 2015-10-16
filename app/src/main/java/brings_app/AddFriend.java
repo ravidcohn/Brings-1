@@ -89,7 +89,7 @@ public class AddFriend extends AppCompatActivity {
             ArrayList<String>[] list = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID","Friend_ID"},new String[]{KEY,email},null);
             if(sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID","Friend_ID"},new String[]{KEY,email},null)[0].isEmpty()){
                 sqlHelper.insert(Constants.Table_Events_Friends, new String[]{KEY, email,Constants.No});
-                new EventFriend_AsyncTask_insert(this).execute(KEY, email, Constants.Yes);
+                new EventFriend_AsyncTask_insert(this).execute(KEY, email, Constants.No);
                 ok = true;
             }
         }
