@@ -64,14 +64,15 @@ public class GcmIntentService extends IntentService{
                         break;
                     }
                     case Constants.Delete_Event:{
-                        sqlHelper.delete(Constants.Table_Events,new String[]{"id"},new String[]{key},new int[]{1});
+                        sqlHelper.delete(Constants.Table_Events, new String[]{"id"}, new String[]{key}, new int[]{1});
                         sqlHelper.delete(Constants.Table_Events_Friends,new String[]{"Event_ID"},new String[]{key},null);
                         break;
                     }
                     case Constants.Update_Event:{
                         String[] event = getEvent(key);
-                        sqlHelper.update(Constants.Table_Events, Constants.Table_Events_Fields, new String[]{event[1], event[2],event[3], event[4],event[5], event[6],event[7]}
-                                , new String[]{"id"}, new String[]{event[0]});
+                        sqlHelper.update(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[1],Constants.Table_Events_Fields[2],Constants.Table_Events_Fields[3],Constants.Table_Events_Fields[4],
+                                Constants.Table_Events_Fields[5],Constants.Table_Events_Fields[6],Constants.Table_Events_Fields[7]},
+                                new String[]{event[1], event[2],event[3], event[4],event[5], event[6],event[7]}, new String[]{"id"}, new String[]{event[0]});
                         sqlHelper.delete(Constants.Table_Events_Friends, new String[]{"Event_ID"}, new String[]{key}, null);
                         break;
                     }
