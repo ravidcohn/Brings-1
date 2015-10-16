@@ -35,6 +35,6 @@ public class EventFriend_AsyncTask_getFriend_by_event  extends AsyncTask<String,
 
     @Override
     protected void onPostExecute(EventFriendCollection result) {
-        delegate.EventFriendCollectionProcessFinish(result);
+        //delegate.EventFriendCollectionProcessFinish(result);
     }
 }

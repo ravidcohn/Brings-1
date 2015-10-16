@@ -36,7 +36,7 @@ public class GcmIntentService extends IntentService{
     @Override
     protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
-        String message = "";
+        String key = "";
         String action = "";
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         // The getMessageType() intent parameter must be the intent you received
@@ -49,18 +49,29 @@ public class GcmIntentService extends IntentService{
                 Logger.getLogger("GCM_RECEIVED").log(Level.INFO, extras.toString());
                 if(extras.getString("message").split("\\|").length>1) {
                     action = extras.getString("message").split("\\|")[0].split(": ")[1];
-                    message = extras.getString("message").split("\\|")[1];
+                    key = extras.getString("message").split("\\|")[1];
                 }
                 switch (action){
                     case Constants.New_Event: {
-                        String[] event = getEvent(message);
-                        ArrayList<String[]> allAttending = getAllAttending(message);
+                        String[] event = getEvent(key);
+                        ArrayList<String[]> allAttending = getAllAttending(key);
                         if(sqlHelper.select(null,Constants.Table_Events,new String[]{"ID"},new String[]{event[0]},null)[0].isEmpty()){
                             sqlHelper.insert(Constants.Table_Events, event);
                             for(String[] attending:allAttending){
                                 sqlHelper.insert(Constants.Table_Events_Friends, attending);
                             }
                         }
+                        break;
+                    }
+                    case Constants.Delete_Event:{
+                        sqlHelper.delete(Constants.Table_Events,new String[]{"id"},new String[]{key},new int[]{1});
+                        sqlHelper.delete(Constants.Table_Events_Friends,new String[]{"Event_ID"},new String[]{key},null);
+                        break;
+                    }
+                    case Constants.Update_Event:{
+                        String[] event = getEvent(key);
+                        sqlHelper.update(Constants.Table_Events, Constants.Table_Events_Fields,event,new String[]{"id"},new String[]{event[0]});
+                        sqlHelper.delete(Constants.Table_Events_Friends, new String[]{"Event_ID"}, new String[]{key}, null);
                         break;
                     }
                     default: {

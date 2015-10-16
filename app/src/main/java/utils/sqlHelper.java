@@ -151,7 +151,9 @@ public final class sqlHelper {
     }
     public static void createALLTabels(){
             SQLiteDatabase db = getConnection();
-            db.execSQL("create table if not exists "+Constants.Table_Events+"(ID varchar NOT NULL primary key,Name varchar NOT NULL,Place VARCHAR NOT NULL,Start DATE not null,End Date not null,Description varchar,imagePath varchar,Update_Time VARCHAR NOT NULL)");
+            db.execSQL("create table if not exists "+Constants.Table_Events+"("+Constants.Table_Events_Fields[0]+" varchar NOT NULL primary key,"+Constants.Table_Events_Fields[1]+" varchar NOT NULL,"
+                    +Constants.Table_Events_Fields[2]+" VARCHAR NOT NULL,"+Constants.Table_Events_Fields[3]+" not null,"+Constants.Table_Events_Fields[4]+" not null,"
+                    +Constants.Table_Events_Fields[5]+" varchar,"+Constants.Table_Events_Fields[6]+" varchar,"+Constants.Table_Events_Fields[7]+" VARCHAR NOT NULL)");
             db.execSQL("create table if not exists "+Constants.Table_Tasks+"(ID varchar NOT NULL,TaskNumber varchar NOT NULL,task VARCHAR NOT NULL,description NOT NULL,how NOT NULL)");
             db.execSQL("create table if not exists "+Constants.Table_Events_Friends+"(Event_ID varchar NOT NULL,Friend_ID varchar NOT NULL,Attending NOT NULL)");
             db.execSQL("create table if not exists "+Constants.Table_Friends+"(Name varchar NOT NULL,Phone varchar NOT NULL,email varchar,regester varchar NOT NULL )");
