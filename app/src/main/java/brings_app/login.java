@@ -139,14 +139,16 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
 
     @Override
     public void processFinish(String output) {
-        String mail = output;
-        String password = etPass.getText().toString();
-        SharedPreferences.Editor editor = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putString("USER", "R-USER");
-        editor.putString("Name", mail);
-        editor.putString("Pass", password);
-        editor.commit();
-        login();
+        if(output.contains("@")) {
+            String mail = output;
+            String password = etPass.getText().toString();
+            SharedPreferences.Editor editor = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE).edit();
+            editor.putString("USER", "R-USER");
+            editor.putString("Name", mail);
+            editor.putString("Pass", password);
+            editor.commit();
+            login();
+        }
     }
 
     @Override
