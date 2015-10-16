@@ -135,7 +135,17 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
             gu.add(gcmUpdate);
             gu.add(oldGCM);
         }
-        new cheackFriendsRegistrationAsyncTask(this).execute(ph,gu);
+        int size = ph.size()/100 + 1;
+        ArrayList<String>[] arrPh = new ArrayList[size];
+        int count = 0;
+        for (int i = 0; i < size && count < ph.size(); i++) {
+            arrPh[i] = new ArrayList<>();
+            for (int j = 0; j < 100 && count < ph.size();j++ ,count++){
+                arrPh[i].add(ph.get(count));
+            }
+            new cheackFriendsRegistrationAsyncTask(this).execute(arrPh[i],gu);
+        }
+
     }
 
     @Override
