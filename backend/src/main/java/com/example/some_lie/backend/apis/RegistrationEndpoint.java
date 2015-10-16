@@ -261,11 +261,13 @@ public class RegistrationEndpoint {
         RegistrationRecord record = null;
         try {
             String email = "";
+            String userName = "";
             ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"email", "password"}, new String[]{user, pass}, new int[]{1});
             if (rs.next()) {
                 record = new RegistrationRecord();
                 rs.close();
                 email = user;
+                userName = rs.getString(2);
             } else {
                 String phone = user.replaceAll("-","").replaceAll(" ","");
                 if(phone.charAt(0) == '0'){
@@ -274,12 +276,14 @@ public class RegistrationEndpoint {
                 rs = MySQL_Util.select(null, "Users", new String[]{"phone", "password"}, new String[]{phone, pass}, new int[]{1});
                 if (rs.next()) {
                     email = rs.getString(1);
+                    userName = rs.getString(2);
                     record = new RegistrationRecord();
                 }
             }
             rs.close();
             if (record != null) {
                 record.setMail(email);
+                record.setName(userName);
                 rs = MySQL_Util.select(new String[]{"reg_id"}, "UsersDevices", new String[]{"email"}, new String[]{email}, new int[]{1});
                 boolean done = false;
                 while (rs.next() && !done) {
