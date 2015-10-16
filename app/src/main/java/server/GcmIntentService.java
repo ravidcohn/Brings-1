@@ -70,7 +70,8 @@ public class GcmIntentService extends IntentService{
                     }
                     case Constants.Update_Event:{
                         String[] event = getEvent(key);
-                        sqlHelper.update(Constants.Table_Events, Constants.Table_Events_Fields,event,new String[]{"id"},new String[]{event[0]});
+                        sqlHelper.update(Constants.Table_Events, Constants.Table_Events_Fields, new String[]{event[1], event[2],event[3], event[4],event[5], event[6],event[7]}
+                                , new String[]{"id"}, new String[]{event[0]});
                         sqlHelper.delete(Constants.Table_Events_Friends, new String[]{"Event_ID"}, new String[]{key}, null);
                         break;
                     }
