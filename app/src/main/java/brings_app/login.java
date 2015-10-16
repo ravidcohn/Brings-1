@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.model.Event;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -148,6 +149,9 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
             editor.putString("Pass", password);
             editor.commit();
             login();
+        }
+        else{
+            Toast.makeText(this,"User is not exist.. please register!",Toast.LENGTH_LONG).show();
         }
     }
 
