@@ -52,7 +52,7 @@ public class LoginAsyncTask extends AsyncTask<String, Void, RegistrationRecord> 
         if(result != null) {
             message = result.getMail();
         }
-        delegate.processFinish(message);
+        delegate.processFinish(message, result.getName());
     }
 }
 

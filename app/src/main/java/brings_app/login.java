@@ -135,18 +135,29 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
             gu.add(gcmUpdate);
             gu.add(oldGCM);
         }
-        new cheackFriendsRegistrationAsyncTask(this).execute(ph,gu);
+        int size = ph.size()/100 + 1;
+        ArrayList<String>[] arrPh = new ArrayList[size];
+        int count = 0;
+        for (int i = 0; i < size && count < ph.size(); i++) {
+            arrPh[i] = new ArrayList<>();
+            for (int j = 0; j < 100 && count < ph.size();j++ ,count++){
+                arrPh[i].add(ph.get(count));
+            }
+            new cheackFriendsRegistrationAsyncTask(this).execute(arrPh[i],gu);
+        }
+
     }
 
     @Override
-    public void processFinish(String output) {
-        if(output.contains("@")) {
-            String mail = output;
+    public void processFinish(String... output) {
+        if(output[0].contains("@")) {
+            String mail = output[0];
             String password = etPass.getText().toString();
             SharedPreferences.Editor editor = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE).edit();
             editor.putString("USER", "R-USER");
             editor.putString("Name", mail);
             editor.putString("Pass", password);
+            editor.putString("nickName",output[1]);
             editor.commit();
             login();
         }

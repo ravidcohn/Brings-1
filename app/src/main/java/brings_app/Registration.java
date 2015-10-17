@@ -51,8 +51,8 @@ public class Registration extends AppCompatActivity  implements ServerAsyncRespo
 
     }
 
-    public void processFinish(String output){
-        if(output.equals("O.K")) {
+    public void processFinish(String... output){
+        if(output[0].equals("O.K")) {
             SharedPreferences.Editor editor = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE).edit();
             editor.putString("USER", "R-USER");
             editor.putString("Name", et_rg_mail_ui.getText().toString());
@@ -64,7 +64,7 @@ public class Registration extends AppCompatActivity  implements ServerAsyncRespo
             finish();
         }
         else{
-            Toast.makeText(getApplicationContext(),output,Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),output[0],Toast.LENGTH_LONG).show();
         }
     }
 
