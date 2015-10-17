@@ -58,5 +58,10 @@
     <string name="tv_login_name">Email / Phone</string>
 
 
+    <string name="hint_google_map">Please enter your event location</string>
+    <string name="b_google_map_save_location">Save Location</string>
+    <string name="b_google_map_city">City</string>
+    <string name="b_google_map_burnaby">Burnaby</string>
+    <string name="b_google_map_surrey">Surrey</string>
 
 </resources>
