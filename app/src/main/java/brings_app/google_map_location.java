@@ -90,7 +90,7 @@ public class google_map_location extends AppCompatActivity implements OnItemClic
                     location_str = str;
                     CameraUpdate update = CameraUpdateFactory.newLatLngZoom(LOCATION_BURNABY, 16);
                     MarkerOptions place = new MarkerOptions().position(LOCATION_BURNABY).title("Event name!").draggable(true);
-                    ;
+                    map.clear();
                     map.addMarker(place);
                     map.animateCamera(update);
                 }
@@ -167,6 +167,7 @@ public class google_map_location extends AppCompatActivity implements OnItemClic
                 location_str = str;
                 CameraUpdate update = CameraUpdateFactory.newLatLngZoom(LOCATION_BURNABY, 16);
                 MarkerOptions place = new MarkerOptions().position(LOCATION_BURNABY).title("Event name!").draggable(true);
+                map.clear();
                 map.addMarker(place);
                 map.animateCamera(update);
             }
