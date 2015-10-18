@@ -59,9 +59,11 @@ public final class Constants {
     public final static String Table_Tasks = "Tasks";
     public final static String[] Table_Tasks_Fields = new String[]{"Event_ID","TaskNumber","Task_Name", "Description","Who"};
     public final static String Table_Events_Friends = "Events_Friends";
+    public final static String[] Table_Events_Friends_Fields = new String[]{"Event_ID","Friend_ID","Attending"};
     public final static String Table_Friends = "Friends";
     public final static String Yes = "Yes";
     public final static String No = "No";
+    public final static String Maybe = "Maybe";
 
 
 

@@ -95,7 +95,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
 
             }
 
-            //getFriends(regId,gcmUpdate);
+            getFriends(regId,gcmUpdate);
             //TODO get updates from server
             Intent mainActivity = new Intent(this, MainActivity.class);
             startActivity(mainActivity);

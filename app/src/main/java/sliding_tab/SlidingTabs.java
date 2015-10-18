@@ -20,8 +20,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -34,6 +32,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -43,6 +42,7 @@ import brings_app.AddFriend;
 import brings_app.R;
 import brings_app.Task;
 import brings_app.newTask;
+import server.EventFriend_AsyncTask_delete;
 import utils.Constants;
 import utils.sqlHelper;
 
@@ -269,8 +269,9 @@ public class SlidingTabs extends Fragment {
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    String task_key = members_keys.get(pos);
-                                    sqlHelper.delete(Constants.Table_Events_Friends, new String[]{"Event_ID", "Friend_ID"}, new String[]{KEY, task_key}, new int[]{1});
+                                    String Friend_ID = members_keys.get(pos);
+                                    sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY, Friend_ID}, new int[]{1});
+                                    new EventFriend_AsyncTask_delete(context).execute(KEY, Friend_ID);
                                     setAttendinglist(view);
                                 }
                             })
@@ -369,9 +370,31 @@ public class SlidingTabs extends Fragment {
 
         private void sqlAttending() {
             final Context context = getActivity().getApplicationContext();
-            ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID"},new String[]{KEY},null);
+            ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Events_Friends,
+                    new String[]{Constants.Table_Events_Friends_Fields[0]},new String[]{KEY},null);
             for (String val : dbResult[1]){
                 members_keys.add(val);
+            }
+        }
+
+        public void onRadioButtonClicked(View view) {
+            // Is the button now checked?
+            boolean checked = ((RadioButton) view).isChecked();
+
+            // Check which radio button was clicked
+            switch(view.getId()) {
+                case R.id.rb_ea_list_yes:
+                    if (checked)
+                        // Pirates are the best
+                        break;
+                case R.id.rb_ea_list_maybe:
+                    if (checked)
+                        // Ninjas rule
+                        break;
+                case R.id.rb_ea_list_no:
+                    if (checked)
+                        // Ninjas rule
+                        break;
             }
         }
 
@@ -461,7 +484,7 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
             }
         });
 
-        ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{"Event_ID"},new String[]{KEY},null);
+        ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0]},new String[]{KEY},null);
         name.setText(dbResult[1].get(position));
 
         return convertView;
