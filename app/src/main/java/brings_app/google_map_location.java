@@ -90,7 +90,7 @@ public class google_map_location extends AppCompatActivity implements OnItemClic
                     location_str = str;
                     CameraUpdate update = CameraUpdateFactory.newLatLngZoom(LOCATION_BURNABY, 16);
                     MarkerOptions place = new MarkerOptions().position(LOCATION_BURNABY).title("Event name!").draggable(true);
-                    ;
+                    map.clear();
                     map.addMarker(place);
                     map.animateCamera(update);
                 }
@@ -124,7 +124,7 @@ public class google_map_location extends AppCompatActivity implements OnItemClic
     public void onClick_saveLocation(View v){
         Intent _result = new Intent();
         Bundle b = new Bundle();
-        b.putString("location",LOCATION_BURNABY.latitude+"-"+LOCATION_BURNABY.longitude+"$&$"+location_str);
+        b.putString("location",LOCATION_BURNABY.latitude+"-"+LOCATION_BURNABY.longitude+"!"+location_str);
         _result.putExtras(b);
         setResult(Activity.RESULT_OK, _result);
         finish();
@@ -167,6 +167,7 @@ public class google_map_location extends AppCompatActivity implements OnItemClic
                 location_str = str;
                 CameraUpdate update = CameraUpdateFactory.newLatLngZoom(LOCATION_BURNABY, 16);
                 MarkerOptions place = new MarkerOptions().position(LOCATION_BURNABY).title("Event name!").draggable(true);
+                map.clear();
                 map.addMarker(place);
                 map.animateCamera(update);
             }

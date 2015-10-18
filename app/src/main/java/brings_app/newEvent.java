@@ -270,9 +270,13 @@ public class newEvent extends AppCompatActivity {
             else if(requestCode == 26){
                 Bundle b = data.getExtras();
                 location = b.getString("location");
-                StringTokenizer tok = new StringTokenizer("$&$");
-                tok.nextToken();
-                String locationTag = tok.nextToken();
+                String locationTag = "";
+                for (int i = 0; i < location.length();i++){
+                    if(location.charAt(i)=='!'){
+                        locationTag = location.substring(i+1);
+                        i = location.length();
+                    }
+                }
                 tv_ne_place_ui.setText(locationTag);
 
             }
