@@ -103,6 +103,36 @@ public class Event_Friend_Endpoint {
     }
 
     /**
+     *
+     * @param Event_ID
+     * @param Friend_ID
+     */
+    @ApiMethod(name = "EventFriendDelete", path="EventFriendDelete")
+    public void Delete(@Named("Event_ID")String Event_ID, @Named("Friend_ID")String Friend_ID) {
+        try {
+            MySQL_Util.delete("Events_Friends",new String[]{"Event_ID", "Friend_ID"}, new String[]{Event_ID, Friend_ID},null);
+        }catch(Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    /**
      * This inserts a new <code>Event_Friend</code> object.
      *
      * @param Friend_ID The object to be added.
@@ -111,7 +141,7 @@ public class Event_Friend_Endpoint {
     @ApiMethod(name = "EventFriendInsert", path = "EventFriendInsert")
     public void Insert(@Named("AEvent_ID")String Event_ID,@Named("BFriend_ID")String Friend_ID,@Named("CAttending")String attending) {
         try {
-            MySQL_Util.insert("Events_Friends",new String[]{Event_ID,Friend_ID,attending});
+            MySQL_Util.insert("Events_Friends", new String[]{Event_ID, Friend_ID, attending});
 
         }catch(Exception e){
             StringWriter sw = new StringWriter();
@@ -206,5 +236,34 @@ public class Event_Friend_Endpoint {
             }
         }
         return eventFriendArrayList;
+    }
+
+    @ApiMethod(name = "EventFriendUpdate", path="EventFriendUpdate")
+    public void Update(@Named("AEvent_ID")String Event_ID,@Named("BFriend_ID")String Friend_ID,@Named("CAttending")String attending) {
+        ArrayList<Event_Friend> eventFriendArrayList = new ArrayList<>();
+        try {
+            MySQL_Util.update("Events_Friends", new String[]{"Attending"},
+                    new String[]{attending},
+                    new String[]{"Event_ID","Friend_ID"}, new String[]{Event_ID,Friend_ID});
+
+        }catch(Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 }
