@@ -454,13 +454,14 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
 
         TextView name = (TextView) convertView.findViewById(R.id.tv_ea_list_item);
         RadioGroup radioGroup = (RadioGroup) convertView.findViewById(R.id.radioGroup);
-
+        //radioGroup.setChecked(position == selectedPosition);
+        radioGroup.setTag(position);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                int i = 0;
+                int i = position;
+                i++;
             }
         });
-
         ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0]},new String[]{KEY},null);
         name.setText(dbResult[1].get(position));
 
