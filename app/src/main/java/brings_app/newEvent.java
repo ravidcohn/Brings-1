@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.StringTokenizer;
 
 import server.EventFriend_AsyncTask_insert;
 import server.Event_AsyncTask_insert;
@@ -136,7 +135,7 @@ public class newEvent extends AppCompatActivity {
             Date time = Calendar.getInstance().getTime();
             Update_Time = time.toString();
             sqlHelper.insert(Constants.Table_Events, new String[]{key, name, place, start, end, description, imagePath, Update_Time});
-            sqlHelper.insert(Constants.Table_Events_Friends, new String[]{key, Constants.User_nickName, Constants.Yes});
+            sqlHelper.insert(Constants.Table_Events_Friends, new String[]{key, Constants.User_Name, Constants.Yes});
         }
         return ok;
     }

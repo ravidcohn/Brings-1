@@ -41,6 +41,7 @@ import brings_app.AddFriend;
 import brings_app.R;
 import brings_app.Task;
 import brings_app.newTask;
+import server.EventFriend_AsyncTask_Update;
 import server.EventFriend_AsyncTask_delete;
 import utils.Constants;
 import utils.sqlHelper;
@@ -454,10 +455,13 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
 
         TextView name = (TextView) convertView.findViewById(R.id.tv_ea_list_item);
         RadioGroup radioGroup = (RadioGroup) convertView.findViewById(R.id.radioGroup);
-        //radioGroup.setChecked(position == selectedPosition);
-        radioGroup.setTag(position);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
+                if (dbResult[1].get(position).equals(Constants.User_Name)) {
+                    new EventFriend_AsyncTask_Update(context).execute(KEY,Constants.User_Name,"dd");
+                    int i=5;
+                }
                 int i = position;
                 i++;
             }
