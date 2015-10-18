@@ -32,7 +32,6 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -361,7 +360,7 @@ public class SlidingTabs extends Fragment {
 
         private void sqlTodo() {
             final Context context = getActivity().getApplicationContext();
-            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Tasks, new String[]{"ID"}, new String[]{KEY}, null);
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
             for (String val: dbResult[1]){
                 Tasks_keys.add(Integer.parseInt(val));
             }
@@ -370,33 +369,12 @@ public class SlidingTabs extends Fragment {
 
         private void sqlAttending() {
             final Context context = getActivity().getApplicationContext();
-            ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Events_Friends,
-                    new String[]{Constants.Table_Events_Friends_Fields[0]},new String[]{KEY},null);
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends,
+                    new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
             for (String val : dbResult[1]){
                 members_keys.add(val);
             }
         }
-
-        public void onRadioButtonClicked(View view) {
-            // Is the button now checked?
-            boolean checked = ((RadioButton) view).isChecked();
-            // Check which radio button was clicked
-            switch(view.getId()) {
-                case R.id.rb_ea_list_yes:
-                    if (checked)
-                        // Pirates are the best
-                        break;
-                case R.id.rb_ea_list_maybe:
-                    if (checked)
-                        // Ninjas rule
-                        break;
-                case R.id.rb_ea_list_no:
-                    if (checked)
-                        // Ninjas rule
-                        break;
-            }
-        }
-
     }
 }
 
@@ -479,7 +457,7 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-
+                int i = 0;
             }
         });
 
