@@ -64,6 +64,12 @@ public class AddFriend extends AppCompatActivity {
                 boolean ok = saveData();
                 if (ok) {
                     new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.New_Event + "|" + KEY, email);
+                    ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
+                    for(String to:dbResult[1]) {
+                        if(!to.equals(email)&&!to.equals(Constants.User_Name)) {
+                            new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.New_Attending + "|" + KEY + "^" + email, to);
+                        }
+                    }
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "only description can by empty..", Toast.LENGTH_SHORT).show();
@@ -86,12 +92,12 @@ public class AddFriend extends AppCompatActivity {
     private boolean saveData(){
         boolean ok = false;
         if(email.length() > 0) {
-            ArrayList<String>[] list = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0]
-                    ,Constants.Table_Events_Friends_Fields[1]},new String[]{KEY,email},null);
+            ArrayList<String>[] list = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]
+                    , Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, email}, null);
             if(sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0],
                     Constants.Table_Events_Friends_Fields[1]},new String[]{KEY,email},null)[0].isEmpty()){
-                sqlHelper.insert(Constants.Table_Events_Friends, new String[]{KEY, email,Constants.No});
-                new EventFriend_AsyncTask_insert(this).execute(KEY, email, Constants.No);
+                sqlHelper.insert(Constants.Table_Events_Friends, new String[]{KEY, email,Constants.UnCheck});
+                new EventFriend_AsyncTask_insert(this).execute(KEY, email, Constants.UnCheck);
                 ok = true;
             }
         }
