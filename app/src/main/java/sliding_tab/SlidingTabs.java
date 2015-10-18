@@ -380,7 +380,6 @@ public class SlidingTabs extends Fragment {
         public void onRadioButtonClicked(View view) {
             // Is the button now checked?
             boolean checked = ((RadioButton) view).isChecked();
-
             // Check which radio button was clicked
             switch(view.getId()) {
                 case R.id.rb_ea_list_yes:
@@ -470,7 +469,7 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
         this.KEY = KEY;
     }
 
-    public View getView(int position, View convertView, ViewGroup viewGroup) {
+    public View getView(final int position, View convertView, ViewGroup viewGroup) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.event_attending_list_item, null);
