@@ -27,8 +27,7 @@
             android:focusable="false"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:checked="false"
-            android:onClick="onRadioButtonClicked"/>
+            android:checked="false" />
 
         <RadioButton
             android:id="@+id/rb_ea_list_maybe"
@@ -36,8 +35,7 @@
             android:focusable="false"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:checked="false"
-            android:onClick="onRadioButtonClicked"/>
+            android:checked="false" />
 
         <RadioButton
             android:id="@+id/rb_ea_list_no"
@@ -45,7 +43,6 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:layout_weight="1"
-            android:checked="false"
-            android:onClick="onRadioButtonClicked"/>
+            android:checked="false" />
     </RadioGroup>
 </LinearLayout>
