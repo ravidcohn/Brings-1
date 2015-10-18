@@ -265,9 +265,9 @@ public class RegistrationEndpoint {
             ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"email", "password"}, new String[]{user, pass}, new int[]{1});
             if (rs.next()) {
                 record = new RegistrationRecord();
-                rs.close();
                 email = user;
                 userName = rs.getString(2);
+                rs.close();
             } else {
                 String phone = user.replaceAll("-","").replaceAll(" ","");
                 if(phone.charAt(0) == '0'){
