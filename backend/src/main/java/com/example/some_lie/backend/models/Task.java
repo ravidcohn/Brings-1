@@ -10,7 +10,7 @@ import com.googlecode.objectify.annotation.Id;
 public class Task {
     @Id
     private String Event_ID;
-    private String TaskNumber;
+    private String Task_ID_Number;
     private String Task_Name;
     private String Description;
     private String Who;
@@ -24,11 +24,11 @@ public class Task {
     }
 
     public String getTaskNumber() {
-        return TaskNumber;
+        return Task_ID_Number;
     }
 
     public void setTaskNumber(String taskNumber) {
-        TaskNumber = taskNumber;
+        Task_ID_Number = taskNumber;
     }
 
     public String getTask_Name() {
@@ -57,9 +57,9 @@ public class Task {
 
     public Task() {}
 
-    public Task(String event_ID, String taskNumber, String task_Name, String description, String who) {
+    public Task(String event_ID, String task_ID_Number, String task_Name, String description, String who) {
         Event_ID = event_ID;
-        TaskNumber = taskNumber;
+        Task_ID_Number = task_ID_Number;
         Task_Name = task_Name;
         Description = description;
         Who = who;
