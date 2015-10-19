@@ -57,6 +57,9 @@ public final class Constants {
     public final static String New_Attending = "New_Attending";
     public final static String Delete_Attending = "Delete_Attending";
     public final static String Update_Attending = "Update_Attending";
+    public final static String New_Task = "New_Task";
+    public final static String Delete_Task = "Delete_Task";
+    public final static String Update_Task = "Update_Task";
     public final static String Table_Events = "Events";
     public final static String[] Table_Events_Fields = new String[]{"ID","Name","Place","Start DATE","End Date","Description","imagePath","Update_Time"};
     public final static String Table_Tasks = "Tasks";

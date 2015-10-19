@@ -81,7 +81,7 @@ public class GcmIntentService extends IntentService{
                         String Friend_ID = key.split("\\^")[1];
                         String attend = "";
                         sqlHelper.insert(Constants.Table_Events_Friends, new String[]{Event_ID, Friend_ID, attend});
-                        ArrayList<String>[] dbUsers = sqlHelper.select(null,Constants.Table_Users,new String[]{Constants.Table_Users_Fields[0]},new String[]{Friend_ID},null);
+                        ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{Friend_ID}, null);
                         if(dbUsers[0].isEmpty()) {
                             try {
                                 String name = myApiService.userGet(Friend_ID).execute().getName();
@@ -105,6 +105,43 @@ public class GcmIntentService extends IntentService{
                         String attend = key.split("\\^")[2];
                         sqlHelper.update(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[2]}, new String[]{attend},
                                 new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]}, new String[]{Event_ID, Friend_ID});
+                        break;
+                    }
+                    case Constants.New_Task:{
+                        /*
+                        String Event_ID = key.split("\\^")[0];
+                        String Friend_ID = key.split("\\^")[1];
+                        String attend = "";
+                        sqlHelper.insert(Constants.Table_Events_Friends, new String[]{Event_ID, Friend_ID, attend});
+                        ArrayList<String>[] dbUsers = sqlHelper.select(null,Constants.Table_Users,new String[]{Constants.Table_Users_Fields[0]},new String[]{Friend_ID},null);
+                        if(dbUsers[0].isEmpty()) {
+                            try {
+                                String name = myApiService.userGet(Friend_ID).execute().getName();
+                                sqlHelper.insert(Constants.Table_Users,new String[]{Friend_ID,name});
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        */
+                        break;
+                    }
+                    case Constants.Delete_Task:{
+                        /*
+                        String Event_ID = key.split("\\^")[0];
+                        String Friend_ID = key.split("\\^")[1];
+                        sqlHelper.delete(Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0],Constants.Table_Events_Friends_Fields[0]},
+                                new String[]{Event_ID,Friend_ID},new int[]{1});
+                                */
+                        break;
+                    }
+                    case Constants.Update_Task:{
+                        /*
+                        String Event_ID = key.split("\\^")[0];
+                        String Friend_ID = key.split("\\^")[1];
+                        String attend = key.split("\\^")[2];
+                        sqlHelper.update(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[2]}, new String[]{attend},
+                                new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]}, new String[]{Event_ID, Friend_ID});
+                                */
                         break;
                     }
                     default: {
