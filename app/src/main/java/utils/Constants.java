@@ -54,21 +54,26 @@ public final class Constants {
     public final static String New_Event = "New_Event";
     public final static String Delete_Event = "Delete_Event";
     public final static String Update_Event = "Update_Event";
-    public final static String Update_Attending = "Update_Attending";
     public final static String New_Attending = "New_Attending";
+    public final static String Delete_Attending = "Delete_Attending";
+    public final static String Update_Attending = "Update_Attending";
+    public final static String New_Task = "New_Task";
+    public final static String Delete_Task = "Delete_Task";
+    public final static String Update_Task = "Update_Task";
     public final static String Table_Events = "Events";
     public final static String[] Table_Events_Fields = new String[]{"ID","Name","Place","Start DATE","End Date","Description","imagePath","Update_Time"};
     public final static String Table_Tasks = "Tasks";
-    public final static String[] Table_Tasks_Fields = new String[]{"Event_ID","TaskNumber","Task_Name", "Description","Who"};
+    public final static String[] Table_Tasks_Fields = new String[]{"Event_ID","Task_ID_Number","Task_Name","Description","Who"};
     public final static String Table_Events_Friends = "Events_Friends";
     public final static String[] Table_Events_Friends_Fields = new String[]{"Event_ID","Friend_ID","Attending"};
     public final static String Table_Friends = "Friends";
     public final static String[] Table_Friends_Fields = new String[]{"Name","Phone","email","regester"};
+    public final static String Table_Users = "Users";
+    public final static String[] Table_Users_Fields = new String[]{"Email","name"};
     public final static String Yes = "Yes";
     public final static String No = "No";
     public final static String Maybe = "Maybe";
     public final static String UnCheck = "UnCheck";
-
 
 
 }

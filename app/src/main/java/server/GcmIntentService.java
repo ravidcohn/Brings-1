@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.Event;
+import com.example.some_lie.backend.brings.model.Task;
 import com.example.some_lie.backend.brings.model.EventFriendCollection;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -65,7 +66,7 @@ public class GcmIntentService extends IntentService{
                     }
                     case Constants.Delete_Event:{
                         sqlHelper.delete(Constants.Table_Events, new String[]{"id"}, new String[]{key}, new int[]{1});
-                        sqlHelper.delete(Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0]},new String[]{key},null);
+                        sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key}, new int[]{1});
                         break;
                     }
                     case Constants.Update_Event:{
@@ -76,12 +77,63 @@ public class GcmIntentService extends IntentService{
                         sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key}, null);
                         break;
                     }
+                    case Constants.New_Attending:{
+                        String Event_ID = key.split("\\^")[0];
+                        String Friend_ID = key.split("\\^")[1];
+                        String attend = "";
+                        sqlHelper.insert(Constants.Table_Events_Friends, new String[]{Event_ID, Friend_ID, attend});
+                        ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{Friend_ID}, null);
+                        if(dbUsers[0].isEmpty()) {
+                            try {
+                                String name = myApiService.userGet(Friend_ID).execute().getName();
+                                sqlHelper.insert(Constants.Table_Users,new String[]{Friend_ID,name});
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        break;
+                    }
+                    case Constants.Delete_Attending:{
+                        String Event_ID = key.split("\\^")[0];
+                        String Friend_ID = key.split("\\^")[1];
+                        sqlHelper.delete(Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0],Constants.Table_Events_Friends_Fields[0]},
+                                new String[]{Event_ID,Friend_ID},new int[]{1});
+                        break;
+                    }
                     case Constants.Update_Attending:{
                         String Event_ID = key.split("\\^")[0];
                         String Friend_ID = key.split("\\^")[1];
                         String attend = key.split("\\^")[2];
                         sqlHelper.update(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[2]}, new String[]{attend},
                                 new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]}, new String[]{Event_ID, Friend_ID});
+                        break;
+                    }
+                    case Constants.New_Task:{
+                        String Event_ID = key.split("\\^")[0];
+                        String Task_ID = key.split("\\^")[1];
+                        String[] task = getTask(Event_ID, Task_ID);
+                        if(sqlHelper.select(null,Constants.Table_Tasks,new String[]{"Event_ID", "Task_ID_Number"},new String[]{task[0], task[1]},null)[0].isEmpty()) {
+                            sqlHelper.insert(Constants.Table_Tasks, task);
+                        }
+                        break;
+                    }
+                    case Constants.Delete_Task:{
+                        /*
+                        String Event_ID = key.split("\\^")[0];
+                        String Friend_ID = key.split("\\^")[1];
+                        sqlHelper.delete(Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0],Constants.Table_Events_Friends_Fields[0]},
+                                new String[]{Event_ID,Friend_ID},new int[]{1});
+                                */
+                        break;
+                    }
+                    case Constants.Update_Task:{
+                        /*
+                        String Event_ID = key.split("\\^")[0];
+                        String Friend_ID = key.split("\\^")[1];
+                        String attend = key.split("\\^")[2];
+                        sqlHelper.update(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[2]}, new String[]{attend},
+                                new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]}, new String[]{Event_ID, Friend_ID});
+                                */
                         break;
                     }
                     default: {
@@ -95,6 +147,7 @@ public class GcmIntentService extends IntentService{
     }
 
 
+
     protected void showToast(final String message) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -102,6 +155,22 @@ public class GcmIntentService extends IntentService{
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private String[] getTask(String event_id, String task_id) {
+        Task task;
+        String[] result = new String[5];
+        try {
+            task = myApiService.taskGet(event_id, task_id).execute();
+            result[0] = task.getEventID();
+            result[1] = task.getTaskNumber();
+            result[2] = task.getTaskName();
+            result[3] = task.getDescription();
+            result[4] = task.getWho();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     private String[] getEvent(String event_id){

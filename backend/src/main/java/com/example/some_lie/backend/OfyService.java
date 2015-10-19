@@ -3,6 +3,8 @@ package com.example.some_lie.backend;
 import com.example.some_lie.backend.models.Event;
 import com.example.some_lie.backend.models.Event_Friend;
 import com.example.some_lie.backend.models.RegistrationRecord;
+import com.example.some_lie.backend.models.Task;
+import com.example.some_lie.backend.models.User;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
@@ -17,7 +19,10 @@ public class OfyService {
         ObjectifyService.register(RegistrationRecord.class);
         ObjectifyService.register(Event.class);
         ObjectifyService.register(Event_Friend.class);
+        ObjectifyService.register(User.class);
+        ObjectifyService.register(Task.class);
     }
+
 
     public static Objectify ofy() {
         return ObjectifyService.ofy();

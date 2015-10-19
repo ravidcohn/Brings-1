@@ -1,5 +1,6 @@
 package brings_app;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import server.SendMessage_AsyncTask;
 import utils.Constants;
 import utils.sqlHelper;
 
@@ -25,6 +27,7 @@ public class newTask extends AppCompatActivity {
     private String imagePath = "";
     private String USERNAME = "user 1";//TODO
     private String KEY;
+    private int task_id;
 
 
     @Override
@@ -35,6 +38,7 @@ public class newTask extends AppCompatActivity {
         et_nt_description_ui = (EditText) findViewById(R.id.et_nt_description_ui);
         bt_nt_create_task_ui = (Button) findViewById(R.id.bt_nt_create_task_ui);
         Bundle b = getIntent().getExtras();
+        final Context context = this;
 
         //ID = b.getInt("ID");
         //USERNAME = b.getString("USERNAME");
@@ -45,6 +49,12 @@ public class newTask extends AppCompatActivity {
             public void onClick(View v) {
                 boolean ok = saveData();
                 if (ok) {
+                    ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
+                    for(String to:dbResult[1]) {
+                        if(!to.equals(Constants.User_Name)) {
+                            new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.New_Task + "|" + KEY + "^" + task_id, to);
+                        }
+                    }
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "only description can by empty..", Toast.LENGTH_SHORT).show();
@@ -58,7 +68,7 @@ public class newTask extends AppCompatActivity {
         boolean ok = false;
         if (et_nt_task_ui.getText().length() > 0) {
             ok = true;
-            int task_id = 0;
+            task_id = 0;
             ArrayList<Integer> allIDS = new ArrayList<>();
             ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
             for (String t_id : dbResult[0]) {
@@ -67,10 +77,10 @@ public class newTask extends AppCompatActivity {
             while (allIDS.contains(task_id)) {
                 task_id++;
             }
-            String task = et_nt_task_ui.getText().toString();
+            String task_name = et_nt_task_ui.getText().toString();
             String description = et_nt_description_ui.getText().toString();
             String name = "";
-            sqlHelper.insert(Constants.Table_Tasks, new String[]{KEY, task_id + "", task, description, name});
+            sqlHelper.insert(Constants.Table_Tasks, new String[]{KEY, task_id + "", task_name, description, name});
         }
         return ok;
     }

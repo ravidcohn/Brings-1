@@ -16,10 +16,14 @@
 
 package sliding_tab;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -263,16 +267,27 @@ public class SlidingTabs extends Fragment {
                     // TODO Auto-generated method stub
 
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-
+                    String name = members_keys.get(pos);
+                    ArrayList<String>[] dbUsers= sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{members_keys.get(pos)},new int[]{1});
+                    if(!dbUsers[0].isEmpty()){
+                        name = dbUsers[1].get(0);
+                    }
                     // set dialog message
                     alertDialogBuilder
-                            .setMessage("Delete " + members_keys.get(pos) + "?")
+                            .setMessage("Delete " + name + "?")
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     String Friend_ID = members_keys.get(pos);
-                                    sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY, Friend_ID}, new int[]{1});
+                                    sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, Friend_ID}, new int[]{1});
                                     new EventFriend_AsyncTask_delete(context).execute(KEY, Friend_ID);
+                                    ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
+                                    for(String to:dbResult[1]) {
+                                        if(!to.equals(KEY)&&!to.equals(Constants.User_Name) && !to.equals(Friend_ID)) {
+                                            new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Attending + "|" + KEY + "^" + Friend_ID, to);
+                                        }
+                                    }
+                                    new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + KEY, Friend_ID);
                                     setAttendinglist(view);
                                 }
                             })
@@ -449,6 +464,7 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
         this.KEY = KEY;
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -459,29 +475,25 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
-                if (dbResult[1].get(position).equals(Constants.User_Name)) {
-                    switch (radioGroup.getCheckedRadioButtonId()) {
-                        case R.id.rb_ea_list_yes: {
-                            Update_Attending(dbResult, Constants.Yes, position);
-                            break;
-                        }
-                        case R.id.rb_ea_list_maybe: {
-                            Update_Attending(dbResult, Constants.Maybe, position);
-                            break;
-                        }
-                        case R.id.rb_ea_list_no: {
-                            Update_Attending(dbResult, Constants.No, position);
-                            break;
-                        }
+                switch (radioGroup.getCheckedRadioButtonId()) {
+                    case R.id.rb_ea_list_yes: {
+                        Update_Attending(dbResult, Constants.Yes, position);
+                        break;
                     }
-                }else{
-                    //TODO
+                    case R.id.rb_ea_list_maybe: {
+                        Update_Attending(dbResult, Constants.Maybe, position);
+                        break;
+                    }
+                    case R.id.rb_ea_list_no: {
+                        Update_Attending(dbResult, Constants.No, position);
+                        break;
+                    }
                 }
             }
         });
         ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0]},new String[]{KEY},null);
-        name.setText(dbResult[1].get(position));
-        //name.setText(getName(dbResult[1].get(position)));
+        //name.setText(dbResult[1].get(position));
+        name.setText(getName(dbResult[1].get(position)));
         switch (dbResult[2].get(position)) {
             case Constants.Yes: {
                 radioGroup.check(R.id.rb_ea_list_yes);
@@ -499,18 +511,28 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
                 break;
             }
         }
+        if (!dbResult[1].get(position).equals(Constants.User_Name)) {
+            for(int i=0;i<radioGroup.getChildCount();i++) {
+                radioGroup.getChildAt(i).setEnabled(false);
+                radioGroup.getChildAt(i).setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+            }
+        }
 
         return convertView;
     }
 
     private String getName(String Friend_ID){
         ArrayList<String>[] dbFriends = sqlHelper.select(null,Constants.Table_Friends,new String[]{Constants.Table_Friends_Fields[2]},new String[]{Friend_ID},null);
+        ArrayList<String>[] dbUsers = sqlHelper.select(null,Constants.Table_Users,new String[]{Constants.Table_Users_Fields[0]},new String[]{Friend_ID},null);
         if(!dbFriends[0].isEmpty()){
             return dbFriends[0].get(0);
+        }else if(!dbUsers[0].isEmpty()){
+            return dbUsers[1].get(0);
+        }else if (Friend_ID.equals(Constants.User_Name)){
+            return Constants.User_nickName;
         }else{
-            return "nike name";
+            return Friend_ID;
         }
-
     }
 
     private void Update_Attending(ArrayList<String>[] dbResult, String attend, int pos){
