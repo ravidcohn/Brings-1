@@ -267,10 +267,14 @@ public class SlidingTabs extends Fragment {
                     // TODO Auto-generated method stub
 
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-
+                    String name = members_keys.get(pos);
+                    ArrayList<String>[] dbUsers= sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{members_keys.get(pos)},new int[]{1});
+                    if(!dbUsers[0].isEmpty()){
+                        name = dbUsers[1].get(0);
+                    }
                     // set dialog message
                     alertDialogBuilder
-                            .setMessage("Delete " + members_keys.get(pos) + "?")
+                            .setMessage("Delete " + name + "?")
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
