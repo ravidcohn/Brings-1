@@ -91,7 +91,6 @@ public class RegistrationEndpoint {
                 e.printStackTrace(new PrintWriter(sw));
                 LocalDateTime now = LocalDateTime.now();
                 try {
-
                     int year = now.getYear();
                     int month = now.getMonthOfYear();
                     int day = now.getDayOfMonth();
