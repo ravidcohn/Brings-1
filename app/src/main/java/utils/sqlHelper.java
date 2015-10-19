@@ -158,6 +158,8 @@ public final class sqlHelper {
                     +Constants.Table_Tasks_Fields[2]+ "VARCHAR NOT NULL,"+Constants.Table_Tasks_Fields[3]+","+Constants.Table_Tasks_Fields[4]+")");
             db.execSQL("create table if not exists "+Constants.Table_Events_Friends+"(Event_ID varchar NOT NULL,Friend_ID varchar NOT NULL,Attending NOT NULL)");
             db.execSQL("create table if not exists "+Constants.Table_Friends+"(Name varchar NOT NULL,Phone varchar NOT NULL,email varchar,regester varchar NOT NULL )");
+            db.execSQL("create table if not exists "+Constants.Table_Users+"("+Constants.Table_Users_Fields[0]+" varchar NOT NULL primary key,"+
+                            Constants.Table_Tasks_Fields[1]+" varchar NOT NULL)");
             db.close();
         }
 

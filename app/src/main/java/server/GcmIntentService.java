@@ -65,7 +65,7 @@ public class GcmIntentService extends IntentService{
                     }
                     case Constants.Delete_Event:{
                         sqlHelper.delete(Constants.Table_Events, new String[]{"id"}, new String[]{key}, new int[]{1});
-                        sqlHelper.delete(Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0]},new String[]{key},null);
+                        sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key}, new int[]{1});
                         break;
                     }
                     case Constants.Update_Event:{
@@ -74,6 +74,29 @@ public class GcmIntentService extends IntentService{
                                         Constants.Table_Events_Fields[5], Constants.Table_Events_Fields[6], Constants.Table_Events_Fields[7]},
                                 new String[]{event[1], event[2], event[3], event[4], event[5], event[6], event[7]}, new String[]{"id"}, new String[]{event[0]});
                         sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key}, null);
+                        break;
+                    }
+                    case Constants.New_Attending:{
+                        String Event_ID = key.split("\\^")[0];
+                        String Friend_ID = key.split("\\^")[1];
+                        String attend = "";
+                        sqlHelper.insert(Constants.Table_Events_Friends, new String[]{Event_ID, Friend_ID, attend});
+                        ArrayList<String>[] dbUsers = sqlHelper.select(null,Constants.Table_Users,new String[]{Constants.Table_Users_Fields[0]},new String[]{Friend_ID},null);
+                        if(dbUsers[0].isEmpty()) {
+                            try {
+                                String name = myApiService.userGet(Friend_ID).execute().getName();
+                                sqlHelper.insert(Constants.Table_Users,new String[]{Friend_ID,name});
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        break;
+                    }
+                    case Constants.Delete_Attending:{
+                        String Event_ID = key.split("\\^")[0];
+                        String Friend_ID = key.split("\\^")[1];
+                        sqlHelper.delete(Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0],Constants.Table_Events_Friends_Fields[0]},
+                                new String[]{Event_ID,Friend_ID},new int[]{1});
                         break;
                     }
                     case Constants.Update_Attending:{

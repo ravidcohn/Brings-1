@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import server.EventFriend_AsyncTask_insert;
 import server.SendMessage_AsyncTask;
+import server.User_AsyncTask_get;
 import utils.Constants;
 import utils.sqlHelper;
 
@@ -69,6 +70,10 @@ public class AddFriend extends AppCompatActivity {
                         if(!to.equals(email)&&!to.equals(Constants.User_Name)) {
                             new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.New_Attending + "|" + KEY + "^" + email, to);
                         }
+                    }
+                    ArrayList<String>[] dbUsers = sqlHelper.select(null,Constants.Table_Users,new String[]{Constants.Table_Users_Fields[0]},new String[]{email},null);
+                    if(dbUsers[0].isEmpty()){
+                        new User_AsyncTask_get().execute(email);
                     }
                     finish();
                 } else {

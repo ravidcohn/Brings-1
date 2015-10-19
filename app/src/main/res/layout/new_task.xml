@@ -30,6 +30,17 @@
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:ems="10"
+            android:id="@+id/et_nt_task_ui"
+            android:layout_alignParentTop="true"
+            android:layout_alignLeft="@+id/et_nt_description_ui"
+            android:layout_alignStart="@+id/et_nt_description_ui"
+            android:layout_marginTop="45dp"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
             android:id="@+id/et_nt_description_ui"
             android:layout_alignBottom="@+id/tv_nt_description_tit"
             android:layout_alignLeft="@+id/bt_nt_create_task_ui"
@@ -44,15 +55,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="43dp" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/et_nt_task_ui"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/et_nt_description_ui"
-        android:layout_alignStart="@+id/et_nt_description_ui"
-        android:layout_marginTop="45dp" />
+
 
 </RelativeLayout>
