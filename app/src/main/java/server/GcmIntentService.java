@@ -136,6 +136,14 @@ public class GcmIntentService extends IntentService{
                                 */
                         break;
                     }
+                    case Constants.Update_Task_Friend_ID:{
+                        String Event_ID = key.split("\\^")[0];
+                        String Task_ID_Number = key.split("\\^")[1];
+                        String Friend_ID = key.split("\\^")[2];
+                        sqlHelper.update(Constants.Table_Tasks, new String[]{Constants.Table_Events_Friends_Fields[4]}, new String[]{Friend_ID},
+                                new String[]{Constants.Table_Tasks_Fields[0], Constants.Table_Tasks_Fields[1]}, new String[]{Event_ID, Task_ID_Number});
+                        break;
+                    }
                     default: {
                         showToast(extras.getString("message"));
                         break;

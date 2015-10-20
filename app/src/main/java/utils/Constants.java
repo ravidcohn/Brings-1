@@ -60,10 +60,11 @@ public final class Constants {
     public final static String New_Task = "New_Task";
     public final static String Delete_Task = "Delete_Task";
     public final static String Update_Task = "Update_Task";
+    public final static String Update_Task_Friend_ID = "Update_Task_Friend_ID";
     public final static String Table_Events = "Events";
     public final static String[] Table_Events_Fields = new String[]{"ID","Name","Place","Start DATE","End Date","Description","imagePath","Update_Time"};
     public final static String Table_Tasks = "Tasks";
-    public final static String[] Table_Tasks_Fields = new String[]{"Event_ID","Task_ID_Number","Task_Name","Description","Who"};
+    public final static String[] Table_Tasks_Fields = new String[]{"Event_ID","Task_ID_Number","Task_Name","Description","Friend_ID"};
     public final static String Table_Events_Friends = "Events_Friends";
     public final static String[] Table_Events_Friends_Fields = new String[]{"Event_ID","Friend_ID","Attending"};
     public final static String Table_Friends = "Friends";

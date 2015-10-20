@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioGroup;
@@ -48,6 +49,7 @@ import brings_app.newTask;
 import server.EventFriend_AsyncTask_Update;
 import server.EventFriend_AsyncTask_delete;
 import server.SendMessage_AsyncTask;
+import server.Task_AsyncTask_update;
 import utils.Constants;
 import utils.sqlHelper;
 
@@ -408,24 +410,38 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
         this.KEY = KEY;
     }
 
-    public View getView(int position, View convertView, ViewGroup viewGroup) {
+    public View getView(final int position, View convertView, ViewGroup viewGroup) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.event_tasks_list_item, null);
 
         TextView task_tit = (TextView) convertView.findViewById(R.id.tv_etd_list_item_task_tit);
         TextView task_friend = (TextView) convertView.findViewById(R.id.tv_etd_list_item_frind_tit);
-        CheckBox task_do = (CheckBox) convertView.findViewById(R.id.cb_etd_list_item_task);
-
-        ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Tasks,new String[]{"ID"},new String[]{KEY},null);
-        task_tit.setText(dbResult[2].get(position));
-        task_friend.setText(dbResult[3].get(position));
-        if (dbResult[4].get(position).equals("")) {
+        final CheckBox task_do = (CheckBox) convertView.findViewById(R.id.cb_etd_list_item_task);
+        task_do.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ArrayList<String>[] dbTasks = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
+                if (isChecked) {
+                    Update_Task_do(dbTasks, true, position);
+                } else {
+                    Update_Task_do(dbTasks, false, position);
+                }
+            }
+        });
+        ArrayList<String>[] dbTasks = sqlHelper.select(null, Constants.Table_Tasks, new String[]{"ID"}, new String[]{KEY}, null);
+        task_tit.setText(dbTasks[2].get(position));
+        task_friend.setText(getName(dbTasks[4].get(position)));
+        if (dbTasks[4].get(position).equals("")) {
             task_do.setChecked(false);
         } else {
             task_do.setChecked(true);
         }
-
+        if (dbTasks[4].get(position).equals(Constants.User_Name)) {
+            task_do.setEnabled(true);
+        } else {
+            task_do.setEnabled(false);
+        }
         return convertView;
     }
 
@@ -450,98 +466,26 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
     public void onClick(View v) {
 
     }
-}
 
-class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickListener {
-
-    private Context context;
-    private ArrayList<String> members_keys;
-    private String KEY;
-
-    public StableArrayAdapterAttending(Context context, ArrayList<String> members_keys, String KEY) {
-        this.context = context;
-        this.members_keys = members_keys;
-        this.KEY = KEY;
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public View getView(final int position, View convertView, ViewGroup viewGroup) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.event_attending_list_item, null);
-
-        TextView name = (TextView) convertView.findViewById(R.id.tv_ea_list_item);
-        final RadioGroup radioGroup = (RadioGroup) convertView.findViewById(R.id.radioGroup);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
-                switch (radioGroup.getCheckedRadioButtonId()) {
-                    case R.id.rb_ea_list_yes: {
-                        Update_Attending(dbResult, Constants.Yes, position);
-                        break;
-                    }
-                    case R.id.rb_ea_list_maybe: {
-                        Update_Attending(dbResult, Constants.Maybe, position);
-                        break;
-                    }
-                    case R.id.rb_ea_list_no: {
-                        Update_Attending(dbResult, Constants.No, position);
-                        break;
-                    }
-                }
+    private void Update_Task_do(ArrayList<String>[] dbTasks, Boolean task_do, int pos) {
+        if ((dbTasks[4].get(pos).equals("") && task_do == true) ||
+                (!dbTasks[4].get(pos).equals("") && task_do == false)) {
+            if (task_do) {
+                new Task_AsyncTask_update(context).execute(dbTasks[0].get(pos), dbTasks[1].get(pos),
+                        dbTasks[2].get(pos), dbTasks[3].get(pos), Constants.User_Name);
+                sqlHelper.update(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[4]}, new String[]{Constants.User_Name},
+                        new String[]{Constants.Table_Tasks_Fields[0], Constants.Table_Tasks_Fields[1]},
+                        new String[]{dbTasks[0].get(pos), dbTasks[1].get(pos)});
+            } else {
+                new Task_AsyncTask_update(context).execute(dbTasks[0].get(pos), dbTasks[1].get(pos),
+                        dbTasks[2].get(pos), dbTasks[3].get(pos), "");
+                sqlHelper.update(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[4]}, new String[]{""},
+                        new String[]{Constants.Table_Tasks_Fields[0], Constants.Table_Tasks_Fields[1]},
+                        new String[]{dbTasks[0].get(pos), dbTasks[1].get(pos)});
             }
-        });
-        ArrayList<String>[] dbResult = sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0]},new String[]{KEY},null);
-        //name.setText(dbResult[1].get(position));
-        name.setText(getName(dbResult[1].get(position)));
-        switch (dbResult[2].get(position)) {
-            case Constants.Yes: {
-                radioGroup.check(R.id.rb_ea_list_yes);
-                break;
-            }
-            case Constants.Maybe: {
-                radioGroup.check(R.id.rb_ea_list_maybe);
-                break;
-            }
-            case Constants.No: {
-                radioGroup.check(R.id.rb_ea_list_no);
-                break;
-            }
-            default:{
-                break;
-            }
-        }
-        if (!dbResult[1].get(position).equals(Constants.User_Name)) {
-            for(int i=0;i<radioGroup.getChildCount();i++) {
-                radioGroup.getChildAt(i).setEnabled(false);
-                radioGroup.getChildAt(i).setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-            }
-        }
-
-        return convertView;
-    }
-
-    private String getName(String Friend_ID){
-        ArrayList<String>[] dbFriends = sqlHelper.select(null,Constants.Table_Friends,new String[]{Constants.Table_Friends_Fields[2]},new String[]{Friend_ID},null);
-        ArrayList<String>[] dbUsers = sqlHelper.select(null,Constants.Table_Users,new String[]{Constants.Table_Users_Fields[0]},new String[]{Friend_ID},null);
-        if(!dbFriends[0].isEmpty()){
-            return dbFriends[0].get(0);
-        }else if(!dbUsers[0].isEmpty()){
-            return dbUsers[1].get(0);
-        }else if (Friend_ID.equals(Constants.User_Name)){
-            return Constants.User_nickName;
-        }else{
-            return Friend_ID;
-        }
-    }
-
-    private void Update_Attending(ArrayList<String>[] dbResult, String attend, int pos){
-        if(!dbResult[2].get(pos).equals(attend)) {
-            new EventFriend_AsyncTask_Update(context).execute(KEY, Constants.User_Name, attend);
-            sqlHelper.update(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[2]}, new String[]{attend},
-                    new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, Constants.User_Name});
-            String message = Constants.Update_Attending + "|" + KEY + "^" + Constants.User_Name + "^" + attend;
-            for (String to : dbResult[1]) {
+            ArrayList<String>[] dbEvent_friends = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
+            String message = Constants.Update_Task_Friend_ID + "|" + dbTasks[0].get(pos) + "^" + dbTasks[1].get(pos) + "^" + Constants.User_Name;
+            for (String to : dbEvent_friends[1]) {
                 if (!to.equals(Constants.User_Name)) {
                     new SendMessage_AsyncTask(context).execute(Constants.User_Name, message, to);
                 }
@@ -549,25 +493,138 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
         }
     }
 
-    public int getCount() {
-        //return IDS.size();
-        return members_keys.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        //String s = users_names.get(position)+" - "+IDS.get(position);
-        //return s;
-        return members_keys.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public void onClick(View v) {
+    private String getName(String Friend_ID) {
+        ArrayList<String>[] dbFriends = sqlHelper.select(null, Constants.Table_Friends, new String[]{Constants.Table_Friends_Fields[2]}, new String[]{Friend_ID}, null);
+        ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{Friend_ID}, null);
+        if (!dbFriends[0].isEmpty()) {
+            return dbFriends[0].get(0);
+        } else if (!dbUsers[0].isEmpty()) {
+            return dbUsers[1].get(0);
+        } else if (Friend_ID.equals(Constants.User_Name)) {
+            return Constants.User_nickName;
+        } else {
+            return Friend_ID;
+        }
 
     }
 }
+
+class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickListener {
+
+        private Context context;
+        private ArrayList<String> members_keys;
+        private String KEY;
+
+        public StableArrayAdapterAttending(Context context, ArrayList<String> members_keys, String KEY) {
+            this.context = context;
+            this.members_keys = members_keys;
+            this.KEY = KEY;
+        }
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        public View getView(final int position, View convertView, ViewGroup viewGroup) {
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.event_attending_list_item, null);
+
+            TextView name = (TextView) convertView.findViewById(R.id.tv_ea_list_item);
+            final RadioGroup radioGroup = (RadioGroup) convertView.findViewById(R.id.radioGroup);
+            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
+                    switch (radioGroup.getCheckedRadioButtonId()) {
+                        case R.id.rb_ea_list_yes: {
+                            Update_Attending(dbResult, Constants.Yes, position);
+                            break;
+                        }
+                        case R.id.rb_ea_list_maybe: {
+                            Update_Attending(dbResult, Constants.Maybe, position);
+                            break;
+                        }
+                        case R.id.rb_ea_list_no: {
+                            Update_Attending(dbResult, Constants.No, position);
+                            break;
+                        }
+                    }
+                }
+            });
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
+            //name.setText(dbResult[1].get(position));
+            name.setText(getName(dbResult[1].get(position)));
+            switch (dbResult[2].get(position)) {
+                case Constants.Yes: {
+                    radioGroup.check(R.id.rb_ea_list_yes);
+                    break;
+                }
+                case Constants.Maybe: {
+                    radioGroup.check(R.id.rb_ea_list_maybe);
+                    break;
+                }
+                case Constants.No: {
+                    radioGroup.check(R.id.rb_ea_list_no);
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+            if (!dbResult[1].get(position).equals(Constants.User_Name)) {
+                for (int i = 0; i < radioGroup.getChildCount(); i++) {
+                    radioGroup.getChildAt(i).setEnabled(false);
+                    radioGroup.getChildAt(i).setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+                }
+            }
+
+            return convertView;
+        }
+
+        private String getName(String Friend_ID) {
+            ArrayList<String>[] dbFriends = sqlHelper.select(null, Constants.Table_Friends, new String[]{Constants.Table_Friends_Fields[2]}, new String[]{Friend_ID}, null);
+            ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{Friend_ID}, null);
+            if (!dbFriends[0].isEmpty()) {
+                return dbFriends[0].get(0);
+            } else if (!dbUsers[0].isEmpty()) {
+                return dbUsers[1].get(0);
+            } else if (Friend_ID.equals(Constants.User_Name)) {
+                return Constants.User_nickName;
+            } else {
+                return Friend_ID;
+            }
+        }
+
+        private void Update_Attending(ArrayList<String>[] dbResult, String attend, int pos) {
+            if (!dbResult[2].get(pos).equals(attend)) {
+                new EventFriend_AsyncTask_Update(context).execute(KEY, Constants.User_Name, attend);
+                sqlHelper.update(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[2]}, new String[]{attend},
+                        new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, Constants.User_Name});
+                String message = Constants.Update_Attending + "|" + KEY + "^" + Constants.User_Name + "^" + attend;
+                for (String to : dbResult[1]) {
+                    if (!to.equals(Constants.User_Name)) {
+                        new SendMessage_AsyncTask(context).execute(Constants.User_Name, message, to);
+                    }
+                }
+            }
+        }
+
+        public int getCount() {
+            //return IDS.size();
+            return members_keys.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            //String s = users_names.get(position)+" - "+IDS.get(position);
+            //return s;
+            return members_keys.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public void onClick(View v) {
+
+        }
+    }
