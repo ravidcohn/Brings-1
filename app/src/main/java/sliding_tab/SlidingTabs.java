@@ -49,6 +49,7 @@ import brings_app.newTask;
 import server.EventFriend_AsyncTask_Update;
 import server.EventFriend_AsyncTask_delete;
 import server.SendMessage_AsyncTask;
+import server.Task_AsyncTask_delete;
 import server.Task_AsyncTask_update;
 import utils.Constants;
 import utils.sqlHelper;
@@ -333,13 +334,14 @@ public class SlidingTabs extends Fragment {
                     String task_name = dbTasks[2].get(pos);
                     // set dialog message
                     alertDialogBuilder
-                            .setMessage("Delete Task: "+Tasks_keys.get(pos)+"?")
+                            .setMessage("Delete Task: "+task_name+"?")
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     int task_key = Tasks_keys.get(pos);
                                     sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0],
                                             Constants.Table_Tasks_Fields[1]}, new String[]{KEY, task_key + ""}, new int[]{1});
+                                    new Task_AsyncTask_delete(context).execute(KEY, task_key+"");
                                     ArrayList<String>[] dbEvent_Friend = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
                                     for(String to:dbEvent_Friend[1]) {
                                         if(!to.equals(dbTasks[4].get(pos))) {
@@ -424,7 +426,7 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
         convertView = inflater.inflate(R.layout.event_tasks_list_item, null);
 
         TextView task_tit = (TextView) convertView.findViewById(R.id.tv_etd_list_item_task_tit);
-        TextView task_friend = (TextView) convertView.findViewById(R.id.tv_etd_list_item_frind_tit);
+        final TextView task_friend = (TextView) convertView.findViewById(R.id.tv_etd_list_item_frind_tit);
         final CheckBox task_do = (CheckBox) convertView.findViewById(R.id.cb_etd_list_item_task);
         task_do.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
             @Override
@@ -432,8 +434,10 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
                 ArrayList<String>[] dbTasks = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
                 if (isChecked) {
                     Update_Task_do(dbTasks, true, position);
+                    task_friend.setText(Constants.User_nickName);
                 } else {
                     Update_Task_do(dbTasks, false, position);
+                    task_friend.setText("");
                 }
             }
         });
@@ -445,7 +449,7 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
         } else {
             task_do.setChecked(true);
         }
-        if (dbTasks[4].get(position).equals(Constants.User_Name)) {
+        if (dbTasks[4].get(position).equals(Constants.User_Name)||dbTasks[4].get(position).equals("")) {
             task_do.setEnabled(true);
         } else {
             task_do.setEnabled(false);
