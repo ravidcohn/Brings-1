@@ -72,7 +72,7 @@ public class newTask extends AppCompatActivity {
             task_id = 0;
             ArrayList<Integer> allIDS = new ArrayList<>();
             ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
-            for (String t_id : dbResult[0]) {
+            for (String t_id : dbResult[1]) {
                 allIDS.add(Integer.parseInt(t_id));
             }
             while (allIDS.contains(task_id)) {

@@ -451,6 +451,7 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
         }
         if (dbTasks[4].get(position).equals(Constants.User_Name)||dbTasks[4].get(position).equals("")) {
             task_do.setEnabled(true);
+            task_do.setVisibility(View.VISIBLE);
         } else {
             task_do.setEnabled(false);
         }
