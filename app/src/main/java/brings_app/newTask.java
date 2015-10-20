@@ -13,6 +13,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import server.SendMessage_AsyncTask;
+import server.Task_AsyncTask_insert;
 import utils.Constants;
 import utils.sqlHelper;
 
@@ -81,6 +82,8 @@ public class newTask extends AppCompatActivity {
             String description = et_nt_description_ui.getText().toString();
             String name = "";
             sqlHelper.insert(Constants.Table_Tasks, new String[]{KEY, task_id + "", task_name, description, name});
+            new Task_AsyncTask_insert(this).execute(KEY, task_id + "", task_name, description, name);
+
         }
         return ok;
     }

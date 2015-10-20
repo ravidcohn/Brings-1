@@ -11,6 +11,7 @@ import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.Event;
 import com.example.some_lie.backend.brings.model.Task;
 import com.example.some_lie.backend.brings.model.EventFriendCollection;
+import com.example.some_lie.backend.brings.model.TaskCollection;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
@@ -56,10 +57,14 @@ public class GcmIntentService extends IntentService{
                     case Constants.New_Event: {
                         String[] event = getEvent(key);
                         ArrayList<String[]> allAttending = getAllAttending(key);
-                        if(sqlHelper.select(null,Constants.Table_Events,new String[]{"ID"},new String[]{event[0]},null)[0].isEmpty()){
+                        ArrayList<String[]> allTasks = getAllTasks(key);
+                        if(sqlHelper.select(null,Constants.Table_Events,new String[]{Constants.Table_Events_Fields[0]},new String[]{event[0]},null)[0].isEmpty()){
                             sqlHelper.insert(Constants.Table_Events, event);
                             for(String[] attending:allAttending){
                                 sqlHelper.insert(Constants.Table_Events_Friends, attending);
+                            }
+                            for(String[] task:allTasks){
+                                sqlHelper.insert(Constants.Table_Tasks, task);
                             }
                         }
                         break;
@@ -149,6 +154,20 @@ public class GcmIntentService extends IntentService{
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 
+    private ArrayList<String[]> getAllTasks(String event_id) {
+        ArrayList<String[]>result = new ArrayList<>();
+        TaskCollection taskCollection;
+        try {
+            taskCollection = myApiService.taskGetAll(event_id).execute();
+            for(int i=0;i<taskCollection.getItems().size();i++){
+                result.add(new String[]{taskCollection.getItems().get(i).getEventID(),taskCollection.getItems().get(i).getTaskIDNumber(),
+                        taskCollection.getItems().get(i).getTaskName(),taskCollection.getItems().get(i).getDescription(),taskCollection.getItems().get(i).getFriendID()});
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
 
     protected void showToast(final String message) {
@@ -166,10 +185,10 @@ public class GcmIntentService extends IntentService{
         try {
             task = myApiService.taskGet(event_id, task_id).execute();
             result[0] = task.getEventID();
-            result[1] = task.getTaskNumber();
+            result[1] = task.getTaskIDNumber();
             result[2] = task.getTaskName();
             result[3] = task.getDescription();
-            result[4] = task.getWho();
+            result[4] = task.getFriendID();
         } catch (IOException e) {
             e.printStackTrace();
         }

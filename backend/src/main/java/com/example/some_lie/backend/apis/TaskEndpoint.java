@@ -14,6 +14,7 @@ import com.google.appengine.repackaged.org.joda.time.LocalDateTime;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
@@ -59,10 +60,10 @@ public class TaskEndpoint {
                         ResultSet rs = MySQL_Util.select(null, "Tasks", new String[]{"Event_ID","Task_ID_Number"}, new String[]{Event_ID, Task_ID_Number}, new int[]{1});
                         if(rs.next()) {
                                 task.setEvent_ID(rs.getString("Event_ID"));
-                                task.setTaskNumber(rs.getString("Task_ID_Number"));
+                                task.setTask_ID_Number(rs.getString("Task_ID_Number"));
                                 task.setTask_Name(rs.getString("Task_Name"));
                                 task.setDescription(rs.getString("Description"));
-                                task.setWho(rs.getString("Who"));
+                                task.setFriend_ID(rs.getString("Who"));
                         }
                         rs.close();
                 } catch (Exception e) {
@@ -85,6 +86,37 @@ public class TaskEndpoint {
                         }
                 }
                 return task;
+        }
+
+        @ApiMethod( name = "TaskGetAll",path = "TaskGetAll")
+        public ArrayList<Task> GetAll(@Named("Event_ID") String Event_ID) {
+                ArrayList<Task> taskArrayList = new ArrayList<>();
+                try {
+                        ResultSet rs = MySQL_Util.select(null,"Tasks",new String[]{"Event_ID"}, new String[]{Event_ID},null);
+                        while(rs.next()){
+                                taskArrayList.add(new Task(rs.getString("Event_ID"),rs.getString("Task_ID_Number"),rs.getString("Task_Name"),rs.getString("Description"),rs.getString("Friend_ID")));
+                        }
+                        rs.close();
+                } catch (Exception e) {
+                        StringWriter sw = new StringWriter();
+                        e.printStackTrace(new PrintWriter(sw));
+                        LocalDateTime now = LocalDateTime.now();
+                        try {
+                                int year = now.getYear();
+                                int month = now.getMonthOfYear();
+                                int day = now.getDayOfMonth();
+                                int hour = now.getHourOfDay();
+                                int minute = now.getMinuteOfHour();
+                                int second = now.getSecondOfMinute();
+                                int millis = now.getMillisOfSecond();
+                                String date = day+"/"+month+"/"+year;
+                                String time = hour+":"+minute+":"+second+":"+millis;
+                                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                        } catch (Exception e1) {
+                                e1.printStackTrace();
+                        }
+                }
+                return taskArrayList;
         }
 
         /**

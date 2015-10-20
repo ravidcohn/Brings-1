@@ -437,7 +437,7 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
                 }
             }
         });
-        ArrayList<String>[] dbTasks = sqlHelper.select(null, Constants.Table_Tasks, new String[]{"ID"}, new String[]{KEY}, null);
+        ArrayList<String>[] dbTasks = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
         task_tit.setText(dbTasks[2].get(position));
         task_friend.setText(getName(dbTasks[4].get(position)));
         if (dbTasks[4].get(position).equals("")) {
