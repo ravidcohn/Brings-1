@@ -74,7 +74,6 @@ public class GcmIntentService extends IntentService{
                         sqlHelper.update(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[1], Constants.Table_Events_Fields[2], Constants.Table_Events_Fields[3], Constants.Table_Events_Fields[4],
                                         Constants.Table_Events_Fields[5], Constants.Table_Events_Fields[6], Constants.Table_Events_Fields[7]},
                                 new String[]{event[1], event[2], event[3], event[4], event[5], event[6], event[7]}, new String[]{"id"}, new String[]{event[0]});
-                        sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key}, null);
                         break;
                     }
                     case Constants.New_Attending:{
@@ -96,7 +95,7 @@ public class GcmIntentService extends IntentService{
                     case Constants.Delete_Attending:{
                         String Event_ID = key.split("\\^")[0];
                         String Friend_ID = key.split("\\^")[1];
-                        sqlHelper.delete(Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0],Constants.Table_Events_Friends_Fields[0]},
+                        sqlHelper.delete(Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0],Constants.Table_Events_Friends_Fields[1]},
                                 new String[]{Event_ID,Friend_ID},new int[]{1});
                         break;
                     }
@@ -110,30 +109,26 @@ public class GcmIntentService extends IntentService{
                     }
                     case Constants.New_Task:{
                         String Event_ID = key.split("\\^")[0];
-                        String Task_ID = key.split("\\^")[1];
-                        String[] task = getTask(Event_ID, Task_ID);
+                        String Task_ID_Number = key.split("\\^")[1];
+                        String[] task = getTask(Event_ID, Task_ID_Number);
                         if(sqlHelper.select(null,Constants.Table_Tasks,new String[]{"Event_ID", "Task_ID_Number"},new String[]{task[0], task[1]},null)[0].isEmpty()) {
                             sqlHelper.insert(Constants.Table_Tasks, task);
                         }
                         break;
                     }
                     case Constants.Delete_Task:{
-                        /*
                         String Event_ID = key.split("\\^")[0];
-                        String Friend_ID = key.split("\\^")[1];
-                        sqlHelper.delete(Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0],Constants.Table_Events_Friends_Fields[0]},
-                                new String[]{Event_ID,Friend_ID},new int[]{1});
-                                */
+                        String Task_ID_Number = key.split("\\^")[1];
+                        sqlHelper.delete(Constants.Table_Tasks,new String[]{Constants.Table_Tasks_Fields[0],Constants.Table_Tasks_Fields[1]},
+                                new String[]{Event_ID,Task_ID_Number},new int[]{1});
                         break;
                     }
                     case Constants.Update_Task:{
-                        /*
                         String Event_ID = key.split("\\^")[0];
-                        String Friend_ID = key.split("\\^")[1];
-                        String attend = key.split("\\^")[2];
-                        sqlHelper.update(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[2]}, new String[]{attend},
-                                new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]}, new String[]{Event_ID, Friend_ID});
-                                */
+                        String Task_ID_Number = key.split("\\^")[1];
+                        String[] task = getTask(Event_ID, Task_ID_Number);
+                        sqlHelper.update(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[2], Constants.Table_Tasks_Fields[3], Constants.Table_Tasks_Fields[4]},
+                                new String[]{task[2],task[3],task[4]}, new String[]{Constants.Table_Tasks_Fields[0],Constants.Table_Tasks_Fields[1]}, new String[]{task[0],task[1]});
                         break;
                     }
                     case Constants.Update_Task_Friend_ID:{

@@ -3,12 +3,13 @@ package server;
 /**
  * Created by pinhas on 19/10/2015.
  */
+import android.os.AsyncTask;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import android.os.AsyncTask;
 
 import utils.Constants;
 
@@ -28,11 +29,11 @@ public class sendImage_AsyncTask extends AsyncTask<String, Void, String> {
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
             String returnString="";
-            doubledValue =0;
+            //doubledValue =0;
 
             while ((returnString = in.readLine()) != null)
             {
-                doubledValue= Integer.parseInt(returnString);
+                //doubledValue= Integer.parseInt(returnString);
             }
             in.close();
 

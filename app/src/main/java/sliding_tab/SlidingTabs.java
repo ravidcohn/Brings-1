@@ -313,6 +313,7 @@ public class SlidingTabs extends Fragment {
         private void setTodoList(final View rootView) {
             Tasks_keys.clear();
             sqlTodo();
+            final ArrayList<String>[] dbTasks = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
 
             final Context context = getActivity();
             ListView listview = (ListView) rootView.findViewById(R.id.lv_etd);
@@ -329,15 +330,22 @@ public class SlidingTabs extends Fragment {
                     // TODO Auto-generated method stub
 
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-
+                    String task_name = dbTasks[2].get(pos);
                     // set dialog message
                     alertDialogBuilder
-                            .setMessage("Delete Task?")
+                            .setMessage("Delete Task: "+Tasks_keys.get(pos)+"?")
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     int task_key = Tasks_keys.get(pos);
-                                    sqlHelper.delete(Constants.Table_Tasks, new String[]{"ID", "TaskNumber"}, new String[]{KEY, task_key + ""}, new int[]{1});
+                                    sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0],
+                                            Constants.Table_Tasks_Fields[1]}, new String[]{KEY, task_key + ""}, new int[]{1});
+                                    ArrayList<String>[] dbEvent_Friend = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
+                                    for(String to:dbEvent_Friend[1]) {
+                                        if(!to.equals(dbTasks[4].get(pos))) {
+                                            new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Task + "|" + KEY + "^" + dbEvent_Friend[1].get(pos), to);
+                                        }
+                                    }
                                     setTodoList(rootView);
                                 }
                             })
