@@ -45,6 +45,7 @@ public class edit_event extends AppCompatActivity {
     private String KEY;
     private String imagePath = "";
     private String Update_Time;
+    private String location;
     //private String USERNAME = "user 1";//TODO
 
 
@@ -66,6 +67,15 @@ public class edit_event extends AppCompatActivity {
         //USERNAME = b.getString("USERNAME");
         KEY = b.getString("KEY");
         store_value();
+
+        final Intent maps = new Intent(this, google_map_location.class);
+        et_ee_place_ui.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(maps, 26);
+            }
+        });
 
         //final Intent tabs = new Intent(this,tab.class);
         final Intent tabs2 = new Intent(this,tab.class);
@@ -121,7 +131,7 @@ public class edit_event extends AppCompatActivity {
             ok = true;
 
             String name = et_ee_name_ui.getText().toString();
-            String place = et_ee_place_ui.getText().toString();
+            String place = location;
             String start = et_ee_start_ui.getText().toString();
             String end = et_ee_end_ui.getText().toString();
             String description = et_ee_description_ui.getText().toString();
@@ -255,6 +265,19 @@ public class edit_event extends AppCompatActivity {
                 imagePath = picturePath;
                 Bitmap thumbnail =  bitmapHelper.decodeSampledBitmapFromFile(picturePath, 100, 100);
                 ib_ee_pic_ui.setImageBitmap(thumbnail);
+            }
+            else if(requestCode == 26){
+                Bundle b = data.getExtras();
+                location = b.getString("location");
+                String locationTag = "";
+                for (int i = 0; i < location.length();i++){
+                    if(location.charAt(i)=='!'){
+                        locationTag = location.substring(i+1);
+                        i = location.length();
+                    }
+                }
+                et_ee_place_ui.setText(locationTag);
+
             }
             else{
                 finish();

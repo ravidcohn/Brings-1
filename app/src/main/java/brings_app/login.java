@@ -53,7 +53,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
     }
 
     public void signIn(View view) {
-        new LoginAsyncTask(this,this).execute(etName.getText().toString(), etPass.getText().toString());
+        new LoginAsyncTask(this, this).execute(etName.getText().toString(), etPass.getText().toString());
     }
 
     public void register(View view) {
@@ -82,23 +82,22 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
                 e.printStackTrace();
             }
             String gcmUpdate = null;
-            if(regId != null) {
-                gcmUpdate = prefs.getString("GCM","NO Value");
-                if(gcmUpdate != regId){
+            if (regId != null) {
+                gcmUpdate = prefs.getString("GCM", "NO Value");
+                if (gcmUpdate != regId) {
                     SharedPreferences.Editor editor = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE).edit();
                     editor.putString("GCM", regId);
                     editor.apply();
-                }
-                else{
+                } else {
                     gcmUpdate = null;
                 }
 
             }
-    try {
-        getFriends(regId, gcmUpdate);
-    }catch (Exception e){
-        e.printStackTrace();
-    }
+            try {
+                getFriends(regId, gcmUpdate);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             //TODO get updates from server
             Intent mainActivity = new Intent(this, MainActivity.class);
             startActivity(mainActivity);
@@ -106,18 +105,17 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         }
     }
 
-    private void getFriends(String gcmUpdate, String oldGCM){
+    private void getFriends(String gcmUpdate, String oldGCM) {
 
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null, null, null);
         ArrayList<String>[] list;
-        HashMap<String,String> data = new HashMap<>();
+        HashMap<String, String> data = new HashMap<>();
         ArrayList<String> ph = new ArrayList<>();
-        while (phones.moveToNext() )
-        {
+        while (phones.moveToNext()) {
             String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("-","").replaceAll(" ","");
-            if(data.get(name) == null) {
+            String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("-", "").replaceAll(" ", "");
+            if (data.get(name) == null) {
                 data.put(name, phone);
                 list = sqlHelper.select(null, Constants.Table_Friends, new String[]{"Name", "Phone"}, new String[]{name, phone}, new int[]{1});
                 if (list[0].isEmpty()) {
@@ -125,47 +123,46 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
                 }
                 ph.add(phone);
             }
-          //  String email = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-         //   String name2 = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME));
-         //   if(name2 != null)
-        //    Toast.makeText(this,name2+": "+email,Toast.LENGTH_LONG).show();
+            //  String email = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+            //   String name2 = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME));
+            //   if(name2 != null)
+            //    Toast.makeText(this,name2+": "+email,Toast.LENGTH_LONG).show();
         }
         //Toast.makeText(this,count+"",Toast.LENGTH_LONG).show();
         phones.close();
         ArrayList<String> gu = null;
-        if(gcmUpdate != null) {
+        if (gcmUpdate != null) {
             gu = new ArrayList<>();
             gu.add(gcmUpdate);
             gu.add(oldGCM);
         }
-        int size = ph.size()/100 + 1;
+        int size = ph.size() / 100 + 1;
         ArrayList<String>[] arrPh = new ArrayList[size];
         int count = 0;
         for (int i = 0; i < size && count < ph.size(); i++) {
             arrPh[i] = new ArrayList<>();
-            for (int j = 0; j < 100 && count < ph.size();j++ ,count++){
+            for (int j = 0; j < 100 && count < ph.size(); j++, count++) {
                 arrPh[i].add(ph.get(count));
             }
-            new cheackFriendsRegistrationAsyncTask(this).execute(arrPh[i],gu);
+            new cheackFriendsRegistrationAsyncTask(this).execute(arrPh[i], gu);
         }
 
     }
 
     @Override
     public void processFinish(String... output) {
-        if(output[0].contains("@")) {
+        if (output[0].contains("@")) {
             String mail = output[0];
             String password = etPass.getText().toString();
             SharedPreferences.Editor editor = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE).edit();
             editor.putString("USER", "R-USER");
             editor.putString("Name", mail);
             editor.putString("Pass", password);
-            editor.putString("nickName",output[1]);
+            editor.putString("nickName", output[1]);
             editor.commit();
             login();
-        }
-        else{
-            Toast.makeText(this,"User is not exist.. please register!",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "User is not exist.. please register!", Toast.LENGTH_LONG).show();
         }
     }
 

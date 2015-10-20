@@ -26,6 +26,15 @@
         <url-pattern>/_ah/spi/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>ImagesServlet</servlet-name>
+        <servlet-class>com.example.some_lie.backend.servlets.ImagesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ImagesServlet</servlet-name>
+        <url-pattern>/blob_image</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
