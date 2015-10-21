@@ -248,6 +248,14 @@ public final class sqlHelper {
         return null;
     }
 
+        public static void Create_Table(String Event_ID){
+            SQLiteDatabase db = getConnection();
+            String table_name = Event_ID + "_Chat";
+            db.execSQL("create table if not exists "+table_name+"("+Constants.Table_Users_Fields[0]+" varchar NOT NULL primary key,"+
+                    Constants.Table_Tasks_Fields[1]+" varchar NOT NULL)");
+            db.close();
+        }
+
 
     private static void clean(String[] values) {
         if (values != null)

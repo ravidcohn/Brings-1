@@ -58,7 +58,7 @@ public class GcmIntentService extends IntentService{
                         String[] event = getEvent(key);
                         ArrayList<String[]> allAttending = getAllAttending(key);
                         ArrayList<String[]> allTasks = getAllTasks(key);
-                        if(sqlHelper.select(null,Constants.Table_Events,new String[]{Constants.Table_Events_Fields[0]},new String[]{event[0]},null)[0].isEmpty()){
+                        if(sqlHelper.select(null,Constants.Table_Events,new String[]{Constants.Table_Events_Fields[0]},new String[]{event[0]},new int[1])[0].isEmpty()){
                             sqlHelper.insert(Constants.Table_Events, event);
                             for(String[] attending:allAttending){
                                 sqlHelper.insert(Constants.Table_Events_Friends, attending);
@@ -159,9 +159,11 @@ public class GcmIntentService extends IntentService{
         TaskCollection taskCollection;
         try {
             taskCollection = myApiService.taskGetAll(event_id).execute();
-            for(int i=0;i<taskCollection.getItems().size();i++){
-                result.add(new String[]{taskCollection.getItems().get(i).getEventID(),taskCollection.getItems().get(i).getTaskIDNumber(),
-                        taskCollection.getItems().get(i).getTaskName(),taskCollection.getItems().get(i).getDescription(),taskCollection.getItems().get(i).getFriendID()});
+            if(taskCollection.getItems()!=null) {
+                for (int i = 0; i < taskCollection.getItems().size(); i++) {
+                    result.add(new String[]{taskCollection.getItems().get(i).getEventID(), taskCollection.getItems().get(i).getTaskIDNumber(),
+                            taskCollection.getItems().get(i).getTaskName(), taskCollection.getItems().get(i).getDescription(), taskCollection.getItems().get(i).getFriendID()});
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
