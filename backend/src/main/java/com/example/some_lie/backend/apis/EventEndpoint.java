@@ -2,12 +2,15 @@ package com.example.some_lie.backend.apis;
 
 import com.example.some_lie.backend.Constants;
 import com.example.some_lie.backend.models.Event;
+import com.example.some_lie.backend.models.images_path;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.NotFoundException;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.repackaged.org.joda.time.LocalDateTime;
 
 import java.io.PrintWriter;
@@ -96,10 +99,15 @@ public class EventEndpoint {
      * Inserts a new {@code Event}.
      */
     @ApiMethod(name = "EventInsert",path = "EventInsert")
-    public void Insert(@Named("AID")String id, @Named("BName")String name, @Named("CLocation")String location, @Named("DStart")String start,
+    public images_path Insert(@Named("AID")String id, @Named("BName")String name, @Named("CLocation")String location, @Named("DStart")String start,
                        @Named("EEnd")String end, @Named("FDescription")String description,@Named("GImagePath")String imagePath,@Named("HUpdateTime")String updateTime) {
         try {
-           MySQL_Util.insert("Events",new String[]{id,name,location,start,end,description,imagePath,updateTime});
+            BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+            String uploadURL = blobstoreService.createUploadUrl("/blob_image");
+           //MySQL_Util.insert("Events",new String[]{id,name,location,start,end,description,imagePath,updateTime});
+            MySQL_Util.insert("Events",new String[]{id,name,location,start,end,description,uploadURL,updateTime});
+            images_path im_path = new images_path(uploadURL);
+            return im_path;
 
         }catch(Exception e){
             StringWriter sw = new StringWriter();
@@ -121,6 +129,7 @@ public class EventEndpoint {
                 e1.printStackTrace();
             }
         }
+        return null;
     }
 
     /**
