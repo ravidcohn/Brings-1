@@ -24,7 +24,7 @@ public class ImagesServlet extends HttpServlet {
     public void doPost(HttpServletRequest req, HttpServletResponse res) {//    throws ServletException, IOException {
         try {
             Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
-            List<BlobKey> blobKeys = blobs.get("myFile");
+            List<BlobKey> blobKeys = blobs.get("file");
 
             if (blobKeys == null || blobKeys.isEmpty()) {
                 res.sendRedirect("/");
