@@ -248,13 +248,38 @@ public final class sqlHelper {
         return null;
     }
 
-        public static void Create_Table(String Event_ID){
+    public static void Create_Table(String Event_ID){
+        try{
             SQLiteDatabase db = getConnection();
             String table_name = Event_ID + "_Chat";
-            db.execSQL("create table if not exists "+table_name+"("+Constants.Table_Users_Fields[0]+" varchar NOT NULL primary key,"+
-                    Constants.Table_Tasks_Fields[1]+" varchar NOT NULL)");
+            db.execSQL("create table if not exists "+table_name+"("+Constants.Table_Chat_Fields[0]+" varchar NOT NULL,"+
+                    Constants.Table_Chat_Fields[1]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[2]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[3]+" varchar NOT NULL)");
             db.close();
+        }catch(Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                String eString = sw.toString();
+                if(eString.length() > 1000){
+                    eString = eString.substring(0,1000)+"...";
+                }
+                new add_logAsyncTask().execute(eString, date, time);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
         }
+    }
 
 
     private static void clean(String[] values) {
