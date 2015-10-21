@@ -81,6 +81,7 @@ public final class sqlHelper {
     }
 
     public static void insert(String table_name, String[] values) {
+        try{
         clean(values);
         String query = "insert into `" + table_name + "` values('";
         int end = values.length - 1;
@@ -92,9 +93,34 @@ public final class sqlHelper {
         SQLiteDatabase db = getConnection();
         db.execSQL(query);
         db.close();
+        }catch(Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                String eString = sw.toString();
+                if(eString.length() > 1000){
+                    eString = eString.substring(0,1000)+"...";
+                }
+                new add_logAsyncTask().execute(eString, date, time);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
+        }
     }
 
     public static void delete(String table, String[] where_columns, String[] where_values, int[] limit) {
+        try{
         clean(where_values);
         int end = where_columns.length - 1;
         String query = "delete from `" + table + "` where ";
@@ -115,6 +141,30 @@ public final class sqlHelper {
         SQLiteDatabase db = getConnection();
         db.execSQL(query);
         db.close();
+        }catch(Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                String eString = sw.toString();
+                if(eString.length() > 1000){
+                    eString = eString.substring(0,1000)+"...";
+                }
+                new add_logAsyncTask().execute(eString, date, time);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
+        }
     }
 
     /**
@@ -126,6 +176,7 @@ public final class sqlHelper {
      * @return
      */
     public static ArrayList<String>[] select(String[] what, String table, String[] where_columns, String[] where_values, int[] limit) {
+        try{
         clean(where_values);
         String query = "select ";
         if (what == null) {
@@ -170,6 +221,31 @@ public final class sqlHelper {
         c.close();
         db.close();
         return result;
+        }catch(Exception e){
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day+"/"+month+"/"+year;
+                String time = hour+":"+minute+":"+second+":"+millis;
+                String eString = sw.toString();
+                if(eString.length() > 1000){
+                    eString = eString.substring(0,1000)+"...";
+                }
+                new add_logAsyncTask().execute(eString, date, time);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
+        }
+        return null;
     }
 
 
@@ -182,17 +258,41 @@ public final class sqlHelper {
     }
 
     public static void createALLTabels() {
-        SQLiteDatabase db = getConnection();
-        db.execSQL("create table if not exists " + Constants.Table_Events + "(" + Constants.Table_Events_Fields[0] + " varchar NOT NULL primary key," + Constants.Table_Events_Fields[1] + " varchar NOT NULL,"
-                + Constants.Table_Events_Fields[2] + " VARCHAR NOT NULL," + Constants.Table_Events_Fields[3] + " not null," + Constants.Table_Events_Fields[4] + " not null,"
-                + Constants.Table_Events_Fields[5] + " varchar," + Constants.Table_Events_Fields[6] + " varchar," + Constants.Table_Events_Fields[7] + " VARCHAR NOT NULL)");
-        db.execSQL("create table if not exists " + Constants.Table_Tasks + "(" + Constants.Table_Tasks_Fields[0] + " varchar NOT NULL," + Constants.Table_Tasks_Fields[1] + " varchar NOT NULL primary key,"
-                + Constants.Table_Tasks_Fields[2] + "VARCHAR NOT NULL," + Constants.Table_Tasks_Fields[3] + "," + Constants.Table_Tasks_Fields[4] + ")");
-        db.execSQL("create table if not exists " + Constants.Table_Events_Friends + "(Event_ID varchar NOT NULL,Friend_ID varchar NOT NULL,Attending NOT NULL)");
-        db.execSQL("create table if not exists " + Constants.Table_Friends + "(Name varchar NOT NULL,Phone varchar NOT NULL,email varchar,regester varchar NOT NULL )");
-        db.execSQL("create table if not exists " + Constants.Table_Users + "(" + Constants.Table_Users_Fields[0] + " varchar NOT NULL primary key," +
-                Constants.Table_Tasks_Fields[1] + " varchar NOT NULL)");
-        db.close();
+        try {
+            SQLiteDatabase db = getConnection();
+            db.execSQL("create table if not exists " + Constants.Table_Events + "(" + Constants.Table_Events_Fields[0] + " varchar NOT NULL primary key," + Constants.Table_Events_Fields[1] + " varchar NOT NULL,"
+                    + Constants.Table_Events_Fields[2] + " VARCHAR NOT NULL," + Constants.Table_Events_Fields[3] + " not null," + Constants.Table_Events_Fields[4] + " not null,"
+                    + Constants.Table_Events_Fields[5] + " varchar," + Constants.Table_Events_Fields[6] + " varchar," + Constants.Table_Events_Fields[7] + " VARCHAR NOT NULL)");
+            db.execSQL("create table if not exists " + Constants.Table_Tasks + "(" + Constants.Table_Tasks_Fields[0] + " varchar NOT NULL," + Constants.Table_Tasks_Fields[1] + " varchar NOT NULL primary key,"
+                    + Constants.Table_Tasks_Fields[2] + "VARCHAR NOT NULL," + Constants.Table_Tasks_Fields[3] + "," + Constants.Table_Tasks_Fields[4] + ")");
+            db.execSQL("create table if not exists " + Constants.Table_Events_Friends + "(Event_ID varchar NOT NULL,Friend_ID varchar NOT NULL,Attending NOT NULL)");
+            db.execSQL("create table if not exists " + Constants.Table_Friends + "(Name varchar NOT NULL,Phone varchar NOT NULL,email varchar,regester varchar NOT NULL )");
+            db.execSQL("create table if not exists " + Constants.Table_Users + "(" + Constants.Table_Users_Fields[0] + " varchar NOT NULL primary key," +
+                    Constants.Table_Tasks_Fields[1] + " varchar NOT NULL)");
+            db.close();
+        }}catch(Exception e){
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        LocalDateTime now = LocalDateTime.now();
+        try {
+            int year = now.getYear();
+            int month = now.getMonthOfYear();
+            int day = now.getDayOfMonth();
+            int hour = now.getHourOfDay();
+            int minute = now.getMinuteOfHour();
+            int second = now.getSecondOfMinute();
+            int millis = now.getMillisOfSecond();
+            String date = day+"/"+month+"/"+year;
+            String time = hour+":"+minute+":"+second+":"+millis;
+            String eString = sw.toString();
+            if(eString.length() > 1000){
+                eString = eString.substring(0,1000)+"...";
+            }
+            new add_logAsyncTask().execute(eString, date, time);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+    }
     }
 
 

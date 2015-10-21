@@ -20,7 +20,11 @@ public class add_logAsyncTask extends AsyncTask<String, Void, Void>{
         if (myApiService == null) {
             myApiService = CloudEndpointBuilderHelper.getEndpoints();
         }
-
+        try {
+            myApiService.addLog(params[0], params[1], params[2]).execute();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return null;
     }
 }
