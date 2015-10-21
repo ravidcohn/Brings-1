@@ -3,6 +3,7 @@ package com.example.some_lie.backend.servlets;
 /**
  * Created by pinhas on 19/10/2015.
  */
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -20,27 +21,18 @@ public class ImagesServlet extends HttpServlet {
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
     @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse res)
-            throws ServletException, IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse res) {//    throws ServletException, IOException {
+        try {
+            Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
+            List<BlobKey> blobKeys = blobs.get("myFile");
 
-        Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
-        List<BlobKey> blobKeys = blobs.get("myFile");
-
-        if (blobKeys == null || blobKeys.isEmpty()) {
-            res.sendRedirect("/");
-        } else {
-            res.sendRedirect("/serve?blob-key=" + blobKeys.get(0).getKeyString());
-        }
-    }
-    @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse res)throws IOException {
-        Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
-        List<BlobKey> blobKeys = blobs.get("myFile");
-
-        if (blobKeys == null || blobKeys.isEmpty()) {
-            res.sendRedirect("/");
-        } else {
-            res.sendRedirect("/serve?blob-key=" + blobKeys.get(0).getKeyString());
+            if (blobKeys == null || blobKeys.isEmpty()) {
+                res.sendRedirect("/");
+            } else {
+                res.sendRedirect("/serve?blob-key=" + blobKeys.get(0).getKeyString());
+            }
+        } catch (Exception e) {
+            //TODO save exception in "Logs"
         }
     }
 }
