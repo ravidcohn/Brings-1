@@ -270,7 +270,7 @@ public final class sqlHelper {
             db.execSQL("create table if not exists " + Constants.Table_Users + "(" + Constants.Table_Users_Fields[0] + " varchar NOT NULL primary key," +
                     Constants.Table_Tasks_Fields[1] + " varchar NOT NULL)");
             db.close();
-        }}catch(Exception e){
+        }catch(Exception e){
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
         LocalDateTime now = LocalDateTime.now();
