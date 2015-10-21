@@ -34,7 +34,7 @@ public class apps_logs {
     @ApiMethod(name = "addLog", path = "addLog")
     public void addLog(@Named("exception_string") String eString, @Named("date") String date, @Named("time") String time) {
         try {
-            MySQL_Util.insert("Logs_Apps", new String[]{eString,date,time});
+            MySQL_Util.insert("Logs_App", new String[]{eString,date,time});
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
