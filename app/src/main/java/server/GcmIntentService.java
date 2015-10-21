@@ -62,6 +62,16 @@ public class GcmIntentService extends IntentService{
                             sqlHelper.insert(Constants.Table_Events, event);
                             for(String[] attending:allAttending){
                                 sqlHelper.insert(Constants.Table_Events_Friends, attending);
+                                //TODO move this function down
+                                ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{attending[1]}, null);
+                                if(dbUsers[0].isEmpty()) {
+                                    try {
+                                        String name = myApiService.userGet(attending[1]).execute().getName();
+                                        sqlHelper.insert(Constants.Table_Users,new String[]{attending[1],name});
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
                             for(String[] task:allTasks){
                                 sqlHelper.insert(Constants.Table_Tasks, task);
@@ -86,6 +96,7 @@ public class GcmIntentService extends IntentService{
                         String Friend_ID = key.split("\\^")[1];
                         String attend = "";
                         sqlHelper.insert(Constants.Table_Events_Friends, new String[]{Event_ID, Friend_ID, attend});
+                        //TODO move this function down
                         ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{Friend_ID}, null);
                         if(dbUsers[0].isEmpty()) {
                             try {
@@ -140,7 +151,7 @@ public class GcmIntentService extends IntentService{
                         String Event_ID = key.split("\\^")[0];
                         String Task_ID_Number = key.split("\\^")[1];
                         String Friend_ID = key.split("\\^")[2];
-                        sqlHelper.update(Constants.Table_Tasks, new String[]{Constants.Table_Events_Friends_Fields[4]}, new String[]{Friend_ID},
+                        sqlHelper.update(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[4]}, new String[]{Friend_ID},
                                 new String[]{Constants.Table_Tasks_Fields[0], Constants.Table_Tasks_Fields[1]}, new String[]{Event_ID, Task_ID_Number});
                         break;
                     }
