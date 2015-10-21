@@ -5,6 +5,7 @@ package com.example.some_lie.backend.servlets;
  */
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ServingUrlOptions;
+
+import org.json.simple.JSONObject;
 
 public class ImagesServlet extends HttpServlet {
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -23,14 +29,25 @@ public class ImagesServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) {//    throws ServletException, IOException {
         try {
-            Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
-            List<BlobKey> blobKeys = blobs.get("file");
+            List<BlobKey> blobs = blobstoreService.getUploads(req).get("file");
+            BlobKey blobKey = blobs.get(0);
 
-            if (blobKeys == null || blobKeys.isEmpty()) {
-                res.sendRedirect("/");
-            } else {
-                res.sendRedirect("/serve?blob-key=" + blobKeys.get(0).getKeyString());
-            }
+            ImagesService imagesService = ImagesServiceFactory.getImagesService();
+            ServingUrlOptions servingOptions = ServingUrlOptions.Builder.withBlobKey(blobKey);
+
+            String servingUrl = imagesService.getServingUrl(servingOptions);
+
+            res.setStatus(HttpServletResponse.SC_OK);
+            res.setContentType("application/json");
+
+            JSONObject json = new JSONObject();
+            json.put("servingUrl", servingUrl);
+            json.put("blobKey", blobKey.getKeyString());
+
+            PrintWriter out = res.getWriter();
+            out.print(json.toString());
+            out.flush();
+            out.close();
         } catch (Exception e) {
             //TODO save exception in "Logs"
         }

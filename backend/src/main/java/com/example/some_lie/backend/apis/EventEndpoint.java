@@ -106,7 +106,8 @@ public class EventEndpoint {
             String uploadURL = blobstoreService.createUploadUrl("/blob_image");
            //MySQL_Util.insert("Events",new String[]{id,name,location,start,end,description,imagePath,updateTime});
             MySQL_Util.insert("Events",new String[]{id,name,location,start,end,description,uploadURL,updateTime});
-            images_path im_path = new images_path(uploadURL);
+            images_path im_path = new images_path();
+            im_path.setPath(uploadURL);
             return im_path;
 
         }catch(Exception e){
