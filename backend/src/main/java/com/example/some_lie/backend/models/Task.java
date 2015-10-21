@@ -13,7 +13,17 @@ public class Task {
     private String Task_ID_Number;
     private String Task_Name;
     private String Description;
-    private String Who;
+    private String Friend_ID;
+
+    public Task() {}
+
+    public Task(String event_ID, String task_ID_Number, String task_Name, String description, String friend_ID) {
+        Event_ID = event_ID;
+        Task_ID_Number = task_ID_Number;
+        Task_Name = task_Name;
+        Description = description;
+        Friend_ID = friend_ID;
+    }
 
     public String getEvent_ID() {
         return Event_ID;
@@ -23,12 +33,12 @@ public class Task {
         Event_ID = event_ID;
     }
 
-    public String getTaskNumber() {
+    public String getTask_ID_Number() {
         return Task_ID_Number;
     }
 
-    public void setTaskNumber(String taskNumber) {
-        Task_ID_Number = taskNumber;
+    public void setTask_ID_Number(String task_ID_Number) {
+        Task_ID_Number = task_ID_Number;
     }
 
     public String getTask_Name() {
@@ -47,22 +57,11 @@ public class Task {
         Description = description;
     }
 
-    public String getWho() {
-        return Who;
+    public String getFriend_ID() {
+        return Friend_ID;
     }
 
-    public void setWho(String who) {
-        Who = who;
+    public void setFriend_ID(String friend_ID) {
+        Friend_ID = friend_ID;
     }
-
-    public Task() {}
-
-    public Task(String event_ID, String task_ID_Number, String task_Name, String description, String who) {
-        Event_ID = event_ID;
-        Task_ID_Number = task_ID_Number;
-        Task_Name = task_Name;
-        Description = description;
-        Who = who;
-    }
-
 }

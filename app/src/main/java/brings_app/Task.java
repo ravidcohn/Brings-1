@@ -1,6 +1,5 @@
 package brings_app;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import utils.Constants;
 import utils.sqlHelper;
 
 /**
@@ -20,7 +20,7 @@ public class Task extends AppCompatActivity {
     private TextView tv_et_task_info;
     private TextView tv_et_description_info;
     private String KEY;
-    private int ID;
+    private int Task_ID;
     private SQLiteDatabase db;
   //  private String task;
   //  private String description;
@@ -34,9 +34,10 @@ public class Task extends AppCompatActivity {
         tv_et_description_info = (TextView)findViewById(R.id.tv_et_description_info);
         Bundle b = getIntent().getExtras();
         KEY = b.getString("KEY");
-        ID = b.getInt("taskID");
+        Task_ID = b.getInt("taskID");
 
-        ArrayList<String>[] db = sqlHelper.select(null,"Tasks",new String[]{"ID","TaskNumber"},new String[]{KEY,ID+""},new int[]{1});
+        ArrayList<String>[] db = sqlHelper.select(null, Constants.Table_Tasks,new String[]{Constants.Table_Tasks_Fields[0],
+                Constants.Table_Tasks_Fields[1]},new String[]{KEY, Task_ID +""},new int[]{1});
         tv_et_task_info.setText(db[2].get(0));
         tv_et_description_info.setText(db[3].get(0));
 
