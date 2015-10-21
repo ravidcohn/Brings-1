@@ -18,7 +18,7 @@
     <string name="bt_save_ui">Save</string>
     <string name="bt_cancel_ui">Cancel</string>
 
-
+    <string name="bt_post_tit">Post</string>
 
     <string name="tv_yes_title">Yes:</string>
     <string name="tv_maybe_title">Maybe: </string>

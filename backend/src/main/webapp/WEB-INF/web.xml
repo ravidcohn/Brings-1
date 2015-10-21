@@ -19,7 +19,8 @@
                 com.example.some_lie.backend.apis.Event_Friend_Endpoint,
                 com.example.some_lie.backend.apis.UserEndpoint,
                 com.example.some_lie.backend.apis.TaskEndpoint
-            ,com.example.some_lie.backend.apis.apps_logs</param-value>
+                ,com.example.some_lie.backend.apis.apps_logs,
+                com.example.some_lie.backend.apis.ChatEndpoint</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
