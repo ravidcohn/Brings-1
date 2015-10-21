@@ -124,9 +124,9 @@ public class TaskEndpoint {
          */
         @ApiMethod(name = "TaskInsert",path = "TaskInsert")
         public void Insert(@Named("AEvent_ID")String Event_ID, @Named("BTask_ID_Number")String Task_ID_Number, @Named("CTask_Name")String Task_Name, @Named("DDescription")String Description,
-                           @Named("EWho")String Who) {
+                           @Named("EFriend_ID")String Friend_ID) {
                 try {
-                        MySQL_Util.insert("Tasks",new String[]{Event_ID,Task_ID_Number,Task_Name,Description,Who});
+                        MySQL_Util.insert("Tasks",new String[]{Event_ID,Task_ID_Number,Task_Name,Description,Friend_ID});
 
                 }catch(Exception e){
                         StringWriter sw = new StringWriter();
