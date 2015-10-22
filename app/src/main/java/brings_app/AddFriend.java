@@ -97,8 +97,8 @@ public class AddFriend extends AppCompatActivity {
     private boolean saveData(){
         boolean ok = false;
         if(email.length() > 0) {
-            ArrayList<String>[] list = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]
-                    , Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, email}, null);
+           // ArrayList<String>[] list = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]
+                //    , Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, email}, null);
             if(sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0],
                     Constants.Table_Events_Friends_Fields[1]},new String[]{KEY,email},null)[0].isEmpty()){
                 sqlHelper.insert(Constants.Table_Events_Friends, new String[]{KEY, email,Constants.UnCheck});
