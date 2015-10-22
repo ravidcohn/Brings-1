@@ -34,6 +34,7 @@ import server.CloudEndpointBuilderHelper;
 import server.EventFriend_AsyncTask_delete_by_event;
 import server.Event_AsyncTask_delete;
 import server.SendMessage_AsyncTask;
+import server.Task_AsyncTask_deleteByEvent;
 import utils.Constants;
 import utils.bitmapHelper;
 import utils.sqlHelper;
@@ -261,8 +262,11 @@ public class MainActivity extends AppCompatActivity {
                                 sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{key}, null);
                                 new Event_AsyncTask_delete(context).execute(key);
                                 new EventFriend_AsyncTask_delete_by_event(context).execute(key);
+                                new Task_AsyncTask_deleteByEvent(context).execute(key);
                                 for(String to:attendingArray[1]) {
-                                    new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + key, to);
+                                    if(!to.equals(Constants.User_Name)) {
+                                        new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + key, to);
+                                    }
                                 }
                                 setList();
                             }

@@ -63,7 +63,7 @@ public class TaskEndpoint {
                                 task.setTask_ID_Number(rs.getString("Task_ID_Number"));
                                 task.setTask_Name(rs.getString("Task_Name"));
                                 task.setDescription(rs.getString("Description"));
-                                task.setFriend_ID(rs.getString("Who"));
+                                task.setFriend_ID(rs.getString("Friend_ID"));
                         }
                         rs.close();
                 } catch (Exception e) {
