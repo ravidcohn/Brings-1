@@ -545,6 +545,7 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
             task_do.setEnabled(false);
         }
         return convertView;
+        return null;
     }
 
     public int getCount() {
