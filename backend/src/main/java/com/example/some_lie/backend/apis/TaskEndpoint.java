@@ -126,7 +126,7 @@ public class TaskEndpoint {
         public void Insert(@Named("AEvent_ID")String Event_ID, @Named("BTask_ID_Number")String Task_ID_Number, @Named("CTask_Name")String Task_Name, @Named("DDescription")String Description,
                            @Named("EFriend_ID")String Friend_ID) {
                 try {
-                        MySQL_Util.insert("Tasks",new String[]{Event_ID,Task_ID_Number,Task_Name,Description,Friend_ID});
+                        MySQL_Util.insert("Tasks", new String[]{Event_ID, Task_ID_Number, Task_Name, Description, Friend_ID});
 
                 }catch(Exception e){
                         StringWriter sw = new StringWriter();
@@ -158,8 +158,8 @@ public class TaskEndpoint {
         public void Update(@Named("AEvent_ID")String Event_ID, @Named("BTask_ID_Number")String Task_ID_Number, @Named("CTask_Name")String Task_Name, @Named("DDescription")String Description,
                            @Named("EFriend_ID")String Friend_ID){
                 try {
-                        MySQL_Util.update("Tasks",new String[]{"Task_Name","Description","Friend_ID"},
-                                new String[]{Task_Name,Description,Friend_ID},
+                        MySQL_Util.update("Tasks", new String[]{"Task_Name", "Description", "Friend_ID"},
+                                new String[]{Task_Name, Description, Friend_ID},
                                 new String[]{"Event_ID", "Task_ID_Number"}, new String[]{Event_ID, Task_ID_Number});
 
                 }catch(Exception e){
@@ -193,7 +193,7 @@ public class TaskEndpoint {
         @ApiMethod(name = "TaskDelete",path = "TaskDelete")
         public void Delete(@Named("Event_ID") String Event_ID, @Named("Task_ID_Number") String Task_ID_Number){
                 try {
-                        MySQL_Util.delete("Tasks",new String[]{"Event_ID","Task_ID_Number"}, new String[]{Event_ID, Task_ID_Number}, new int[]{1});
+                        MySQL_Util.delete("Tasks", new String[]{"Event_ID", "Task_ID_Number"}, new String[]{Event_ID, Task_ID_Number}, new int[]{1});
                 }catch(Exception e){
                         StringWriter sw = new StringWriter();
                         e.printStackTrace(new PrintWriter(sw));
@@ -215,5 +215,28 @@ public class TaskEndpoint {
                 }
         }
 
-
+        @ApiMethod(name = "TaskDeleteByEvent",path = "TaskDeleteByEvent")
+        public void DeleteByEvent(@Named("Event_ID") String Event_ID){
+                try {
+                        MySQL_Util.delete("Tasks",new String[]{"Event_ID"}, new String[]{Event_ID}, new int[]{1});
+                }catch(Exception e){
+                        StringWriter sw = new StringWriter();
+                        e.printStackTrace(new PrintWriter(sw));
+                        LocalDateTime now = LocalDateTime.now();
+                        try {
+                                int year = now.getYear();
+                                int month = now.getMonthOfYear();
+                                int day = now.getDayOfMonth();
+                                int hour = now.getHourOfDay();
+                                int minute = now.getMinuteOfHour();
+                                int second = now.getSecondOfMinute();
+                                int millis = now.getMillisOfSecond();
+                                String date = day+"/"+month+"/"+year;
+                                String time = hour+":"+minute+":"+second+":"+millis;
+                                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                        } catch (Exception e1) {
+                                e1.printStackTrace();
+                        }
+                }
+        }
 }

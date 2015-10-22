@@ -257,7 +257,8 @@ public class MainActivity extends AppCompatActivity {
                                 String key = users_names.get(pos) + " - " + IDS.get(pos);
                                 ArrayList<String>[] attendingArray = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{"Event_ID"}, new String[]{key}, null);
                                 sqlHelper.delete(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{key}, new int[]{1});
-                                sqlHelper.delete(Constants.Table_Events_Friends, new String[]{"Event_ID"}, new String[]{key}, null);
+                                sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key}, null);
+                                sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{key}, null);
                                 new Event_AsyncTask_delete(context).execute(key);
                                 new EventFriend_AsyncTask_delete_by_event(context).execute(key);
                                 for(String to:attendingArray[1]) {
