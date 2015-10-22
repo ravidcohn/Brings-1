@@ -52,11 +52,7 @@ public class Event_AsyncTask_insert extends AsyncTask<String, Void, Void> {
                         urlConnection.getOutputStream());
 
                 String f_name = f.getName();
-                RandomAccessFile aFile = new RandomAccessFile
-                        (params[6], "r");
-                FileChannel inChannel = aFile.getChannel();
-                MappedByteBuffer buffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0, inChannel.size());
-                buffer.load();
+
                 String attachmentName = "file";
                 String attachmentFileName = f_name;
                 String crlf = "\r\n";
@@ -68,8 +64,11 @@ public class Event_AsyncTask_insert extends AsyncTask<String, Void, Void> {
                         attachmentName + "\";filename=\"" +
                         attachmentFileName + "\"" + crlf);
                 request.writeBytes(crlf);
+                RandomAccessFile fr = new RandomAccessFile(params[6], "rw");
+                byte[] buffer = new byte[(int)fr.length()];
+                fr.read(buffer);
 
-                request.write(buffer.array());
+                request.write(buffer);
 
                 request.writeBytes(crlf);
                 request.writeBytes(twoHyphens + boundary + twoHyphens + crlf);
@@ -77,9 +76,6 @@ public class Event_AsyncTask_insert extends AsyncTask<String, Void, Void> {
                 request.flush();
                 request.close();
 
-                buffer.clear();
-                inChannel.close();
-                aFile.close();
 
             }
         } catch (Exception e) {

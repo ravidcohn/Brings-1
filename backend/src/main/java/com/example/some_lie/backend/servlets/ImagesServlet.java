@@ -32,6 +32,8 @@ public class ImagesServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) {//    throws ServletException, IOException {
         try {
+            MySQL_Util.insert("Logs", new String[]{"ImagesServlet 35", "debug", "debug"});
+
             List<BlobKey> blobs = blobstoreService.getUploads(req).get("file");
             BlobKey blobKey = blobs.get(0);
 
