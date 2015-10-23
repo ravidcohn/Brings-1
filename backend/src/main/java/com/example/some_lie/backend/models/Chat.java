@@ -9,7 +9,7 @@ import com.googlecode.objectify.annotation.Id;
 @Entity
 public class Chat {
     @Id
-    private String Event_ID;
+    private String Message_ID;
     private String Friend_ID_Sender;
     private String Message;
     private String Date;
@@ -17,21 +17,20 @@ public class Chat {
 
     public Chat() {}
 
-
-    public Chat(String event_ID, String friend_ID_Sender, String message, String date, String time) {
-        Event_ID = event_ID;
+    public Chat(String message_ID, String friend_ID_Sender, String message, String date, String time) {
+        Message_ID = message_ID;
         Friend_ID_Sender = friend_ID_Sender;
         Message = message;
         Date = date;
         Time = time;
     }
 
-    public String getEvent_ID() {
-        return Event_ID;
+    public String getMessage_ID() {
+        return Message_ID;
     }
 
-    public void setEvent_ID(String event_ID) {
-        Event_ID = event_ID;
+    public void setMessage_ID(String message_ID) {
+        Message_ID = message_ID;
     }
 
     public String getFriend_ID_Sender() {

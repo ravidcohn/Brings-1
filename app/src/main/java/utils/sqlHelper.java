@@ -251,8 +251,8 @@ public final class sqlHelper {
     public static void Create_Table(String table_name){
         try{
             SQLiteDatabase db = getConnection();
-            db.execSQL("create table if not exists "+table_name+"("+Constants.Table_Chat_Fields[0]+" varchar NOT NULL,"+
-                    Constants.Table_Chat_Fields[1]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[2]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[3]+" varchar NOT NULL)");
+            db.execSQL("create table if not exists "+table_name+" ("+Constants.Table_Chat_Fields[0]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[1]+" varchar NOT NULL,"
+                    +Constants.Table_Chat_Fields[2]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[3]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[4]+" varchar NOT NULL)");
             db.close();
         }catch(Exception e){
             StringWriter sw = new StringWriter();

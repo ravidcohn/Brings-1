@@ -80,9 +80,8 @@ public class newTask extends AppCompatActivity {
             }
             String task_name = et_nt_task_ui.getText().toString();
             String description = et_nt_description_ui.getText().toString();
-            String name = "";
-            sqlHelper.insert(Constants.Table_Tasks, new String[]{KEY, task_id + "", task_name, description, name});
-            new Task_AsyncTask_insert(this).execute(KEY, task_id + "", task_name, description, name);
+            sqlHelper.insert(Constants.Table_Tasks, new String[]{KEY, task_id + "", task_name, description, Constants.UnCheck});
+            new Task_AsyncTask_insert(this).execute(KEY, task_id + "", task_name, description, Constants.UnCheck);
 
         }
         return ok;

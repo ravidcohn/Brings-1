@@ -33,8 +33,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioGroup;
@@ -46,12 +48,16 @@ import brings_app.AddFriend;
 import brings_app.R;
 import brings_app.Task;
 import brings_app.newTask;
+import server.Chat_AsyncTask_insert;
 import server.EventFriend_AsyncTask_Update;
 import server.EventFriend_AsyncTask_delete;
 import server.SendMessage_AsyncTask;
 import server.Task_AsyncTask_delete;
 import server.Task_AsyncTask_update;
 import utils.Constants;
+import utils.Helper;
+import utils.SendMessageHelper;
+import utils.TimeHelper;
 import utils.sqlHelper;
 
 public class SlidingTabs extends Fragment {
@@ -59,7 +65,6 @@ public class SlidingTabs extends Fragment {
 
     private int layouts[] = {R.layout.event_main, R.layout.event_attending, R.layout.event_todo, R.layout.event_chat};
     private String[] tabName= {"MAIN", "ATTENDING", "TODO", "CHAT"};
-
 
 
     /**
@@ -127,6 +132,7 @@ public class SlidingTabs extends Fragment {
         private String KEY = "";
         ArrayList<Integer> Tasks_keys = new ArrayList<>();
         ArrayList<String> members_keys = new ArrayList<>();
+        ArrayList<String> chat_keys = new ArrayList<>();
         /**
          * @return the number of pages to display
          */
@@ -224,7 +230,6 @@ public class SlidingTabs extends Fragment {
             setAttendingList(view);
 
         }
-
         private void setTodoTab(View view){
 
             setTodoList(view);
@@ -242,21 +247,38 @@ public class SlidingTabs extends Fragment {
             });
 
         }
-        private void setChatTab(View view){
-            /*
+        private void setChatTab(final View view){
             setChatList(view);
-            ImageButton bt_etd_add_task = (ImageButton) view.findViewById(R.id.bt_etd_add_task);
-            bt_etd_add_task.setOnClickListener(new View.OnClickListener() {
+            Button bt_chat_post_ui = (Button) view.findViewById(R.id.bt_chat_post_ui);
+            bt_chat_post_ui.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final Intent task = new Intent(getActivity().getApplicationContext(), newTask.class);
-                    Bundle data = new Bundle();
-                    data.putString("KEY", KEY);
-                    task.putExtras(data);
-                    getArguments().putInt("from", 2);
-                    startActivityForResult(task, 2);
+                    EditText et_chat_message_ui = (EditText)view.findViewById(R.id.et_chat_message_ui);
+                    String chat_message = et_chat_message_ui.getText().toString();
+                    if (chat_message.length() > 0) {
+                        String Chat_ID = Constants.Table_Chat +Helper.Clean_Event_ID(KEY);
+                        int id = 0;
+                        String message_ID = Constants.User_Name + " - " + id;
+                        ArrayList<String> allIDS = new ArrayList<>();
+                        ArrayList<String>[] dbResult = sqlHelper.select(null, Chat_ID, new String[]{Constants.Table_Chat_Fields[1]}, new String[]{Constants.User_Name}, null);
+                        for (String t_id : dbResult[0]) {
+                            allIDS.add(t_id);
+                        }
+                        while (allIDS.contains(message_ID)) {
+                            id++;
+                            message_ID = Constants.User_Name + " - " + id;
+                        }
+                        String date =  TimeHelper.getCurrentDate();
+                        String time =  TimeHelper.getCurrentTime();
+                        sqlHelper.insert(Chat_ID, new String[]{message_ID, Constants.User_Name, chat_message, date, time});
+                        new Chat_AsyncTask_insert(getContext()).execute(Chat_ID,message_ID, Constants.User_Name, chat_message, date, time);
+                        String update_massage = Constants.New_Chat_Message + "|" + Chat_ID + "^" + message_ID;
+                        SendMessageHelper.SendMessageToAllMyFriendByEvent(getContext(), KEY, update_massage);
+                        setChatList(view);
+                        getArguments().putInt("from", 2);
+                    }
                 }
-            });*/
+            });
 
         }
 
@@ -358,8 +380,8 @@ public class SlidingTabs extends Fragment {
                                     new Task_AsyncTask_delete(context).execute(KEY, task_key + "");
                                     ArrayList<String>[] dbEvent_Friend = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
                                     for (String to : dbEvent_Friend[1]) {
-                                        if (!to.equals(dbTasks[4].get(pos))) {
-                                            new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Task + "|" + KEY + "^" + dbEvent_Friend[1].get(pos), to);
+                                        if (!to.equals(Constants.User_Name)) {
+                                            new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Task + "|" + KEY + "^" + dbTasks[1].get(pos), to);
                                         }
                                     }
                                     setTodoList(rootView);
@@ -400,17 +422,16 @@ public class SlidingTabs extends Fragment {
                 }
             });
         }
-       /* private void setChatList(final View rootView) {
+        private void setChatList(final View rootView) {
             chat_keys.clear();
-            sqlTodo();
-            final ArrayList<String>[] dbTasks = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
+            sqlChat();
+            final ArrayList<String>[] dbChat = sqlHelper.select(null, Constants.Table_Chat + Helper.Clean_Event_ID(KEY), null, null, null);
 
             final Context context = getActivity();
-            ListView listview = (ListView) rootView.findViewById(R.id.lv_etd);
+            ListView listview = (ListView) rootView.findViewById(R.id.lv_chat);
             listview.setClickable(true);
-            final Intent task = new Intent(getActivity().getApplicationContext(), Task.class);
 
-            StableArrayAdapterTodo adapter = new StableArrayAdapterTodo(getActivity().getApplicationContext(),Tasks_keys,KEY);
+            StableArrayAdapterChat adapter = new StableArrayAdapterChat(getActivity().getApplicationContext(),chat_keys,KEY);
             listview.setAdapter(adapter);
 
             listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -418,70 +439,41 @@ public class SlidingTabs extends Fragment {
                 public boolean onItemLongClick(AdapterView<?> arg0, final View arg1,
                                                final int pos, final long id) {
                     // TODO Auto-generated method stub
-
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                    String task_name = dbTasks[2].get(pos);
-                    // set dialog message
-                    alertDialogBuilder
-                            .setMessage("Delete Task: "+task_name+"?")
-                            .setCancelable(false)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    int task_key = Tasks_keys.get(pos);
-                                    sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0],
-                                            Constants.Table_Tasks_Fields[1]}, new String[]{KEY, task_key + ""}, new int[]{1});
-                                    new Task_AsyncTask_delete(context).execute(KEY, task_key+"");
-                                    ArrayList<String>[] dbEvent_Friend = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
-                                    for(String to:dbEvent_Friend[1]) {
-                                        if(!to.equals(dbTasks[4].get(pos))) {
-                                            new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Task + "|" + KEY + "^" + dbEvent_Friend[1].get(pos), to);
-                                        }
+                    String sender_ID = dbChat[1].get(pos);
+                    if (sender_ID.equals(Constants.User_Name)) {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                        // set dialog message
+                        alertDialogBuilder
+                                .setMessage("Delete message?")
+                                .setCancelable(false)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        String Chat_ID = Constants.Table_Chat +Helper.Clean_Event_ID(KEY);
+                                        sqlHelper.delete(Chat_ID, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{dbChat[0].get(pos)}, new int[]{1});
+                                        new Task_AsyncTask_delete(context).execute(Chat_ID, dbChat[0].get(pos));
+                                        String message = Constants.Delete_Chat_Message + "|" + Chat_ID + "^" + dbChat[0].get(pos);
+                                        SendMessageHelper.SendMessageToAllMyFriendByEvent(context, KEY, message);
+                                        setChatList(rootView);
                                     }
-                                    setTodoList(rootView);
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    // if this button is clicked, just close
-                                    // the dialog box and do nothing
-                                    dialog.cancel();
-                                }
-                            });
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // if this button is clicked, just close
+                                        // the dialog box and do nothing
+                                        dialog.cancel();
+                                    }
+                                });
 
-                    // create alert dialog
-                    AlertDialog alertDialog = alertDialogBuilder.create();
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
 
-                    // show it
-                    alertDialog.show();
+                        // show it
+                        alertDialog.show();
+                    }
                     return true;
                 }
-            });*/
-
-          //  listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                /**
-                 *  starts the Register class for specific course when clicked on in the list
-                 */
-        /*
-                @Override
-                public void onItemClick(final AdapterView<?> parent, final View view, final int position, long id) {
-                    Bundle data = new Bundle();
-                    //data.putInt("ID", IDS.get(position));
-                    //data.putString("USERNAME", users_names.get(position));
-                    data.putInt("taskID", Tasks_keys.get(position));
-                    data.putString("KEY", KEY);
-                    task.putExtras(data);
-                    startActivity(task);
-                }
             });
-        }*/
 
-        private void sqlTodo() {
-            final Context context = getActivity().getApplicationContext();
-            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
-            for (String val: dbResult[1]){
-                Tasks_keys.add(Integer.parseInt(val));
-            }
         }
 
 
@@ -493,256 +485,35 @@ public class SlidingTabs extends Fragment {
                 members_keys.add(val);
             }
         }
-    }
-}
 
-class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener {
-
-    private Context context;
-    private String path;
-    private ArrayList<Integer> Tasks_keys;
-    private String KEY;
-
-    public StableArrayAdapterTodo(Context context, ArrayList<Integer> Tasks_keys, String KEY) {
-        this.context = context;
-        this.Tasks_keys = Tasks_keys;
-        this.KEY = KEY;
-    }
-
-    public View getView(final int position, View convertView, ViewGroup viewGroup) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.event_todo_list_item, null);
-
-        TextView task_tit = (TextView) convertView.findViewById(R.id.tv_etd_list_item_task_tit);
-        final TextView task_friend = (TextView) convertView.findViewById(R.id.tv_etd_list_item_frind_tit);
-        final CheckBox task_do = (CheckBox) convertView.findViewById(R.id.cb_etd_list_item_task);
-        task_do.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ArrayList<String>[] dbTasks = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
-                if (isChecked) {
-                    Update_Task_do(dbTasks, true, position);
-                    task_friend.setText(Constants.User_nickName);
-                } else {
-                    Update_Task_do(dbTasks, false, position);
-                    task_friend.setText("");
-                }
-            }
-        });
-        ArrayList<String>[] dbTasks = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
-        task_tit.setText(dbTasks[2].get(position));
-        task_friend.setText(getName(dbTasks[4].get(position)));
-        if (dbTasks[4].get(position).equals("")) {
-            task_do.setChecked(false);
-        } else {
-            task_do.setChecked(true);
-        }
-        if (dbTasks[4].get(position).equals(Constants.User_Name)||dbTasks[4].get(position).equals("")) {
-            task_do.setEnabled(true);
-            task_do.setVisibility(View.VISIBLE);
-        } else {
-            task_do.setEnabled(false);
-        }
-        return convertView;
-    }
-
-    public int getCount() {
-        //return IDS.size();
-        return Tasks_keys.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        //String s = users_names.get(position)+" - "+IDS.get(position);
-        //return s;
-        return Tasks_keys.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public void onClick(View v) {
-
-    }
-
-    private void Update_Task_do(ArrayList<String>[] dbTasks, Boolean task_do, int pos) {
-        if ((dbTasks[4].get(pos).equals("") && task_do == true) ||
-                (!dbTasks[4].get(pos).equals("") && task_do == false)) {
-            if (task_do) {
-                new Task_AsyncTask_update(context).execute(dbTasks[0].get(pos), dbTasks[1].get(pos),
-                        dbTasks[2].get(pos), dbTasks[3].get(pos), Constants.User_Name);
-                sqlHelper.update(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[4]}, new String[]{Constants.User_Name},
-                        new String[]{Constants.Table_Tasks_Fields[0], Constants.Table_Tasks_Fields[1]},
-                        new String[]{dbTasks[0].get(pos), dbTasks[1].get(pos)});
-            } else {
-                new Task_AsyncTask_update(context).execute(dbTasks[0].get(pos), dbTasks[1].get(pos),
-                        dbTasks[2].get(pos), dbTasks[3].get(pos), "");
-                sqlHelper.update(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[4]}, new String[]{""},
-                        new String[]{Constants.Table_Tasks_Fields[0], Constants.Table_Tasks_Fields[1]},
-                        new String[]{dbTasks[0].get(pos), dbTasks[1].get(pos)});
-            }
-            ArrayList<String>[] dbEvent_friends = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
-            String message = Constants.Update_Task_Friend_ID + "|" + dbTasks[0].get(pos) + "^" + dbTasks[1].get(pos) + "^" + Constants.User_Name;
-            for (String to : dbEvent_friends[1]) {
-                if (!to.equals(Constants.User_Name)) {
-                    new SendMessage_AsyncTask(context).execute(Constants.User_Name, message, to);
-                }
+        private void sqlTodo() {
+            final Context context = getActivity().getApplicationContext();
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
+            for (String val: dbResult[1]){
+                Tasks_keys.add(Integer.parseInt(val));
             }
         }
-    }
 
-    private String getName(String Friend_ID) {
-        if(Friend_ID.equals("null")){
-            return "";
+        private void sqlChat() {
+            final Context context = getActivity().getApplicationContext();
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Chat + Helper.Clean_Event_ID(KEY),
+                    null, null, null);
+            for (String val : dbResult[0]){
+                chat_keys.add(val);
+            }
         }
-        ArrayList<String>[] dbFriends = sqlHelper.select(null, Constants.Table_Friends, new String[]{Constants.Table_Friends_Fields[2]}, new String[]{Friend_ID}, null);
-        ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{Friend_ID}, null);
-        if (!dbFriends[0].isEmpty()) {
-            return dbFriends[0].get(0);
-        } else if (!dbUsers[0].isEmpty()) {
-            return dbUsers[1].get(0);
-        } else if (Friend_ID.equals(Constants.User_Name)) {
-            return Constants.User_nickName;
-        } else {
-            return Friend_ID;
-        }
-
     }
 }
 
 class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickListener {
 
-        private Context context;
-        private ArrayList<String> members_keys;
-        private String KEY;
-
-        public StableArrayAdapterAttending(Context context, ArrayList<String> members_keys, String KEY) {
-            this.context = context;
-            this.members_keys = members_keys;
-            this.KEY = KEY;
-        }
-
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        public View getView(final int position, View convertView, ViewGroup viewGroup) {
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.event_attending_list_item, null);
-
-            TextView name = (TextView) convertView.findViewById(R.id.tv_ea_list_item);
-            final RadioGroup radioGroup = (RadioGroup) convertView.findViewById(R.id.radioGroup);
-            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
-                    switch (radioGroup.getCheckedRadioButtonId()) {
-                        case R.id.rb_ea_list_yes: {
-                            Update_Attending(dbResult, Constants.Yes, position);
-                            break;
-                        }
-                        case R.id.rb_ea_list_maybe: {
-                            Update_Attending(dbResult, Constants.Maybe, position);
-                            break;
-                        }
-                        case R.id.rb_ea_list_no: {
-                            Update_Attending(dbResult, Constants.No, position);
-                            break;
-                        }
-                    }
-                }
-            });
-            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
-            //name.setText(dbResult[1].get(position));
-            name.setText(getName(dbResult[1].get(position)));
-            switch (dbResult[2].get(position)) {
-                case Constants.Yes: {
-                    radioGroup.check(R.id.rb_ea_list_yes);
-                    break;
-                }
-                case Constants.Maybe: {
-                    radioGroup.check(R.id.rb_ea_list_maybe);
-                    break;
-                }
-                case Constants.No: {
-                    radioGroup.check(R.id.rb_ea_list_no);
-                    break;
-                }
-                default: {
-                    break;
-                }
-            }
-            if (!dbResult[1].get(position).equals(Constants.User_Name)) {
-                for (int i = 0; i < radioGroup.getChildCount(); i++) {
-                    radioGroup.getChildAt(i).setEnabled(false);
-                    radioGroup.getChildAt(i).setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-                }
-            }
-
-            return convertView;
-        }
-
-        private String getName(String Friend_ID) {
-            ArrayList<String>[] dbFriends = sqlHelper.select(null, Constants.Table_Friends, new String[]{Constants.Table_Friends_Fields[2]}, new String[]{Friend_ID}, null);
-            ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{Friend_ID}, null);
-            if (!dbFriends[0].isEmpty()) {
-                return dbFriends[0].get(0);
-            } else if (!dbUsers[0].isEmpty()) {
-                return dbUsers[1].get(0);
-            } else if (Friend_ID.equals(Constants.User_Name)) {
-                return Constants.User_nickName;
-            } else {
-                return Friend_ID;
-            }
-        }
-
-        private void Update_Attending(ArrayList<String>[] dbResult, String attend, int pos) {
-            if (!dbResult[2].get(pos).equals(attend)) {
-                new EventFriend_AsyncTask_Update(context).execute(KEY, Constants.User_Name, attend);
-                sqlHelper.update(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[2]}, new String[]{attend},
-                        new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, Constants.User_Name});
-                String message = Constants.Update_Attending + "|" + KEY + "^" + Constants.User_Name + "^" + attend;
-                for (String to : dbResult[1]) {
-                    if (!to.equals(Constants.User_Name)) {
-                        new SendMessage_AsyncTask(context).execute(Constants.User_Name, message, to);
-                    }
-                }
-            }
-        }
-
-        public int getCount() {
-            //return IDS.size();
-            return members_keys.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            //String s = users_names.get(position)+" - "+IDS.get(position);
-            //return s;
-            return members_keys.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public void onClick(View v) {
-
-        }
-    }
-
-class StableArrayAdapterChat extends BaseAdapter implements View.OnClickListener {
-
     private Context context;
-    private ArrayList<String> chat_keys;
+    private ArrayList<String> members_keys;
     private String KEY;
 
-    public StableArrayAdapterChat(Context context, ArrayList<String> chat_keys, String KEY) {
+    public StableArrayAdapterAttending(Context context, ArrayList<String> members_keys, String KEY) {
         this.context = context;
-        this.chat_keys = chat_keys;
+        this.members_keys = members_keys;
         this.KEY = KEY;
     }
 
@@ -804,8 +575,207 @@ class StableArrayAdapterChat extends BaseAdapter implements View.OnClickListener
     }
 
     private String getName(String Friend_ID) {
-        ArrayList<String>[] dbFriends = sqlHelper.select(null, Constants.Table_Friends, new String[]{Constants.Table_Friends_Fields[2]}, new String[]{Friend_ID}, null);
-        ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{Friend_ID}, null);
+        ArrayList<String>[] dbFriends = sqlHelper.select(null, Constants.Table_Friends, new String[]{Constants.Table_Friends_Fields[2]}, new String[]{Friend_ID}, new int[]{1});
+        ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{Friend_ID}, new int[]{1});
+        if (!dbFriends[0].isEmpty()) {
+            return dbFriends[0].get(0);
+        } else if (!dbUsers[0].isEmpty()) {
+            return dbUsers[1].get(0);
+        } else if (Friend_ID.equals(Constants.User_Name)) {
+            return Constants.User_nickName;
+        } else {
+            return Friend_ID;
+        }
+    }
+
+    private void Update_Attending(ArrayList<String>[] dbResult, String attend, int pos) {
+        if (!dbResult[2].get(pos).equals(attend)) {
+            new EventFriend_AsyncTask_Update(context).execute(KEY, Constants.User_Name, attend);
+            sqlHelper.update(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[2]}, new String[]{attend},
+                    new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, Constants.User_Name});
+            String message = Constants.Update_Attending + "|" + KEY + "^" + Constants.User_Name + "^" + attend;
+            for (String to : dbResult[1]) {
+                if (!to.equals(Constants.User_Name)) {
+                    new SendMessage_AsyncTask(context).execute(Constants.User_Name, message, to);
+                }
+            }
+        }
+    }
+
+    public int getCount() {
+        //return IDS.size();
+        return members_keys.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        //String s = users_names.get(position)+" - "+IDS.get(position);
+        //return s;
+        return members_keys.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+}
+class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener {
+
+    private Context context;
+    private String path;
+    private ArrayList<Integer> Tasks_keys;
+    private String KEY;
+
+    public StableArrayAdapterTodo(Context context, ArrayList<Integer> Tasks_keys, String KEY) {
+        this.context = context;
+        this.Tasks_keys = Tasks_keys;
+        this.KEY = KEY;
+    }
+
+    public View getView(final int position, View convertView, ViewGroup viewGroup) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        convertView = inflater.inflate(R.layout.event_todo_list_item, null);
+
+        TextView task_tit = (TextView) convertView.findViewById(R.id.tv_etd_list_item_task_tit);
+        final TextView task_friend = (TextView) convertView.findViewById(R.id.tv_etd_list_item_frind_tit);
+        final CheckBox task_do = (CheckBox) convertView.findViewById(R.id.cb_etd_list_item_task);
+        task_do.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ArrayList<String>[] dbTasks = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
+                if (isChecked) {
+                    Update_Task_do(dbTasks, true, position);
+                    task_friend.setText(Constants.User_nickName);
+                } else {
+                    Update_Task_do(dbTasks, false, position);
+                    task_friend.setText("");
+                }
+            }
+        });
+        ArrayList<String>[] dbTasks = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
+        task_tit.setText(dbTasks[2].get(position));
+        task_friend.setText(getName(dbTasks[4].get(position)));
+        if (dbTasks[4].get(position).equals(Constants.UnCheck)) {
+            task_do.setChecked(false);
+        } else {
+            task_do.setChecked(true);
+        }
+        if (dbTasks[4].get(position).equals(Constants.User_Name)||dbTasks[4].get(position).equals(Constants.UnCheck)) {
+            task_do.setEnabled(true);
+            task_do.setVisibility(View.VISIBLE);
+        } else {
+            task_do.setEnabled(false);
+        }
+        return convertView;
+    }
+
+    public int getCount() {
+        //return IDS.size();
+        return Tasks_keys.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        //String s = users_names.get(position)+" - "+IDS.get(position);
+        //return s;
+        return Tasks_keys.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    private void Update_Task_do(ArrayList<String>[] dbTasks, Boolean task_do, int pos) {
+        if ((dbTasks[4].get(pos).equals(Constants.UnCheck) && task_do == true) ||
+                (!dbTasks[4].get(pos).equals(Constants.UnCheck) && task_do == false)) {
+            String Friend_ID;
+            if (task_do) {
+                new Task_AsyncTask_update(context).execute(dbTasks[0].get(pos), dbTasks[1].get(pos),
+                        dbTasks[2].get(pos), dbTasks[3].get(pos), Constants.User_Name);
+                sqlHelper.update(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[4]}, new String[]{Constants.User_Name},
+                        new String[]{Constants.Table_Tasks_Fields[0], Constants.Table_Tasks_Fields[1]},
+                        new String[]{dbTasks[0].get(pos), dbTasks[1].get(pos)});
+                Friend_ID = Constants.User_Name;
+            } else {
+                new Task_AsyncTask_update(context).execute(dbTasks[0].get(pos), dbTasks[1].get(pos),
+                        dbTasks[2].get(pos), dbTasks[3].get(pos), Constants.UnCheck);
+                sqlHelper.update(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[4]}, new String[]{Constants.UnCheck},
+                        new String[]{Constants.Table_Tasks_Fields[0], Constants.Table_Tasks_Fields[1]},
+                        new String[]{dbTasks[0].get(pos), dbTasks[1].get(pos)});
+                Friend_ID = Constants.UnCheck;
+            }
+            ArrayList<String>[] dbEvent_friends = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
+            String message = Constants.Update_Task_Friend_ID + "|" + dbTasks[0].get(pos) + "^" + dbTasks[1].get(pos) + "^" + Friend_ID;
+            for (String to : dbEvent_friends[1]) {
+                if (!to.equals(Constants.User_Name)) {
+                    new SendMessage_AsyncTask(context).execute(Constants.User_Name, message, to);
+                }
+            }
+        }
+    }
+
+    private String getName(String Friend_ID) {
+        if(Friend_ID.equals(Constants.UnCheck)){
+            return "";
+        }
+        ArrayList<String>[] dbFriends = sqlHelper.select(null, Constants.Table_Friends, new String[]{Constants.Table_Friends_Fields[2]}, new String[]{Friend_ID}, new int[]{1});
+        ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{Friend_ID}, new int[]{1});
+        if (!dbFriends[0].isEmpty()) {
+            return dbFriends[0].get(0);
+        } else if (!dbUsers[0].isEmpty()) {
+            return dbUsers[1].get(0);
+        } else if (Friend_ID.equals(Constants.User_Name)) {
+            return Constants.User_nickName;
+        } else {
+            return Friend_ID;
+        }
+
+    }
+}
+class StableArrayAdapterChat extends BaseAdapter implements View.OnClickListener {
+
+    private Context context;
+    private ArrayList<String> chat_keys;
+    private String KEY;
+
+    public StableArrayAdapterChat(Context context, ArrayList<String> chat_keys, String KEY) {
+        this.context = context;
+        this.chat_keys = chat_keys;
+        this.KEY = KEY;
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public View getView(final int position, View convertView, ViewGroup viewGroup) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        convertView = inflater.inflate(R.layout.event_chat_list_item, null);
+
+        TextView sender_name = (TextView) convertView.findViewById(R.id.tv_chat_list_item_sender_name);
+        TextView time = (TextView) convertView.findViewById(R.id.tv_chat_list_item_time);
+        TextView chat_message = (TextView) convertView.findViewById(R.id.tv_chat_list_item_message);
+
+        ArrayList<String>[] dbChat = sqlHelper.select(null, Constants.Table_Chat + Helper.Clean_Event_ID(KEY), null, null, null);
+        sender_name.setText(getName(dbChat[1].get(position)));
+        time.setText(dbChat[4].get(position));
+        chat_message.setText(dbChat[2].get(position));
+        return convertView;
+    }
+
+    private String getName(String Friend_ID) {
+        ArrayList<String>[] dbFriends = sqlHelper.select(null, Constants.Table_Friends, new String[]{Constants.Table_Friends_Fields[2]}, new String[]{Friend_ID}, new int[]{1});
+        ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{Friend_ID}, new int[]{1});
         if (!dbFriends[0].isEmpty()) {
             return dbFriends[0].get(0);
         } else if (!dbUsers[0].isEmpty()) {
