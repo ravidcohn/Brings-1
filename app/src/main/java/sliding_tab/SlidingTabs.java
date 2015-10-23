@@ -274,6 +274,7 @@ public class SlidingTabs extends Fragment {
                         new Chat_AsyncTask_insert(getContext()).execute(Chat_ID,message_ID, Constants.User_Name, chat_message, date, time);
                         String update_massage = Constants.New_Chat_Message + "|" + Chat_ID + "^" + message_ID;
                         SendMessageHelper.SendMessageToAllMyFriendByEvent(getContext(), KEY, update_massage);
+                        et_chat_message_ui.setText("");
                         setChatList(view);
                         getArguments().putInt("from", 2);
                     }

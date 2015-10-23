@@ -261,15 +261,15 @@ public class MainActivity extends AppCompatActivity {
                                 sqlHelper.delete(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{key}, new int[]{1});
                                 sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key}, null);
                                 sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{key}, null);
+                                sqlHelper.Delete_Table(Constants.Table_Chat + Helper.Clean_Event_ID(key));
                                 new Event_AsyncTask_delete(context).execute(key);
                                 new EventFriend_AsyncTask_delete_by_event(context).execute(key);
-                                new Task_AsyncTask_deleteByEvent(context).execute(key);
+                                new Task_AsyncTask_deleteByEvent(context).execute(Constants.Table_Chat + Helper.Clean_Event_ID(key));
                                 for(String to:attendingArray[1]) {
                                     if(!to.equals(Constants.User_Name)) {
                                         new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + key, to);
                                     }
                                 }
-                                sqlHelper.Delete_Table(Constants.Table_Chat+ Helper.Clean_Event_ID(key));
                                 setList();
                             }
                         })
