@@ -268,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
                                         new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + key, to);
                                     }
                                 }
+                                sqlHelper.Delete_Table(Constants.Table_Chat+key);
                                 setList();
                             }
                         })

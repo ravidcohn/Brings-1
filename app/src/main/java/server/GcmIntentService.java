@@ -8,9 +8,11 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.Brings;
+import com.example.some_lie.backend.brings.model.Chat;
+import com.example.some_lie.backend.brings.model.ChatCollection;
 import com.example.some_lie.backend.brings.model.Event;
-import com.example.some_lie.backend.brings.model.Task;
 import com.example.some_lie.backend.brings.model.EventFriendCollection;
+import com.example.some_lie.backend.brings.model.Task;
 import com.example.some_lie.backend.brings.model.TaskCollection;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -58,23 +60,21 @@ public class GcmIntentService extends IntentService{
                         String[] event = getEvent(key);
                         ArrayList<String[]> allAttending = getAllAttending(key);
                         ArrayList<String[]> allTasks = getAllTasks(key);
+                        String Chat_ID = Constants.Table_Chat+key;
+                        ArrayList<String[]> allChat = getAllChat(Chat_ID);
                         if(sqlHelper.select(null,Constants.Table_Events,new String[]{Constants.Table_Events_Fields[0]},new String[]{event[0]},new int[1])[0].isEmpty()){
                             sqlHelper.insert(Constants.Table_Events, event);
                             for(String[] attending:allAttending){
                                 sqlHelper.insert(Constants.Table_Events_Friends, attending);
-                                //TODO move this function down
-                                ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{attending[1]}, null);
-                                if(dbUsers[0].isEmpty()) {
-                                    try {
-                                        String name = myApiService.userGet(attending[1]).execute().getName();
-                                        sqlHelper.insert(Constants.Table_Users,new String[]{attending[1],name});
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
+                                String Friend_ID = attending[1];
+                                getNickName(Friend_ID);
                             }
                             for(String[] task:allTasks){
                                 sqlHelper.insert(Constants.Table_Tasks, task);
+                            }
+                            sqlHelper.Create_Table(Chat_ID);
+                            for(String[] chat:allChat){
+                                sqlHelper.insert(Chat_ID, chat);
                             }
                         }
                         break;
@@ -83,6 +83,7 @@ public class GcmIntentService extends IntentService{
                         sqlHelper.delete(Constants.Table_Events, new String[]{"id"}, new String[]{key}, new int[]{1});
                         sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key},null);
                         sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{key}, null);
+                        sqlHelper.Delete_Table(Constants.Table_Chat + key);
                         break;
                     }
                     case Constants.Update_Event:{
@@ -97,23 +98,14 @@ public class GcmIntentService extends IntentService{
                         String Friend_ID = key.split("\\^")[1];
                         String attend = "";
                         sqlHelper.insert(Constants.Table_Events_Friends, new String[]{Event_ID, Friend_ID, attend});
-                        //TODO move this function down
-                        ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{Friend_ID}, null);
-                        if(dbUsers[0].isEmpty()) {
-                            try {
-                                String name = myApiService.userGet(Friend_ID).execute().getName();
-                                sqlHelper.insert(Constants.Table_Users,new String[]{Friend_ID,name});
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                        getNickName(Friend_ID);
                         break;
                     }
                     case Constants.Delete_Attending:{
                         String Event_ID = key.split("\\^")[0];
                         String Friend_ID = key.split("\\^")[1];
-                        sqlHelper.delete(Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0],Constants.Table_Events_Friends_Fields[1]},
-                                new String[]{Event_ID,Friend_ID},new int[]{1});
+                        sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]},
+                                new String[]{Event_ID, Friend_ID}, new int[]{1});
                         break;
                     }
                     case Constants.Update_Attending:{
@@ -128,7 +120,8 @@ public class GcmIntentService extends IntentService{
                         String Event_ID = key.split("\\^")[0];
                         String Task_ID_Number = key.split("\\^")[1];
                         String[] task = getTask(Event_ID, Task_ID_Number);
-                        if(sqlHelper.select(null,Constants.Table_Tasks,new String[]{"Event_ID", "Task_ID_Number"},new String[]{task[0], task[1]},null)[0].isEmpty()) {
+                        if(sqlHelper.select(null,Constants.Table_Tasks,new String[]{Constants.Table_Tasks_Fields[0], Constants.Table_Tasks_Fields[1]},
+                                new String[]{task[0], task[1]},null)[0].isEmpty()) {
                             sqlHelper.insert(Constants.Table_Tasks, task);
                         }
                         break;
@@ -136,8 +129,8 @@ public class GcmIntentService extends IntentService{
                     case Constants.Delete_Task:{
                         String Event_ID = key.split("\\^")[0];
                         String Task_ID_Number = key.split("\\^")[1];
-                        sqlHelper.delete(Constants.Table_Tasks,new String[]{Constants.Table_Tasks_Fields[0],Constants.Table_Tasks_Fields[1]},
-                                new String[]{Event_ID,Task_ID_Number},new int[]{1});
+                        sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0], Constants.Table_Tasks_Fields[1]},
+                                new String[]{Event_ID, Task_ID_Number}, new int[]{1});
                         break;
                     }
                     case Constants.Update_Task:{
@@ -156,6 +149,22 @@ public class GcmIntentService extends IntentService{
                                 new String[]{Constants.Table_Tasks_Fields[0], Constants.Table_Tasks_Fields[1]}, new String[]{Event_ID, Task_ID_Number});
                         break;
                     }
+                    case Constants.New_Chat_Message:{
+                        String Chat_ID = key.split("\\^")[0];
+                        String Message_ID = key.split("\\^")[1];
+                        String[] chat = getChat(Chat_ID, Message_ID);
+                        if(sqlHelper.select(null,Chat_ID,new String[]{Constants.Table_Chat_Fields[0]},new String[]{chat[0]},null)[0].isEmpty()) {
+                            sqlHelper.insert(Chat_ID, chat);
+                        }
+                        break;
+                    }
+                    case Constants.Delete_Chat_Message:{
+                        String Chat_ID = key.split("\\^")[0];
+                        String Message_ID = key.split("\\^")[1];
+                        sqlHelper.delete(Chat_ID, new String[]{Constants.Table_Chat_Fields[0]},
+                                new String[]{Message_ID}, new int[]{1});
+                        break;
+                    }
                     default: {
                         showToast(extras.getString("message"));
                         break;
@@ -166,23 +175,20 @@ public class GcmIntentService extends IntentService{
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
 
-    private ArrayList<String[]> getAllTasks(String event_id) {
-        ArrayList<String[]>result = new ArrayList<>();
-        TaskCollection taskCollection;
-        try {
-            taskCollection = myApiService.taskGetAll(event_id).execute();
-            if(taskCollection.getItems()!=null) {
-                for (int i = 0; i < taskCollection.getItems().size(); i++) {
-                    result.add(new String[]{taskCollection.getItems().get(i).getEventID(), taskCollection.getItems().get(i).getTaskIDNumber(),
-                            taskCollection.getItems().get(i).getTaskName(), taskCollection.getItems().get(i).getDescription(), taskCollection.getItems().get(i).getFriendID()});
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
 
+
+
+    private void getNickName(String Friend_ID) {
+        ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{Friend_ID}, new int[]{1});
+        if(dbUsers[0].isEmpty()) {
+            try {
+                String name = myApiService.userGet(Friend_ID).execute().getName();
+                sqlHelper.insert(Constants.Table_Users,new String[]{Friend_ID,name});
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     protected void showToast(final String message) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -191,22 +197,6 @@ public class GcmIntentService extends IntentService{
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    private String[] getTask(String event_id, String task_id) {
-        Task task;
-        String[] result = new String[5];
-        try {
-            task = myApiService.taskGet(event_id, task_id).execute();
-            result[0] = task.getEventID();
-            result[1] = task.getTaskIDNumber();
-            result[2] = task.getTaskName();
-            result[3] = task.getDescription();
-            result[4] = task.getFriendID();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
     }
 
     private String[] getEvent(String event_id){
@@ -227,6 +217,36 @@ public class GcmIntentService extends IntentService{
         }
         return result;
     }
+    private String[] getTask(String event_id, String task_id) {
+        Task task;
+        String[] result = new String[5];
+        try {
+            task = myApiService.taskGet(event_id, task_id).execute();
+            result[0] = task.getEventID();
+            result[1] = task.getTaskIDNumber();
+            result[2] = task.getTaskName();
+            result[3] = task.getDescription();
+            result[4] = task.getFriendID();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    private String[] getChat(String chat_id, String message_id) {
+        Chat chat;
+        String[] result = new String[5];
+        try {
+            chat = myApiService.chatGet(chat_id, message_id).execute();
+            result[0] = chat.getMessageID();
+            result[1] = chat.getFriendIDSender();
+            result[2] = chat.getMessage();
+            result[3] = chat.getDate();
+            result[4] = chat.getTime();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
     private ArrayList<String[]> getAllAttending(String event_id) {
         ArrayList<String[]>result = new ArrayList<>();
@@ -242,5 +262,38 @@ public class GcmIntentService extends IntentService{
         }
         return result;
     }
+    private ArrayList<String[]> getAllTasks(String event_id) {
+        ArrayList<String[]>result = new ArrayList<>();
+        TaskCollection taskCollection;
+        try {
+            taskCollection = myApiService.taskGetAll(event_id).execute();
+            if(taskCollection.getItems()!=null) {
+                for (int i = 0; i < taskCollection.getItems().size(); i++) {
+                    result.add(new String[]{taskCollection.getItems().get(i).getEventID(), taskCollection.getItems().get(i).getTaskIDNumber(),
+                            taskCollection.getItems().get(i).getTaskName(), taskCollection.getItems().get(i).getDescription(), taskCollection.getItems().get(i).getFriendID()});
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    private ArrayList<String[]> getAllChat(String Chat_ID) {
+        ArrayList<String[]>result = new ArrayList<>();
+        ChatCollection chatCollection;
+        try {
+            chatCollection = myApiService.chatGetAll(Chat_ID).execute();
+            if(chatCollection.getItems()!=null) {
+                for (int i = 0; i < chatCollection.getItems().size(); i++) {
+                    result.add(new String[]{chatCollection.getItems().get(i).getMessageID(), chatCollection.getItems().get(i).getFriendIDSender(),
+                            chatCollection.getItems().get(i).getMessage(), chatCollection.getItems().get(i).getDate(), chatCollection.getItems().get(i).getTime()});
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 
 }
