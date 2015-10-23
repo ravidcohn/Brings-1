@@ -11,8 +11,7 @@ public class TimeHelper {
         int hour = now.getHourOfDay();
         int minute = now.getMinuteOfHour();
         int second = now.getSecondOfMinute();
-        int millis = now.getMillisOfSecond();
-        String time = hour+":"+minute+":"+second+":"+millis;
+        String time = hour+":"+minute+":"+second;
         return time;
     }
 

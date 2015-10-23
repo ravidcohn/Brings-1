@@ -55,6 +55,7 @@ import server.SendMessage_AsyncTask;
 import server.Task_AsyncTask_delete;
 import server.Task_AsyncTask_update;
 import utils.Constants;
+import utils.Helper;
 import utils.SendMessageHelper;
 import utils.TimeHelper;
 import utils.sqlHelper;
@@ -64,7 +65,6 @@ public class SlidingTabs extends Fragment {
 
     private int layouts[] = {R.layout.event_main, R.layout.event_attending, R.layout.event_todo, R.layout.event_chat};
     private String[] tabName= {"MAIN", "ATTENDING", "TODO", "CHAT"};
-
 
 
     /**
@@ -250,17 +250,17 @@ public class SlidingTabs extends Fragment {
         private void setChatTab(final View view){
             setChatList(view);
             Button bt_chat_post_ui = (Button) view.findViewById(R.id.bt_chat_post_ui);
-            EditText et_chat_message_ui = (EditText)view.findViewById(R.id.et_chat_message_ui);
-            final String chat_message = et_chat_message_ui.getText().toString();
             bt_chat_post_ui.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    EditText et_chat_message_ui = (EditText)view.findViewById(R.id.et_chat_message_ui);
+                    String chat_message = et_chat_message_ui.getText().toString();
                     if (chat_message.length() > 0) {
-                        String Chat_ID = Constants.Table_Chat + KEY.replaceAll(" - ","_");
+                        String Chat_ID = Constants.Table_Chat +Helper.Clean_Event_ID(KEY);
                         int id = 0;
                         String message_ID = Constants.User_Name + " - " + id;
                         ArrayList<String> allIDS = new ArrayList<>();
-                        ArrayList<String>[] dbResult = sqlHelper.select(null, Chat_ID, new String[]{Constants.Table_Chat_Fields[0]}, new String[]{Constants.User_Name}, null);
+                        ArrayList<String>[] dbResult = sqlHelper.select(null, Chat_ID, new String[]{Constants.Table_Chat_Fields[1]}, new String[]{Constants.User_Name}, null);
                         for (String t_id : dbResult[0]) {
                             allIDS.add(t_id);
                         }
@@ -268,8 +268,10 @@ public class SlidingTabs extends Fragment {
                             id++;
                             message_ID = Constants.User_Name + " - " + id;
                         }
-                        sqlHelper.insert(Chat_ID, new String[]{message_ID, Constants.User_Name, chat_message, TimeHelper.getCurrentDate(), TimeHelper.getCurrentTime()});
-                        new Chat_AsyncTask_insert(getContext()).execute(Chat_ID, Constants.User_Name, chat_message, TimeHelper.getCurrentDate(), TimeHelper.getCurrentTime());
+                        String date =  TimeHelper.getCurrentDate();
+                        String time =  TimeHelper.getCurrentTime();
+                        sqlHelper.insert(Chat_ID, new String[]{message_ID, Constants.User_Name, chat_message, date, time});
+                        new Chat_AsyncTask_insert(getContext()).execute(Chat_ID,message_ID, Constants.User_Name, chat_message, date, time);
                         String update_massage = Constants.New_Chat_Message + "|" + Chat_ID + "^" + message_ID;
                         SendMessageHelper.SendMessageToAllMyFriendByEvent(getContext(), KEY, update_massage);
                         setChatList(view);
@@ -423,7 +425,7 @@ public class SlidingTabs extends Fragment {
         private void setChatList(final View rootView) {
             chat_keys.clear();
             sqlChat();
-            final ArrayList<String>[] dbChat = sqlHelper.select(null, Constants.Table_Chat + KEY.replaceAll(" - ","_"), null, null, null);
+            final ArrayList<String>[] dbChat = sqlHelper.select(null, Constants.Table_Chat + Helper.Clean_Event_ID(KEY), null, null, null);
 
             final Context context = getActivity();
             ListView listview = (ListView) rootView.findViewById(R.id.lv_chat);
@@ -446,7 +448,7 @@ public class SlidingTabs extends Fragment {
                                 .setCancelable(false)
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        String Chat_ID = Constants.Table_Chat + KEY.replaceAll(" - ","_");
+                                        String Chat_ID = Constants.Table_Chat +Helper.Clean_Event_ID(KEY);
                                         sqlHelper.delete(Chat_ID, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{dbChat[0].get(pos)}, new int[]{1});
                                         new Task_AsyncTask_delete(context).execute(Chat_ID, dbChat[0].get(pos));
                                         String message = Constants.Delete_Chat_Message + "|" + Chat_ID + "^" + dbChat[0].get(pos);
@@ -494,7 +496,7 @@ public class SlidingTabs extends Fragment {
 
         private void sqlChat() {
             final Context context = getActivity().getApplicationContext();
-            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Chat + KEY.replaceAll(" - ","_"),
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Chat + Helper.Clean_Event_ID(KEY),
                     null, null, null);
             for (String val : dbResult[0]){
                 chat_keys.add(val);
@@ -764,10 +766,10 @@ class StableArrayAdapterChat extends BaseAdapter implements View.OnClickListener
         TextView time = (TextView) convertView.findViewById(R.id.tv_chat_list_item_time);
         TextView chat_message = (TextView) convertView.findViewById(R.id.tv_chat_list_item_message);
 
-        ArrayList<String>[] dbChat = sqlHelper.select(null, Constants.Table_Chat + KEY.replaceAll(" - ","_"), null, null, null);
+        ArrayList<String>[] dbChat = sqlHelper.select(null, Constants.Table_Chat + Helper.Clean_Event_ID(KEY), null, null, null);
         sender_name.setText(getName(dbChat[1].get(position)));
         time.setText(dbChat[4].get(position));
-        time.setText(dbChat[2].get(position));
+        chat_message.setText(dbChat[2].get(position));
         return convertView;
     }
 
