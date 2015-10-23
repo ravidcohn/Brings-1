@@ -85,11 +85,11 @@ public class MySQL_Util {
     public static void createTable(String table, String[] columns_names, String[] columns_params)throws Exception {
         clean(columns_names);
         int end = columns_names.length - 1;
-        String query = "CREATE TABLE `" + table + "`(";
+        String query = "CREATE TABLE " + table + " (";
         for (int i = 0; i < end; i++) {
-            query += "`" + columns_names[i] + "` " + columns_params[i] + "' COMMENT '', ";
+            query += columns_names[i] + " " + columns_params[i] + ", ";
         }
-        query += "`" + columns_names[end] + "` " + columns_params[end] + "' COMMENT '');";
+        query += columns_names[end] + " " + columns_params[end] + ");";
         Connection conn = getConnection();
         conn.createStatement().execute(query);
 

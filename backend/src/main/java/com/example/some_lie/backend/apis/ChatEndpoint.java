@@ -190,7 +190,7 @@ public class ChatEndpoint {
         public void CreateByEvent(@Named("Chat_ID") String Chat_ID){
                 try {
                         MySQL_Util.createTable(Chat_ID, new String[]{"Message_ID","Friend_ID_Sender","Message","Date","Time"},
-                                new String[]{"VARCHAR(30) NOT NULL ","VARCHAR(30) NOT NULL","VARCHAR(LONGTEXT) NOT NULL","VARCHAR(30) NOT NULL","VARCHAR(30) NOT NULL"});
+                                new String[]{"VARCHAR(30) NOT NULL ","VARCHAR(30) NOT NULL","LONGTEXT NOT NULL","VARCHAR(30) NOT NULL","VARCHAR(30) NOT NULL"});
                 }catch(Exception e){
                         StringWriter sw = new StringWriter();
                         e.printStackTrace(new PrintWriter(sw));
