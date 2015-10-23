@@ -34,7 +34,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ImagesServlet</servlet-name>
-        <url-pattern>/blob_image</url-pattern>
+        <url-pattern>/images_servlet</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>

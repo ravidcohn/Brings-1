@@ -448,7 +448,7 @@ public class SlidingTabs extends Fragment {
                                 .setCancelable(false)
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        String Chat_ID = Constants.Table_Chat +Helper.Clean_Event_ID(KEY);
+                                        String Chat_ID = Constants.Table_Chat + Helper.Clean_Event_ID(KEY);
                                         sqlHelper.delete(Chat_ID, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{dbChat[0].get(pos)}, new int[]{1});
                                         new Task_AsyncTask_delete(context).execute(Chat_ID, dbChat[0].get(pos));
                                         String message = Constants.Delete_Chat_Message + "|" + Chat_ID + "^" + dbChat[0].get(pos);
@@ -661,6 +661,7 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
         ArrayList<String>[] dbTasks = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
         task_tit.setText(dbTasks[2].get(position));
         task_friend.setText(getName(dbTasks[4].get(position)));
+        task_friend.setTextColor(Color.BLACK);
         if (dbTasks[4].get(position).equals(Constants.UnCheck)) {
             task_do.setChecked(false);
         } else {
@@ -768,8 +769,11 @@ class StableArrayAdapterChat extends BaseAdapter implements View.OnClickListener
 
         ArrayList<String>[] dbChat = sqlHelper.select(null, Constants.Table_Chat + Helper.Clean_Event_ID(KEY), null, null, null);
         sender_name.setText(getName(dbChat[1].get(position)));
+        sender_name.setTextColor(Color.BLACK);
         time.setText(dbChat[4].get(position));
+        time.setTextColor(Color.BLACK);
         chat_message.setText(dbChat[2].get(position));
+        chat_message.setTextColor(Color.BLACK);
         return convertView;
     }
 
