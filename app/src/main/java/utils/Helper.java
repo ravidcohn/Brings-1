@@ -6,7 +6,7 @@ package utils;
 public class Helper {
 
     public static String Clean_Event_ID(String Event_ID){
-        return Event_ID.replaceAll(" - ","_").replaceAll("@","_");
+        return Event_ID.replaceAll(" - ","_").replaceAll("@","_").replaceAll(".","_");
     }
 
 }
