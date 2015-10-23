@@ -256,7 +256,7 @@ public class SlidingTabs extends Fragment {
                 @Override
                 public void onClick(View v) {
                     if (chat_message.length() > 0) {
-                        String Chat_ID = Constants.Table_Chat + KEY;
+                        String Chat_ID = Constants.Table_Chat + KEY.replaceAll(" - ","_");
                         int id = 0;
                         String message_ID = Constants.User_Name + " - " + id;
                         ArrayList<String> allIDS = new ArrayList<>();
@@ -423,7 +423,7 @@ public class SlidingTabs extends Fragment {
         private void setChatList(final View rootView) {
             chat_keys.clear();
             sqlChat();
-            final ArrayList<String>[] dbChat = sqlHelper.select(null, Constants.Table_Chat + KEY, null, null, null);
+            final ArrayList<String>[] dbChat = sqlHelper.select(null, Constants.Table_Chat + KEY.replaceAll(" - ","_"), null, null, null);
 
             final Context context = getActivity();
             ListView listview = (ListView) rootView.findViewById(R.id.lv_chat);
@@ -446,7 +446,7 @@ public class SlidingTabs extends Fragment {
                                 .setCancelable(false)
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        String Chat_ID = Constants.Table_Chat + KEY;
+                                        String Chat_ID = Constants.Table_Chat + KEY.replaceAll(" - ","_");
                                         sqlHelper.delete(Chat_ID, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{dbChat[0].get(pos)}, new int[]{1});
                                         new Task_AsyncTask_delete(context).execute(Chat_ID, dbChat[0].get(pos));
                                         String message = Constants.Delete_Chat_Message + "|" + Chat_ID + "^" + dbChat[0].get(pos);
@@ -494,7 +494,7 @@ public class SlidingTabs extends Fragment {
 
         private void sqlChat() {
             final Context context = getActivity().getApplicationContext();
-            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Chat + KEY,
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Chat + KEY.replaceAll(" - ","_"),
                     null, null, null);
             for (String val : dbResult[0]){
                 chat_keys.add(val);
@@ -764,7 +764,7 @@ class StableArrayAdapterChat extends BaseAdapter implements View.OnClickListener
         TextView time = (TextView) convertView.findViewById(R.id.tv_chat_list_item_time);
         TextView chat_message = (TextView) convertView.findViewById(R.id.tv_chat_list_item_message);
 
-        ArrayList<String>[] dbChat = sqlHelper.select(null, Constants.Table_Chat+ KEY, null, null, null);
+        ArrayList<String>[] dbChat = sqlHelper.select(null, Constants.Table_Chat + KEY.replaceAll(" - ","_"), null, null, null);
         sender_name.setText(getName(dbChat[1].get(position)));
         time.setText(dbChat[4].get(position));
         time.setText(dbChat[2].get(position));

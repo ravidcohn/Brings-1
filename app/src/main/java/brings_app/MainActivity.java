@@ -36,6 +36,7 @@ import server.Event_AsyncTask_delete;
 import server.SendMessage_AsyncTask;
 import server.Task_AsyncTask_deleteByEvent;
 import utils.Constants;
+import utils.Helper;
 import utils.bitmapHelper;
 import utils.sqlHelper;
 
@@ -268,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
                                         new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + key, to);
                                     }
                                 }
-                                sqlHelper.Delete_Table(Constants.Table_Chat+key);
+                                sqlHelper.Delete_Table(Constants.Table_Chat+ Helper.Clean_Event_ID(key));
                                 setList();
                             }
                         })

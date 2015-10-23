@@ -28,6 +28,7 @@ import server.Chat_AsyncTask_CreateByEvent;
 import server.EventFriend_AsyncTask_insert;
 import server.Event_AsyncTask_insert;
 import utils.Constants;
+import utils.Helper;
 import utils.bitmapHelper;
 import utils.sqlHelper;
 
@@ -95,7 +96,7 @@ public class newEvent extends AppCompatActivity {
                     String description = tv_ne_description_ui.getText().toString();
                     new Event_AsyncTask_insert(context).execute(key, name, place, start, end, description, imagePath, Update_Time);
                     new EventFriend_AsyncTask_insert(context).execute(key, USERNAME, Constants.Yes);
-                    String Chat_ID = Constants.Table_Chat + key;
+                    String Chat_ID = Constants.Table_Chat + Helper.Clean_Event_ID(key);
                     new Chat_AsyncTask_CreateByEvent(context).execute(Chat_ID);
                     Bundle b = new Bundle();
                     b.putString("KEY", key);
@@ -139,7 +140,7 @@ public class newEvent extends AppCompatActivity {
             Update_Time = time.toString();
             sqlHelper.insert(Constants.Table_Events, new String[]{key, name, place, start, end, description, imagePath, Update_Time});
             sqlHelper.insert(Constants.Table_Events_Friends, new String[]{key, Constants.User_Name, Constants.Yes});
-            String Chat_ID = Constants.Table_Chat + key;
+            String Chat_ID = Constants.Table_Chat + Helper.Clean_Event_ID(key);
             sqlHelper.Create_Table(Chat_ID);
         }
         return ok;

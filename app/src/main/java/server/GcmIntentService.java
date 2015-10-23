@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import utils.Constants;
+import utils.Helper;
 import utils.sqlHelper;
 
 
@@ -60,7 +61,7 @@ public class GcmIntentService extends IntentService{
                         String[] event = getEvent(key);
                         ArrayList<String[]> allAttending = getAllAttending(key);
                         ArrayList<String[]> allTasks = getAllTasks(key);
-                        String Chat_ID = Constants.Table_Chat+key;
+                        String Chat_ID = Constants.Table_Chat + Helper.Clean_Event_ID(key);
                         ArrayList<String[]> allChat = getAllChat(Chat_ID);
                         if(sqlHelper.select(null,Constants.Table_Events,new String[]{Constants.Table_Events_Fields[0]},new String[]{event[0]},new int[1])[0].isEmpty()){
                             sqlHelper.insert(Constants.Table_Events, event);
@@ -83,7 +84,7 @@ public class GcmIntentService extends IntentService{
                         sqlHelper.delete(Constants.Table_Events, new String[]{"id"}, new String[]{key}, new int[]{1});
                         sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key},null);
                         sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{key}, null);
-                        sqlHelper.Delete_Table(Constants.Table_Chat + key);
+                        sqlHelper.Delete_Table(Constants.Table_Chat + Helper.Clean_Event_ID(key));
                         break;
                     }
                     case Constants.Update_Event:{
