@@ -44,8 +44,21 @@ public class Event_AsyncTask_insert extends AsyncTask<String, Void, Void> {
             if(f.exists()) {
                 String urlP = ipath.getPath();
                 URL url = new URL(urlP);
+/*
+                HttpClient httpclient = new DefaultHttpClient();
+
+                HttpPost httppost = new HttpPost(urlP);
+
+                FileBody fileBody  = new FileBody(f);
+                MultipartEntity reqEntity = new MultipartEntity();
+
+                reqEntity.addPart("file", fileBody);
+
+                httppost.setEntity(reqEntity);
+                org.apache.http.HttpResponse response = httpclient.execute(httppost);
+
+                */
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setUseCaches(false);
                 urlConnection.setDoOutput(true);
                 urlConnection.setRequestMethod("POST");
                 DataOutputStream request = new DataOutputStream(
