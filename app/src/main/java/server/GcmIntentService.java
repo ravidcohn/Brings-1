@@ -81,7 +81,7 @@ public class GcmIntentService extends IntentService{
                         break;
                     }
                     case Constants.Delete_Event:{
-                        sqlHelper.delete(Constants.Table_Events, new String[]{"id"}, new String[]{key}, new int[]{1});
+                        sqlHelper.delete(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{key}, new int[]{1});
                         sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key},null);
                         sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{key}, null);
                         sqlHelper.Delete_Table(Constants.Table_Chat + Helper.Clean_Event_ID(key));
@@ -105,8 +105,15 @@ public class GcmIntentService extends IntentService{
                     case Constants.Delete_Attending:{
                         String Event_ID = key.split("\\^")[0];
                         String Friend_ID = key.split("\\^")[1];
-                        sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]},
-                                new String[]{Event_ID, Friend_ID}, new int[]{1});
+                        if(Friend_ID.equals(Constants.User_Name)){
+                            sqlHelper.delete(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{key}, new int[]{1});
+                            sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key},null);
+                            sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{key}, null);
+                            sqlHelper.Delete_Table(Constants.Table_Chat + Helper.Clean_Event_ID(key));
+                        }else {
+                            sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]},
+                                    new String[]{Event_ID, Friend_ID}, new int[]{1});
+                        }
                         break;
                     }
                     case Constants.Update_Attending:{

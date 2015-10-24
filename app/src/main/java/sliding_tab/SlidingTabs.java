@@ -176,28 +176,32 @@ public class SlidingTabs extends Fragment {
                 Bundle b = getArguments();
                 KEY = b.getString("KEY");
             }
-            switch(position){
-                case 0:{
-                    setMainTab(view);
-                    break;
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{KEY}, null);
+            if(dbResult[0].isEmpty()) {
+                getActivity().finish();
+            }else {
+                switch (position) {
+                    case 0: {
+                        setMainTab(view);
+                        break;
+                    }
+                    case 1: {
+                        setAttendingTab(view);
+                        break;
+                    }
+                    case 2: {
+                        setTodoTab(view);
+                        break;
+                    }
+                    case 3: {
+                        setChatTab(view);
+                        break;
+                    }
                 }
-                case 1:{
-                    setAttendingTab(view);
-                    break;
-                }
-                case 2:{
-                    setTodoTab(view);
-                    break;
-                }
-                case 3:{
-                    setChatTab(view);
-                    break;
-                }
+
+                // Add the newly created View to the ViewPager
+                container.addView(view);
             }
-
-            // Add the newly created View to the ViewPager
-            container.addView(view);
-
             return view;
         }
         private void setMainTab(View view){
@@ -252,10 +256,10 @@ public class SlidingTabs extends Fragment {
             bt_chat_post_ui.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    EditText et_chat_message_ui = (EditText)view.findViewById(R.id.et_chat_message_ui);
+                    EditText et_chat_message_ui = (EditText) view.findViewById(R.id.et_chat_message_ui);
                     String chat_message = et_chat_message_ui.getText().toString();
                     if (chat_message.length() > 0) {
-                        String Chat_ID = Constants.Table_Chat +Helper.Clean_Event_ID(KEY);
+                        String Chat_ID = Constants.Table_Chat + Helper.Clean_Event_ID(KEY);
                         int id = 0;
                         String message_ID = Constants.User_Name + " - " + id;
                         ArrayList<String> allIDS = new ArrayList<>();
@@ -267,10 +271,10 @@ public class SlidingTabs extends Fragment {
                             id++;
                             message_ID = Constants.User_Name + " - " + id;
                         }
-                        String date =  TimeHelper.getCurrentDate();
-                        String time =  TimeHelper.getCurrentTime();
+                        String date = TimeHelper.getCurrentDate();
+                        String time = TimeHelper.getCurrentTime();
                         sqlHelper.insert(Chat_ID, new String[]{message_ID, Constants.User_Name, chat_message, date, time});
-                        new Chat_AsyncTask_insert(getContext()).execute(Chat_ID,message_ID, Constants.User_Name, chat_message, date, time);
+                        new Chat_AsyncTask_insert(getContext()).execute(Chat_ID, message_ID, Constants.User_Name, chat_message, date, time);
                         String update_massage = Constants.New_Chat_Message + "|" + Chat_ID + "^" + message_ID;
                         SendMessageHelper.SendMessageToAllMyFriendByEvent(getContext(), KEY, update_massage);
                         et_chat_message_ui.setText("");
@@ -318,15 +322,23 @@ public class SlidingTabs extends Fragment {
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     String Friend_ID = members_keys.get(pos);
-                                    sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, Friend_ID}, new int[]{1});
                                     new EventFriend_AsyncTask_delete(context).execute(KEY, Friend_ID);
                                     ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
                                     for (String to : dbResult[1]) {
-                                        if (!to.equals(KEY) && !to.equals(Constants.User_Name) && !to.equals(Friend_ID)) {
+                                        if (!to.equals(Constants.User_Name) && !to.equals(Friend_ID)) {
                                             new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Attending + "|" + KEY + "^" + Friend_ID, to);
                                         }
                                     }
-                                    new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + KEY, Friend_ID);
+                                    if(Friend_ID.equals(Constants.User_Name)){
+                                        sqlHelper.delete(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{KEY}, new int[]{1});
+                                        sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY},null);
+                                        sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
+                                        sqlHelper.Delete_Table(Constants.Table_Chat + Helper.Clean_Event_ID(KEY));
+                                    }else {
+                                        new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + KEY, Friend_ID);
+                                        sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0],
+                                                Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, Friend_ID}, new int[]{1});
+                                    }
                                     setAttendingList(view);
                                 }
                             })
@@ -502,6 +514,7 @@ public class SlidingTabs extends Fragment {
                 chat_keys.add(val);
             }
         }
+
     }
 }
 
