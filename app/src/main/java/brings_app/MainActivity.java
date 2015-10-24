@@ -30,6 +30,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.util.ArrayList;
 
+import server.Chat_AsyncTask_deleteByEvent;
 import server.CloudEndpointBuilderHelper;
 import server.EventFriend_AsyncTask_delete_by_event;
 import server.Event_AsyncTask_delete;
@@ -264,7 +265,9 @@ public class MainActivity extends AppCompatActivity {
                                 sqlHelper.Delete_Table(Constants.Table_Chat + Helper.Clean_Event_ID(key));
                                 new Event_AsyncTask_delete(context).execute(key);
                                 new EventFriend_AsyncTask_delete_by_event(context).execute(key);
-                                new Task_AsyncTask_deleteByEvent(context).execute(Constants.Table_Chat + Helper.Clean_Event_ID(key));
+                                new Task_AsyncTask_deleteByEvent(context).execute(key);
+                                String Chat_ID = Constants.Table_Chat + Helper.Clean_Event_ID(key);
+                                new Chat_AsyncTask_deleteByEvent(context).execute(Chat_ID);
                                 for(String to:attendingArray[1]) {
                                     if(!to.equals(Constants.User_Name)) {
                                         new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + key, to);
