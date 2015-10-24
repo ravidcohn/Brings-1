@@ -80,5 +80,4 @@ public final class Constants {
     public final static String Maybe = "Maybe";
     public final static String UnCheck = "UnCheck";
 
-
 }
