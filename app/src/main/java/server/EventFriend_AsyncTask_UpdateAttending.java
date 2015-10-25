@@ -8,11 +8,11 @@ import com.example.some_lie.backend.brings.Brings;
 /**
  * Created by Ravid on 18/10/2015.
  */
-public class EventFriend_AsyncTask_Update extends AsyncTask<String, Void, Void> {
+public class EventFriend_AsyncTask_UpdateAttending extends AsyncTask<String, Void, Void> {
     private static Brings myApiService = null;
     private Context context;
 
-    public EventFriend_AsyncTask_Update(Context context) {
+    public EventFriend_AsyncTask_UpdateAttending(Context context) {
         this.context = context;
     }
 
@@ -23,7 +23,7 @@ public class EventFriend_AsyncTask_Update extends AsyncTask<String, Void, Void> 
         }
 
         try {
-            myApiService.eventFriendUpdate(params[0],params[1],params[2]).execute();
+            myApiService.eventFriendUpdateAttending(params[0], params[1], params[2]).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }

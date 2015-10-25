@@ -48,7 +48,7 @@ import brings_app.R;
 import brings_app.Task;
 import brings_app.newTask;
 import server.Chat_AsyncTask_insert;
-import server.EventFriend_AsyncTask_Update;
+import server.EventFriend_AsyncTask_UpdateAttending;
 import server.EventFriend_AsyncTask_delete;
 import server.SendMessage_AsyncTask;
 import server.Task_AsyncTask_delete;
@@ -603,7 +603,7 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
 
     private void Update_Attending(ArrayList<String>[] dbResult, String attend, int pos) {
         if (!dbResult[2].get(pos).equals(attend)) {
-            new EventFriend_AsyncTask_Update(context).execute(KEY, Constants.User_Name, attend);
+            new EventFriend_AsyncTask_UpdateAttending(context).execute(KEY, Constants.User_Name, attend);
             sqlHelper.update(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[2]}, new String[]{attend},
                     new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, Constants.User_Name});
             String message = Constants.Update_Attending + "|" + KEY + "^" + Constants.User_Name + "^" + attend;
@@ -806,7 +806,7 @@ class StableArrayAdapterChat extends BaseAdapter implements View.OnClickListener
 
     private void Update_Attending(ArrayList<String>[] dbResult, String attend, int pos) {
         if (!dbResult[2].get(pos).equals(attend)) {
-            new EventFriend_AsyncTask_Update(context).execute(KEY, Constants.User_Name, attend);
+            new EventFriend_AsyncTask_UpdateAttending(context).execute(KEY, Constants.User_Name, attend);
             sqlHelper.update(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[2]}, new String[]{attend},
                     new String[]{Constants.Table_Events_Friends_Fields[0], Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, Constants.User_Name});
             String message = Constants.Update_Attending + "|" + KEY + "^" + Constants.User_Name + "^" + attend;

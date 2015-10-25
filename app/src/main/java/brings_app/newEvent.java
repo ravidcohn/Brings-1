@@ -139,7 +139,7 @@ public class newEvent extends AppCompatActivity {
             Date time = Calendar.getInstance().getTime();
             Update_Time = time.toString();
             sqlHelper.insert(Constants.Table_Events, new String[]{key, name, place, start, end, description, imagePath, Update_Time});
-            sqlHelper.insert(Constants.Table_Events_Friends, new String[]{key, Constants.User_Name, Constants.Yes});
+            sqlHelper.insert(Constants.Table_Events_Friends, new String[]{key, Constants.User_Name, Constants.Yes, Constants.Manager});
             String Chat_ID = Constants.Table_Chat + Helper.Clean_Event_ID(key);
             sqlHelper.Create_Table(Chat_ID);
         }

@@ -11,6 +11,7 @@ import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.Chat;
 import com.example.some_lie.backend.brings.model.ChatCollection;
 import com.example.some_lie.backend.brings.model.Event;
+import com.example.some_lie.backend.brings.model.EventFriend;
 import com.example.some_lie.backend.brings.model.EventFriendCollection;
 import com.example.some_lie.backend.brings.model.Task;
 import com.example.some_lie.backend.brings.model.TaskCollection;
@@ -97,8 +98,8 @@ public class GcmIntentService extends IntentService{
                     case Constants.New_Attending:{
                         String Event_ID = key.split("\\^")[0];
                         String Friend_ID = key.split("\\^")[1];
-                        String attend = "";
-                        sqlHelper.insert(Constants.Table_Events_Friends, new String[]{Event_ID, Friend_ID, attend});
+                        String[] event_friend = getEventFriend(Event_ID,Friend_ID);
+                        sqlHelper.insert(Constants.Table_Events_Friends, event_friend);
                         getNickName(Friend_ID);
                         break;
                     }
@@ -225,6 +226,20 @@ public class GcmIntentService extends IntentService{
         }
         return result;
     }
+    private String[] getEventFriend(String event_id, String friend_id){
+        EventFriend eventFriend;
+        String[] result = new String[4];
+        try {
+            eventFriend = myApiService.eventFriendGet(event_id,friend_id).execute();
+            result[0] = eventFriend.getEventName();
+            result[1] = eventFriend.getFriendName();
+            result[2] = eventFriend.getAttending();
+            result[3] = eventFriend.getPermission();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
     private String[] getTask(String event_id, String task_id) {
         Task task;
         String[] result = new String[5];
@@ -262,8 +277,8 @@ public class GcmIntentService extends IntentService{
         try {
             eventFriendCollection = myApiService.eventFriendGetFriends(event_id).execute();
             for(int i=0;i<eventFriendCollection.getItems().size();i++){
-                result.add(new String[]{eventFriendCollection.getItems().get(i).getEventName(),
-                        eventFriendCollection.getItems().get(i).getFriendName(),eventFriendCollection.getItems().get(i).getAttending()});
+                result.add(new String[]{eventFriendCollection.getItems().get(i).getEventName(), eventFriendCollection.getItems().get(i).getFriendName(),
+                        eventFriendCollection.getItems().get(i).getAttending(),eventFriendCollection.getItems().get(i).getPermission()});
             }
         } catch (IOException e) {
             e.printStackTrace();
