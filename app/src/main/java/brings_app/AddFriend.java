@@ -106,7 +106,7 @@ public class AddFriend extends AppCompatActivity {
                     Constants.Table_Events_Friends_Fields[1]},new String[]{KEY,email},null)[0].isEmpty()){
                 String permission_value = permission_spinner.getSelectedItem().toString();
                 sqlHelper.insert(Constants.Table_Events_Friends, new String[]{KEY, email,Constants.UnCheck, permission_value});
-                new EventFriend_AsyncTask_insert(this).execute(KEY, email, Constants.UnCheck);
+                new EventFriend_AsyncTask_insert(this).execute(KEY, email, Constants.UnCheck, permission_value);
                 ok = true;
             }
         }

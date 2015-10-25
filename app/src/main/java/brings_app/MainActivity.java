@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.Event;
@@ -248,47 +249,50 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> arg0, final View arg1,
                                            final int pos, final long id) {
                 // TODO Auto-generated method stub
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-
-                // set dialog message
-                alertDialogBuilder
-                        .setMessage("Delete Event?")
-                        .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                String key = users_names.get(pos) + " - " + IDS.get(pos);
-                                ArrayList<String>[] attendingArray = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{"Event_ID"}, new String[]{key}, null);
-                                sqlHelper.delete(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{key}, new int[]{1});
-                                sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key}, null);
-                                sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{key}, null);
-                                sqlHelper.Delete_Table(Constants.Table_Chat + Helper.Clean_Event_ID(key));
-                                new Event_AsyncTask_delete(context).execute(key);
-                                new EventFriend_AsyncTask_delete_by_event(context).execute(key);
-                                new Task_AsyncTask_deleteByEvent(context).execute(key);
-                                String Chat_ID = Constants.Table_Chat + Helper.Clean_Event_ID(key);
-                                new Chat_AsyncTask_deleteByEvent(context).execute(Chat_ID);
-                                for(String to:attendingArray[1]) {
-                                    if(!to.equals(Constants.User_Name)) {
-                                        new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + key, to);
+                final String Event_ID = users_names.get(pos) + " - " + IDS.get(pos);
+                String permission = Helper.getMyPermission(Event_ID);
+                if(permission.equals(Constants.Manager)) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                    // set dialog message
+                    alertDialogBuilder
+                            .setMessage("Delete Event?")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    ArrayList<String>[] attendingArray = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{"Event_ID"}, new String[]{Event_ID}, null);
+                                    sqlHelper.delete(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{Event_ID}, new int[]{1});
+                                    sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{Event_ID}, null);
+                                    sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{Event_ID}, null);
+                                    sqlHelper.Delete_Table(Constants.Table_Chat + Helper.Clean_Event_ID(Event_ID));
+                                    new Event_AsyncTask_delete(context).execute(Event_ID);
+                                    new EventFriend_AsyncTask_delete_by_event(context).execute(Event_ID);
+                                    new Task_AsyncTask_deleteByEvent(context).execute(Event_ID);
+                                    String Chat_ID = Constants.Table_Chat + Helper.Clean_Event_ID(Event_ID);
+                                    new Chat_AsyncTask_deleteByEvent(context).execute(Chat_ID);
+                                    for (String to : attendingArray[1]) {
+                                        if (!to.equals(Constants.User_Name)) {
+                                            new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + Event_ID, to);
+                                        }
                                     }
+                                    setList();
                                 }
-                                setList();
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // if this button is clicked, just close
-                                // the dialog box and do nothing
-                                dialog.cancel();
-                            }
-                        });
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // if this button is clicked, just close
+                                    // the dialog box and do nothing
+                                    dialog.cancel();
+                                }
+                            });
 
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
 
-                // show it
-                alertDialog.show();
+                    // show it
+                    alertDialog.show();
+                }else {
+                    Toast.makeText(getApplicationContext(), "Only manager can delete event", Toast.LENGTH_LONG).show();
+                }
                 return true;
             }
         });

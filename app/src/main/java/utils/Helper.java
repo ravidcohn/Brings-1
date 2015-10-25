@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.ArrayList;
+
 /**
  * Created by Ravid on 23/10/2015.
  */
@@ -16,5 +18,11 @@ public class Helper {
             str = str.replaceAll(toReplace[i],replaceWith[i]);
         }
         return str;
+    }
+
+    public static String getMyPermission(String Event_ID){
+        ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0],Constants.Table_Events_Friends_Fields[1]},
+                new String[]{Event_ID,Constants.User_Name}, null);
+        return dbResult[3].get(0);
     }
 }

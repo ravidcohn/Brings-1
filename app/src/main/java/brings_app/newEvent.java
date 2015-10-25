@@ -95,7 +95,7 @@ public class newEvent extends AppCompatActivity {
                     String end = tv_ne_end_ui.getText().toString();
                     String description = tv_ne_description_ui.getText().toString();
                     new Event_AsyncTask_insert(context).execute(key, name, place, start, end, description, imagePath, Update_Time);
-                    new EventFriend_AsyncTask_insert(context).execute(key, USERNAME, Constants.Yes);
+                    new EventFriend_AsyncTask_insert(context).execute(key, USERNAME, Constants.Yes, Constants.Manager);
                     String Chat_ID = Constants.Table_Chat + Helper.Clean_Event_ID(key);
                     new Chat_AsyncTask_CreateByEvent(context).execute(Chat_ID);
                     Bundle b = new Bundle();

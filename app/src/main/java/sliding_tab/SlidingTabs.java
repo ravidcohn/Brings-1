@@ -40,6 +40,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -222,30 +223,39 @@ public class SlidingTabs extends Fragment {
             addFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final Intent addFriend = new Intent(getActivity(), AddFriend.class);
-                    Bundle data = new Bundle();
-                    data.putString("KEY", KEY);
-                    addFriend.putExtras(data);
-                    getArguments().putInt("from", 1);
-                    startActivityForResult(addFriend, 1);
+                    String permission = Helper.getMyPermission(KEY);
+                    if(!permission.equals(Constants.Participant)) {
+                        final Intent addFriend = new Intent(getActivity(), AddFriend.class);
+                        Bundle data = new Bundle();
+                        data.putString("KEY", KEY);
+                        addFriend.putExtras(data);
+                        getArguments().putInt("from", 1);
+                        startActivityForResult(addFriend, 1);
+                    }else{
+                        Toast.makeText(getContext(), "Participant can't add friend", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
             setAttendingList(view);
 
         }
         private void setTodoTab(View view){
-
             setTodoList(view);
             ImageButton bt_etd_add_task = (ImageButton) view.findViewById(R.id.bt_etd_add_task);
             bt_etd_add_task.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final Intent task = new Intent(getActivity().getApplicationContext(), newTask.class);
-                    Bundle data = new Bundle();
-                    data.putString("KEY", KEY);
-                    task.putExtras(data);
-                    getArguments().putInt("from", 2);
-                    startActivityForResult(task, 2);
+                    String permission = Helper.getMyPermission(KEY);
+                    if(!permission.equals(Constants.Participant)) {
+                        final Intent task = new Intent(getActivity().getApplicationContext(), newTask.class);
+                        Bundle data = new Bundle();
+                        data.putString("KEY", KEY);
+                        task.putExtras(data);
+                        getArguments().putInt("from", 2);
+                        startActivityForResult(task, 2);
+                    }else{
+                        Toast.makeText(getContext(), "Participant can't add task", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
 
@@ -308,53 +318,61 @@ public class SlidingTabs extends Fragment {
                 public boolean onItemLongClick(AdapterView<?> arg0, final View arg1,
                                                final int pos, final long id) {
                     // TODO Auto-generated method stub
-
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                     String name = members_keys.get(pos);
-                    ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{members_keys.get(pos)}, new int[]{1});
-                    if (!dbUsers[0].isEmpty()) {
-                        name = dbUsers[1].get(0);
-                    }
-                    // set dialog message
-                    alertDialogBuilder
-                            .setMessage("Delete " + name + "?")
-                            .setCancelable(false)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    String Friend_ID = members_keys.get(pos);
-                                    new EventFriend_AsyncTask_delete(context).execute(KEY, Friend_ID);
-                                    ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
-                                    for (String to : dbResult[1]) {
-                                        if (!to.equals(Constants.User_Name) && !to.equals(Friend_ID)) {
-                                            new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Attending + "|" + KEY + "^" + Friend_ID, to);
+                    String permission = Helper.getMyPermission(KEY);
+                    if (!permission.equals(Constants.Participant) || name.equals(Constants.User_Name)){
+                        if(!(permission.equals(Constants.Manager) && name.equals(Constants.User_Name))){
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                            ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{members_keys.get(pos)}, new int[]{1});
+                            if (!dbUsers[0].isEmpty()) {
+                                name = dbUsers[1].get(0);
+                            }
+                            // set dialog message
+                            alertDialogBuilder
+                                    .setMessage("Delete " + name + "?")
+                                    .setCancelable(false)
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            String Friend_ID = members_keys.get(pos);
+                                            new EventFriend_AsyncTask_delete(context).execute(KEY, Friend_ID);
+                                            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
+                                            for (String to : dbResult[1]) {
+                                                if (!to.equals(Constants.User_Name) && !to.equals(Friend_ID)) {
+                                                    new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Attending + "|" + KEY + "^" + Friend_ID, to);
+                                                }
+                                            }
+                                            if (Friend_ID.equals(Constants.User_Name)) {
+                                                sqlHelper.delete(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{KEY}, new int[]{1});
+                                                sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
+                                                sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
+                                                sqlHelper.Delete_Table(Constants.Table_Chat + Helper.Clean_Event_ID(KEY));
+                                            } else {
+                                                new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + KEY, Friend_ID);
+                                                sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0],
+                                                        Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, Friend_ID}, new int[]{1});
+                                            }
+                                            setAttendingList(view);
                                         }
-                                    }
-                                    if(Friend_ID.equals(Constants.User_Name)){
-                                        sqlHelper.delete(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{KEY}, new int[]{1});
-                                        sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY},null);
-                                        sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
-                                        sqlHelper.Delete_Table(Constants.Table_Chat + Helper.Clean_Event_ID(KEY));
-                                    }else {
-                                        new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + KEY, Friend_ID);
-                                        sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0],
-                                                Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, Friend_ID}, new int[]{1});
-                                    }
-                                    setAttendingList(view);
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    // if this button is clicked, just close
-                                    // the dialog box and do nothing
-                                    dialog.cancel();
-                                }
-                            });
+                                    })
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            // if this button is clicked, just close
+                                            // the dialog box and do nothing
+                                            dialog.cancel();
+                                        }
+                                    });
 
-                    // create alert dialog
-                    AlertDialog alertDialog = alertDialogBuilder.create();
+                            // create alert dialog
+                            AlertDialog alertDialog = alertDialogBuilder.create();
 
-                    // show it
-                    alertDialog.show();
+                            // show it
+                            alertDialog.show();
+                        }else {
+                            Toast.makeText(getContext(), "Manager can't delete himself, please change your permission", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Participant can't delete friend", Toast.LENGTH_LONG).show();
+                    }
                     return true;
                 }
             });
@@ -377,41 +395,45 @@ public class SlidingTabs extends Fragment {
                 public boolean onItemLongClick(AdapterView<?> arg0, final View arg1,
                                                final int pos, final long id) {
                     // TODO Auto-generated method stub
-
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                    String task_name = dbTasks[2].get(pos);
-                    // set dialog message
-                    alertDialogBuilder
-                            .setMessage("Delete Task: " + task_name + "?")
-                            .setCancelable(false)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    int task_key = Tasks_keys.get(pos);
-                                    sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0],
-                                            Constants.Table_Tasks_Fields[1]}, new String[]{KEY, task_key + ""}, new int[]{1});
-                                    new Task_AsyncTask_delete(context).execute(KEY, task_key + "");
-                                    ArrayList<String>[] dbEvent_Friend = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
-                                    for (String to : dbEvent_Friend[1]) {
-                                        if (!to.equals(Constants.User_Name)) {
-                                            new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Task + "|" + KEY + "^" + dbTasks[1].get(pos), to);
+                    String permission = Helper.getMyPermission(KEY);
+                    if(!permission.equals(Constants.Participant)) {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                        String task_name = dbTasks[2].get(pos);
+                        // set dialog message
+                        alertDialogBuilder
+                                .setMessage("Delete Task: " + task_name + "?")
+                                .setCancelable(false)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        int task_key = Tasks_keys.get(pos);
+                                        sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0],
+                                                Constants.Table_Tasks_Fields[1]}, new String[]{KEY, task_key + ""}, new int[]{1});
+                                        new Task_AsyncTask_delete(context).execute(KEY, task_key + "");
+                                        ArrayList<String>[] dbEvent_Friend = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
+                                        for (String to : dbEvent_Friend[1]) {
+                                            if (!to.equals(Constants.User_Name)) {
+                                                new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Task + "|" + KEY + "^" + dbTasks[1].get(pos), to);
+                                            }
                                         }
+                                        setTodoList(rootView);
                                     }
-                                    setTodoList(rootView);
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    // if this button is clicked, just close
-                                    // the dialog box and do nothing
-                                    dialog.cancel();
-                                }
-                            });
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // if this button is clicked, just close
+                                        // the dialog box and do nothing
+                                        dialog.cancel();
+                                    }
+                                });
 
-                    // create alert dialog
-                    AlertDialog alertDialog = alertDialogBuilder.create();
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
 
-                    // show it
-                    alertDialog.show();
+                        // show it
+                        alertDialog.show();
+                    } else {
+                        Toast.makeText(getContext(), "Participant can't delete task", Toast.LENGTH_LONG).show();
+                    }
                     return true;
                 }
             });

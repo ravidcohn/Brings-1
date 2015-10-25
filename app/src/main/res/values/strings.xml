@@ -65,9 +65,9 @@
     <string name="b_google_map_surrey">Surrey</string>
 
     <string-array name="permission_arrays">
-        <item>Manager</item>
-        <item>Editor</item>
         <item>Participant</item>
+        <item>Editor</item>
+        <item>Manager</item>
     </string-array>
 
 
