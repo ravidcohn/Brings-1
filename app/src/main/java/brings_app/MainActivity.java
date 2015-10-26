@@ -301,7 +301,7 @@ public class MainActivity extends AppCompatActivity {
                     // show it
                     alertDialog.show();
                 }else {
-                    Toast.makeText(getApplicationContext(), "Only manager can delete event", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Only manager can delete event", Toast.LENGTH_LONG).show();
                 }
                 return true;
             }
