@@ -6,13 +6,13 @@ import android.os.AsyncTask;
 import com.example.some_lie.backend.brings.Brings;
 
 /**
- * Created by Ravid on 11/10/2015.
+ * Created by Ravid on 25/10/2015.
  */
-public class EventFriend_AsyncTask_insert extends AsyncTask<String, Void, Void> {
+public class EventFriend_AsyncTask_UpdatePermission extends AsyncTask<String, Void, Void> {
     private static Brings myApiService = null;
     private Context context;
 
-    public EventFriend_AsyncTask_insert(Context context) {
+    public EventFriend_AsyncTask_UpdatePermission(Context context) {
         this.context = context;
     }
 
@@ -23,7 +23,7 @@ public class EventFriend_AsyncTask_insert extends AsyncTask<String, Void, Void> 
         }
 
         try {
-            myApiService.eventFriendInsert(params[0],params[1],params[2],params[3]).execute();
+            myApiService.eventFriendUpdatePermission(params[0], params[1], params[2]).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }

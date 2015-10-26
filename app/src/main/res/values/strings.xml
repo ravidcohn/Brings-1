@@ -64,4 +64,11 @@
     <string name="b_google_map_burnaby">Burnaby</string>
     <string name="b_google_map_surrey">Surrey</string>
 
+    <string-array name="permission_arrays">
+        <item>Participant</item>
+        <item>Editor</item>
+        <item>Manager</item>
+    </string-array>
+
+
 </resources>

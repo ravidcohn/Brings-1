@@ -13,13 +13,15 @@ public class Event_Friend {
     private String event_name;
     private String friend_name;
     private String attending;
+    private String permission;
 
     public Event_Friend(){}
 
-    public Event_Friend(String event_name, String friend_name, String attending) {
+    public Event_Friend(String event_name, String friend_name, String attending, String permission) {
         this.event_name = event_name;
         this.friend_name = friend_name;
         this.attending = attending;
+        this.permission = permission;
     }
 
     public String getEvent_name() {
@@ -46,4 +48,11 @@ public class Event_Friend {
         this.attending = attending;
     }
 
+    public String getPermission() {
+        return permission;
+    }
+
+    public void setPermission(String permission) {
+        this.permission = permission;
+    }
 }

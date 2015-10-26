@@ -46,25 +46,27 @@ public class tab extends AppCompatActivity {
     public static void refresh(){
         FragmentActivity activity = (FragmentActivity)context;
         transaction = activity.getSupportFragmentManager().beginTransaction();
+    private void refresh(){
+        transaction = getSupportFragmentManager().beginTransaction();
         int from = 0;
-        try{
+        try {
             from = fragment.getArguments().getInt("from");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        if(from == 1 || from == 2 ){
+        if (from == 1 || from == 2) {
             cItem = from;
         }
         fragment = new SlidingTabs();
         Bundle b = new Bundle();
         b.putString("KEY", KEY);
-        b.putInt("view_num",cItem);
+        b.putInt("view_num", cItem);
 
         fragment.setArguments(b);
         transaction.replace(R.id.fl_fragment, fragment);
         transaction.commit();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

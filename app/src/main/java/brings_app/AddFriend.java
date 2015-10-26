@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import server.EventFriend_AsyncTask_insert;
 import server.SendMessage_AsyncTask;
 import server.User_AsyncTask_get;
 import utils.Constants;
+import utils.Helper;
 import utils.sqlHelper;
 
 /**
@@ -30,9 +32,9 @@ public class AddFriend extends AppCompatActivity {
     private EditText input;
     private EditText input2;
     private Button add;
+    private Spinner permission_spinner;
     private String KEY;
     private String email;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,8 @@ public class AddFriend extends AppCompatActivity {
         input = (EditText)findViewById(R.id.et_addFriend);
         input2 = (EditText)findViewById(R.id.et_addFriend2);
         add = (Button)findViewById(R.id.bt_addFriend);
+        permission_spinner = (Spinner)findViewById(R.id.spin_af_permission_ui);
+
         Bundle b = getIntent().getExtras();
         final Context context = this;
         email = "";
@@ -101,9 +105,15 @@ public class AddFriend extends AppCompatActivity {
                 //    , Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, email}, null);
             if(sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0],
                     Constants.Table_Events_Friends_Fields[1]},new String[]{KEY,email},null)[0].isEmpty()){
-                sqlHelper.insert(Constants.Table_Events_Friends, new String[]{KEY, email,Constants.UnCheck});
-                new EventFriend_AsyncTask_insert(this).execute(KEY, email, Constants.UnCheck);
-                ok = true;
+                String permission = Helper.getMyPermission(KEY);
+                String permission_value = permission_spinner.getSelectedItem().toString();
+                if(!(permission.equals(Constants.Editor) && permission_value.equals(Constants.Manager))) {
+                    sqlHelper.insert(Constants.Table_Events_Friends, new String[]{KEY, email, Constants.UnCheck, permission_value});
+                    new EventFriend_AsyncTask_insert(this).execute(KEY, email, Constants.UnCheck, permission_value);
+                    ok = true;
+                }else{
+                    Toast.makeText(this, "Editor can't give Manage permission", Toast.LENGTH_LONG).show();
+                }
             }
         }
         return ok;

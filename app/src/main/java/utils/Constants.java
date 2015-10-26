@@ -68,7 +68,7 @@ public final class Constants {
     public final static String Table_Tasks = "Tasks";
     public final static String[] Table_Tasks_Fields = new String[]{"Event_ID","Task_ID_Number","Task_Name","Description","Friend_ID"};
     public final static String Table_Events_Friends = "Events_Friends";
-    public final static String[] Table_Events_Friends_Fields = new String[]{"Event_ID","Friend_ID","Attending"};
+    public final static String[] Table_Events_Friends_Fields = new String[]{"Event_ID","Friend_ID","Attending","Permission"};
     public final static String Table_Friends = "Friends";
     public final static String[] Table_Friends_Fields = new String[]{"Name","Phone","email","regester"};
     public final static String Table_Users = "Users";
@@ -79,5 +79,8 @@ public final class Constants {
     public final static String No = "No";
     public final static String Maybe = "Maybe";
     public final static String UnCheck = "UnCheck";
+    public final static String Manager = "Manager";
+    public final static String Editor = "Editor";
+    public final static String Participant = "Participant";
 
 }

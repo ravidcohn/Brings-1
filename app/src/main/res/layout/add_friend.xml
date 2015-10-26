@@ -41,8 +41,21 @@
         android:inputType="textPersonName"
         android:ems="10"
         android:id="@+id/et_addFriend2"
+        android:layout_marginTop="39dp"
         android:layout_below="@+id/et_addFriend"
-        android:layout_alignLeft="@+id/et_addFriend"
-        android:layout_alignStart="@+id/et_addFriend"
-        android:layout_marginTop="40dp" />
+        android:layout_alignRight="@+id/bt_addFriend"
+        android:layout_alignEnd="@+id/bt_addFriend" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spin_af_permission_ui"
+        android:entries="@array/permission_arrays"
+        android:layout_alignBottom="@+id/et_addFriend2"
+        android:layout_alignRight="@+id/et_addFriend"
+        android:layout_alignEnd="@+id/et_addFriend"
+        android:layout_toRightOf="@+id/bt_addFriend"
+        android:layout_toEndOf="@+id/bt_addFriend"
+        android:spinnerMode="dropdown" />
+
 </RelativeLayout>
