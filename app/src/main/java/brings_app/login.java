@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.some_lie.backend.brings.model.Event;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
@@ -164,10 +163,6 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         } else {
             Toast.makeText(this, "User is not exist.. please register!", Toast.LENGTH_LONG).show();
         }
-    }
-
-    @Override
-    public void EventProcessFinish(Event output) {
     }
 
 }

@@ -11,12 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.some_lie.backend.brings.model.Event;
-
-import java.util.ArrayList;
-
-import server.ServerAsyncResponse;
 import server.Registration_AsyncTask;
+import server.ServerAsyncResponse;
 
 /**
  * Created by Ravid on 08/10/2015.
@@ -68,9 +64,6 @@ public class Registration extends AppCompatActivity  implements ServerAsyncRespo
         }
     }
 
-    @Override
-    public void EventProcessFinish(Event output) {
-    }
 
     private void saveData(){
         String mail = et_rg_mail_ui.getText().toString();
