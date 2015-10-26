@@ -1,5 +1,6 @@
 package brings_app;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -58,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private Brings BringsApi;
     private Event event;
-
+    private static Context context;
+    private static ListView listview;
     /**
      * Google Cloud Messaging API.
      */
@@ -73,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if(context == null){
+            context = this;
+         }
+
         BringsApi = CloudEndpointBuilderHelper.getEndpoints();
         users_names = new ArrayList<>();
         IDS = new ArrayList<>();
@@ -82,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         setOnClick();
 
         tvSearch.setText("Search  ");
-
+        listview = (ListView) findViewById(R.id.lvMain);
         setList();
 
     }
@@ -147,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void sql() {
+    private static void sql() {
 
 
         ArrayList<String>[] sqlresult = sqlHelper.select(null, Constants.Table_Events, null, null, null);
@@ -230,17 +236,21 @@ public class MainActivity extends AppCompatActivity {
         setList();
     }
 
-    private void setList() {
+    public static void setList() {
         users_names.clear();
         IDS.clear();
         sql();
 
-        final Context context = this;
-        final ListView listview = (ListView) findViewById(R.id.lvMain);
-        listview.setClickable(true);
-        final Intent tabs =  new Intent(this,tab.class);
+        //final Context context = this;
+        //LayoutInflater inflater = (LayoutInflater) context
+         //       .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        StableArrayAdapter adapter = new StableArrayAdapter(this);
+       // View layout = inflater.inflate(R.layout.activity_main, null);
+       // final ListView listview = (ListView) layout.findViewById(R.id.lvMain);
+        listview.setClickable(true);
+        final Intent tabs =  new Intent(context,tab.class);
+
+        StableArrayAdapter adapter = new StableArrayAdapter();
         listview.setAdapter(adapter);
 
         listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -305,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
                 //data.putString("USERNAME", users_names.get(position));
                 data.putString("KEY", users_names.get(position) + " - " + IDS.get(position));
                 tabs.putExtras(data);
-                startActivity(tabs);
+                context.startActivity(tabs);
             }
         });
     }
@@ -327,14 +337,14 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    private class StableArrayAdapter extends BaseAdapter implements View.OnClickListener {
+    private static class StableArrayAdapter extends BaseAdapter implements View.OnClickListener {
 
-        private Context context;
+      //  private Context context;
 
-        public StableArrayAdapter(Context context) {
+        public StableArrayAdapter(){}/*(Context context) {
             this.context = context;
         }
-
+*/
         public View getView(int position, View convertView, ViewGroup viewGroup) {
                 LayoutInflater inflater = (LayoutInflater) context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);

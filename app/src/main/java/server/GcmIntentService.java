@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import brings_app.MainActivity;
+import brings_app.tab;
 import utils.Constants;
 import utils.Helper;
 import utils.sqlHelper;
@@ -174,6 +176,18 @@ public class GcmIntentService extends IntentService{
             }
         }
         GcmBroadcastReceiver.completeWakefulIntent(intent);
+        try {
+            tab.refresh();
+        }
+        catch (Exception e){
+            //TODO
+        }
+        try {
+            MainActivity.setList();
+        }
+        catch (Exception e){
+            //TODO
+        }
     }
 
 
