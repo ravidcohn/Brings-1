@@ -188,12 +188,14 @@ public class GcmIntentService extends IntentService{
             tab.refresh();
         }
         catch (Exception e){
+            e.printStackTrace();
             //TODO
         }
         try {
             MainActivity.setList();
         }
         catch (Exception e){
+            e.printStackTrace();
             //TODO
         }
     }

@@ -346,6 +346,7 @@ public class SlidingTabs extends Fragment {
                                                 sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
                                                 sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
                                                 sqlHelper.Delete_Table(Constants.Table_Chat + Helper.Clean_Event_ID(KEY));
+                                                getActivity().finish();
                                             } else {
                                                 new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + KEY, Friend_ID);
                                                 sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0],
