@@ -46,8 +46,6 @@ public class tab extends AppCompatActivity {
     public static void refresh(){
         FragmentActivity activity = (FragmentActivity)context;
         transaction = activity.getSupportFragmentManager().beginTransaction();
-    private void refresh(){
-        transaction = getSupportFragmentManager().beginTransaction();
         int from = 0;
         try {
             from = fragment.getArguments().getInt("from");
