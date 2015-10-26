@@ -1,6 +1,5 @@
 package brings_app;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,14 +35,16 @@ import server.Chat_AsyncTask_deleteByEvent;
 import server.CloudEndpointBuilderHelper;
 import server.EventFriend_AsyncTask_delete_by_event;
 import server.Event_AsyncTask_delete;
+import server.GcmIntentService;
 import server.SendMessage_AsyncTask;
+import server.ServerAsyncResponse;
 import server.Task_AsyncTask_deleteByEvent;
 import utils.Constants;
 import utils.Helper;
 import utils.bitmapHelper;
 import utils.sqlHelper;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ServerAsyncResponse{
 
     /**
      * Time limit for the application to wait on a response from Play Services.
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        GcmIntentService.delegate = this;
         if(context == null){
             context = this;
          }
@@ -237,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
         setList();
     }
 
-    public static void setList() {
+    public void setList() {
         users_names.clear();
         IDS.clear();
         sql();
@@ -261,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 final String Event_ID = users_names.get(pos) + " - " + IDS.get(pos);
                 String permission = Helper.getMyPermission(Event_ID);
-                if(permission.equals(Constants.Manager)) {
+                if (permission.equals(Constants.Manager)) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                     // set dialog message
                     alertDialogBuilder
@@ -300,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // show it
                     alertDialog.show();
-                }else {
+                } else {
                     Toast.makeText(context, "Only manager can delete event", Toast.LENGTH_LONG).show();
                 }
                 return true;
@@ -383,6 +385,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
+        }
+    }
+
+    @Override
+    public void processFinish(String... output) {
+        String message = output[0];
+        if(message.equals(Constants.Update_Activity)){
+            setList();
         }
     }
 

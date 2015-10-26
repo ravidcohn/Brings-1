@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import brings_app.MainActivity;
-import brings_app.tab;
 import utils.Constants;
 import utils.Helper;
 import utils.sqlHelper;
@@ -34,6 +32,7 @@ import utils.sqlHelper;
  */
 public class GcmIntentService extends IntentService{
     private static Brings myApiService = null;
+    public static ServerAsyncResponse delegate = null;
     public GcmIntentService() {
         super("GcmIntentService");
         if (myApiService == null) { // Only do this once
@@ -85,9 +84,10 @@ public class GcmIntentService extends IntentService{
                     }
                     case Constants.Delete_Event:{
                         sqlHelper.delete(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{key}, new int[]{1});
-                        sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key},null);
+                        sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key}, null);
                         sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{key}, null);
                         sqlHelper.Delete_Table(Constants.Table_Chat + Helper.Clean_Event_ID(key));
+                        delegate.processFinish(Constants.Update_Activity);
                         break;
                     }
                     case Constants.Update_Event:{
@@ -110,7 +110,7 @@ public class GcmIntentService extends IntentService{
                         String Friend_ID = key.split("\\^")[1];
                         if(Friend_ID.equals(Constants.User_Name)){
                             sqlHelper.delete(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{key}, new int[]{1});
-                            sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key},null);
+                            sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{key}, null);
                             sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{key}, null);
                             sqlHelper.Delete_Table(Constants.Table_Chat + Helper.Clean_Event_ID(key));
                         }else {
@@ -184,20 +184,8 @@ public class GcmIntentService extends IntentService{
             }
         }
         GcmBroadcastReceiver.completeWakefulIntent(intent);
-        try {
-            tab.refresh();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            //TODO
-        }
-        try {
-            MainActivity.setList();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            //TODO
-        }
+        delegate.processFinish(Constants.Update_Activity);
+
     }
 
 

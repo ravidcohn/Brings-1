@@ -10,9 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import server.GcmIntentService;
+import server.ServerAsyncResponse;
 import sliding_tab.SlidingTabs;
+import utils.Constants;
 
-public class tab extends AppCompatActivity {
+public class tab extends AppCompatActivity implements ServerAsyncResponse{
     private static String KEY;
     private static FragmentTransaction transaction;
     private static SlidingTabs fragment;
@@ -23,6 +26,7 @@ public class tab extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tab);
+        GcmIntentService.delegate = this;
         Bundle b = getIntent().getExtras();
         KEY = b.getString("KEY");
         if(context == null){
@@ -103,4 +107,11 @@ public class tab extends AppCompatActivity {
         return sItem;
     }
 
+    @Override
+    public void processFinish(String... output) {
+        String message = output[0];
+        if(message.equals(Constants.Update_Activity)){
+            refresh();
+        }
+    }
 }
