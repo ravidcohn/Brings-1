@@ -36,14 +36,16 @@ import server.Chat_AsyncTask_deleteByEvent;
 import server.CloudEndpointBuilderHelper;
 import server.EventFriend_AsyncTask_delete_by_event;
 import server.Event_AsyncTask_delete;
+import server.GcmIntentService;
 import server.SendMessage_AsyncTask;
+import server.ServerAsyncResponse;
 import server.Task_AsyncTask_deleteByEvent;
 import utils.Constants;
 import utils.Helper;
 import utils.bitmapHelper;
 import utils.sqlHelper;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ServerAsyncResponse{
 
     /**
      * Time limit for the application to wait on a response from Play Services.
@@ -60,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private Brings BringsApi;
     private Event event;
-    private static Context context;
-    private static ListView listview;
     /**
      * Google Cloud Messaging API.
      */
@@ -76,9 +76,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(context == null){
-            context = this;
-         }
+        GcmIntentService.deligate=this;
+
 
         BringsApi = CloudEndpointBuilderHelper.getEndpoints();
         users_names = new ArrayList<>();
@@ -89,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
         setOnClick();
 
         tvSearch.setText("Search  ");
-        listview = (ListView) findViewById(R.id.lvMain);
         setList();
 
     }
@@ -154,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private static void sql() {
+    private void sql() {
 
 
         ArrayList<String>[] sqlresult = sqlHelper.select(null, Constants.Table_Events, null, null, null);
@@ -237,21 +235,16 @@ public class MainActivity extends AppCompatActivity {
         setList();
     }
 
-    public static void setList() {
+    public void setList() {
         users_names.clear();
         IDS.clear();
         sql();
 
-        //final Context context = this;
-        //LayoutInflater inflater = (LayoutInflater) context
-         //       .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-       // View layout = inflater.inflate(R.layout.activity_main, null);
-       // final ListView listview = (ListView) layout.findViewById(R.id.lvMain);
+        final ListView listview = (ListView) findViewById(R.id.lvMain);
         listview.setClickable(true);
-        final Intent tabs =  new Intent(context,tab.class);
-
-        StableArrayAdapter adapter = new StableArrayAdapter();
+        final Intent tabs =  new Intent(this,tab.class);
+        final Context context = this;
+        StableArrayAdapter adapter = new StableArrayAdapter(this);
         listview.setAdapter(adapter);
 
         listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -319,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
                 //data.putString("USERNAME", users_names.get(position));
                 data.putString("KEY", users_names.get(position) + " - " + IDS.get(position));
                 tabs.putExtras(data);
-                context.startActivity(tabs);
+                startActivity(tabs);
             }
         });
     }
@@ -341,14 +334,24 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    @Override
+    public void processFinish(String... output) {
+        setList();
+    }
+
+    @Override
+    public void EventProcessFinish(Event output) {
+
+    }
+
     private static class StableArrayAdapter extends BaseAdapter implements View.OnClickListener {
 
-      //  private Context context;
+        private Context context;
 
-        public StableArrayAdapter(){}/*(Context context) {
+        public StableArrayAdapter(Context context) {
             this.context = context;
         }
-*/
+
         public View getView(int position, View convertView, ViewGroup viewGroup) {
                 LayoutInflater inflater = (LayoutInflater) context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);

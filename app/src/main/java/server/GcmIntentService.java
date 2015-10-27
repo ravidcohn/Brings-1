@@ -34,6 +34,7 @@ import utils.sqlHelper;
  */
 public class GcmIntentService extends IntentService{
     private static Brings myApiService = null;
+    public static ServerAsyncResponse deligate = null;
     public GcmIntentService() {
         super("GcmIntentService");
         if (myApiService == null) { // Only do this once
@@ -81,6 +82,7 @@ public class GcmIntentService extends IntentService{
                                 sqlHelper.insert(Chat_ID, chat);
                             }
                         }
+                        deligate.processFinish("erere");
                         break;
                     }
                     case Constants.Delete_Event:{
@@ -184,18 +186,6 @@ public class GcmIntentService extends IntentService{
             }
         }
         GcmBroadcastReceiver.completeWakefulIntent(intent);
-        try {
-            tab.refresh();
-        }
-        catch (Exception e){
-            //TODO
-        }
-        try {
-            MainActivity.setList();
-        }
-        catch (Exception e){
-            //TODO
-        }
     }
 
 

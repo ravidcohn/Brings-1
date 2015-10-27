@@ -13,11 +13,10 @@ import android.view.MenuItem;
 import sliding_tab.SlidingTabs;
 
 public class tab extends AppCompatActivity {
-    private static String KEY;
-    private static FragmentTransaction transaction;
-    private static SlidingTabs fragment;
-    private static Context context;
-    private static int cItem = 0;
+    private String KEY;
+    private FragmentTransaction transaction;
+    private SlidingTabs fragment;
+    private int cItem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +24,7 @@ public class tab extends AppCompatActivity {
         setContentView(R.layout.tab);
         Bundle b = getIntent().getExtras();
         KEY = b.getString("KEY");
-        if(context == null){
-            context = this;
-        }
+
         if (savedInstanceState == null) {
             transaction = getSupportFragmentManager().beginTransaction();
             fragment = new SlidingTabs();
@@ -43,9 +40,8 @@ public class tab extends AppCompatActivity {
         refresh();
     }
 
-    public static void refresh(){
-        FragmentActivity activity = (FragmentActivity)context;
-        transaction = activity.getSupportFragmentManager().beginTransaction();
+    public void refresh(){
+        transaction = getSupportFragmentManager().beginTransaction();
         int from = 0;
         try {
             from = fragment.getArguments().getInt("from");
