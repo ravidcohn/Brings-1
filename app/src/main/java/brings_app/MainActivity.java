@@ -1,6 +1,5 @@
 package brings_app;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,8 +9,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -86,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
         users_names = new ArrayList<>();
         IDS = new ArrayList<>();
         tvSearch = (TextView) findViewById(R.id.tvSearch);
+        ListView listview;
         //ibAdd = (ImageButton) findViewById(R.id.ibAdd);
        // search = (SearchView) findViewById(R.id.searchView);
        // setOnClick();
@@ -264,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
                 // TODO Auto-generated method stub
                 final String Event_ID = users_names.get(pos) + " - " + IDS.get(pos);
                 String permission = Helper.getMyPermission(Event_ID);
-                if(permission.equals(Constants.Manager)) {
+                if (permission.equals(Constants.Manager)) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                     // set dialog message
                     alertDialogBuilder
@@ -303,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
                     // show it
                     alertDialog.show();
-                }else {
+                } else {
                     Toast.makeText(context, "Only manager can delete event", Toast.LENGTH_LONG).show();
                 }
                 return true;
@@ -349,10 +347,6 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
         setList();
     }
 
-    @Override
-    public void EventProcessFinish(Event output) {
-
-    }
 
     private static class StableArrayAdapter extends BaseAdapter implements View.OnClickListener {
 
@@ -365,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
         public View getView(int position, View convertView, ViewGroup viewGroup) {
                 LayoutInflater inflater = (LayoutInflater) context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.main_list_item, null);
+            convertView = inflater.inflate(R.layout.activity_main_list_item, null);
 
             ImageView iv = (ImageView) convertView.findViewById(R.id.ivPic);
             TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
@@ -376,9 +370,9 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
             Bitmap bitmap = bitmapHelper.decodeSampledBitmapFromFile(dbResult[6].get(0), 100, 100);
             if (bitmap!=null) {
-                RoundedBitmapDrawable img = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-                img.setCircular(true);
-                iv.setImageDrawable(img);
+               // RoundedBitmapDrawable img = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+                //img.setCircular(true);
+                //iv.setImageDrawable(img);
             }
             //iv.setImageBitmap(bitmapHelper.decodeSampledBitmapFromFile(dbResult[6].get(0), 100, 100));
 
