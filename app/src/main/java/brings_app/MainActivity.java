@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        GcmIntentService.delegate =this;
+        GcmIntentService.delegate = this;
         BringsApi = CloudEndpointBuilderHelper.getEndpoints();
         users_names = new ArrayList<>();
         IDS = new ArrayList<>();
