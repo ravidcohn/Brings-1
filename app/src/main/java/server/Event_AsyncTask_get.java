@@ -10,10 +10,8 @@ import com.example.some_lie.backend.brings.model.Event;
  */
 public class Event_AsyncTask_get extends AsyncTask<String, Void, Event> {
     private static Brings myApiService = null;
-    private ServerAsyncResponse delegate;
 
-    public Event_AsyncTask_get(ServerAsyncResponse delegate) {
-        this.delegate = delegate;
+    public Event_AsyncTask_get() {
     }
 
     @Override
@@ -31,8 +29,4 @@ public class Event_AsyncTask_get extends AsyncTask<String, Void, Event> {
 
     }
 
-    @Override
-    protected void onPostExecute(Event result) {
-        delegate.EventProcessFinish(result);
-    }
 }

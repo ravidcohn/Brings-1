@@ -82,5 +82,6 @@ public final class Constants {
     public final static String Manager = "Manager";
     public final static String Editor = "Editor";
     public final static String Participant = "Participant";
+    public final static String Update_Activity = "Update_Activity";
 
 }
