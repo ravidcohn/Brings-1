@@ -1,18 +1,18 @@
 package brings_app;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import server.ServerAsyncResponse;
 import sliding_tab.SlidingTabs;
+import utils.Constants;
 
-public class tab extends AppCompatActivity {
+public class tab extends AppCompatActivity implements ServerAsyncResponse{
     private String KEY;
     private FragmentTransaction transaction;
     private SlidingTabs fragment;
@@ -99,4 +99,16 @@ public class tab extends AppCompatActivity {
         return sItem;
     }
 
+    @Override
+    public void processFinish(String... output) {
+        if(output[0].equals(Constants.Update_Activity)) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    refresh();
+                }
+            });
+
+        }
+    }
 }
