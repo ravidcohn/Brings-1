@@ -8,7 +8,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -83,13 +86,13 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
         users_names = new ArrayList<>();
         IDS = new ArrayList<>();
         tvSearch = (TextView) findViewById(R.id.tvSearch);
-        ibAdd = (ImageButton) findViewById(R.id.ibAdd);
-        search = (SearchView) findViewById(R.id.searchView);
-        setOnClick();
+        //ibAdd = (ImageButton) findViewById(R.id.ibAdd);
+       // search = (SearchView) findViewById(R.id.searchView);
+       // setOnClick();
 
-        tvSearch.setText("Search  ");
+       // tvSearch.setText("Search  ");
+        listview = (ListView) findViewById(R.id.lvMain);
         setList();
-
     }
 
 
@@ -184,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
         }
         return true;
     }
-
+/*
     private void setOnClick() {
 
         final Intent new_event = new Intent(this, newEvent.class);
@@ -207,11 +210,12 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
         });
     }
+    */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_activity_main, menu);
         return true;
     }
 
@@ -224,6 +228,12 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        if (id == R.id.action_add) {
+            final Intent new_event = new Intent(this, newEvent.class);
+            startActivity(new_event);
             return true;
         }
 
@@ -363,7 +373,14 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
             ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{users_names.get(position) + " - " + IDS.get(position)}, new int[]{1});
             tvName.setText(dbResult[1].get(0));
             tvDate.setText(dbResult[3].get(0));
-            iv.setImageBitmap(bitmapHelper.decodeSampledBitmapFromFile(dbResult[6].get(0), 100, 100));
+
+            Bitmap bitmap = bitmapHelper.decodeSampledBitmapFromFile(dbResult[6].get(0), 100, 100);
+            if (bitmap!=null) {
+                RoundedBitmapDrawable img = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+                img.setCircular(true);
+                iv.setImageDrawable(img);
+            }
+            //iv.setImageBitmap(bitmapHelper.decodeSampledBitmapFromFile(dbResult[6].get(0), 100, 100));
 
             return convertView;
         }

@@ -6,6 +6,8 @@
     <string name="action_settings">Settings</string>
     <string name="action_home">Home</string>
     <string name="action_edit">Edit</string>
+    <string name="action_search">Search</string>
+    <string name="action_add">Add</string>
 
     <string name="tv_name_title">Event Name</string>
     <string name="tv_place_title">Place</string>

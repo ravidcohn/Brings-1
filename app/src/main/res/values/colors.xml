@@ -3,4 +3,7 @@
     <item name="white" type="color">#FFFFFF</item>
     <item name="gray" type="color">#FFBFC5D2</item>
     <item name="black" type="color">#000000</item>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
 </resources>
