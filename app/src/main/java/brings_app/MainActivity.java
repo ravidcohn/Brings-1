@@ -76,9 +76,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        GcmIntentService.deligate=this;
-
-
+        GcmIntentService.delegate =this;
         BringsApi = CloudEndpointBuilderHelper.getEndpoints();
         users_names = new ArrayList<>();
         IDS = new ArrayList<>();
@@ -87,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
         //ibAdd = (ImageButton) findViewById(R.id.ibAdd);
        // search = (SearchView) findViewById(R.id.searchView);
        // setOnClick();
-
        // tvSearch.setText("Search  ");
         listview = (ListView) findViewById(R.id.lvMain);
         setList();
@@ -344,8 +341,17 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
     @Override
     public void processFinish(String... output) {
-        setList();
+        if(output[0].equals(Constants.Update_Activity)) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setList();
+                }
+            });
+
+        }
     }
+
 
 
     private static class StableArrayAdapter extends BaseAdapter implements View.OnClickListener {

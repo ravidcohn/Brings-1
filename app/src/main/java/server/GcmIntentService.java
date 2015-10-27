@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import brings_app.MainActivity;
-import brings_app.tab;
 import utils.Constants;
 import utils.Helper;
 import utils.sqlHelper;
@@ -34,14 +32,14 @@ import utils.sqlHelper;
  */
 public class GcmIntentService extends IntentService{
     private static Brings myApiService = null;
-    public static ServerAsyncResponse deligate = null;
+    public static ServerAsyncResponse delegate = null;
+
     public GcmIntentService() {
         super("GcmIntentService");
         if (myApiService == null) { // Only do this once
             myApiService = CloudEndpointBuilderHelper.getEndpoints();
         }
     }
-
     @Override
     protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
@@ -82,7 +80,7 @@ public class GcmIntentService extends IntentService{
                                 sqlHelper.insert(Chat_ID, chat);
                             }
                         }
-                        deligate.processFinish("erere");
+                        delegate.processFinish("erere");
                         break;
                     }
                     case Constants.Delete_Event:{
@@ -186,10 +184,8 @@ public class GcmIntentService extends IntentService{
             }
         }
         GcmBroadcastReceiver.completeWakefulIntent(intent);
+        delegate.processFinish(Constants.Update_Activity);
     }
-
-
-
 
     private void getNickName(String Friend_ID) {
         ArrayList<String>[] dbUsers = sqlHelper.select(null, Constants.Table_Users, new String[]{Constants.Table_Users_Fields[0]}, new String[]{Friend_ID}, new int[]{1});
