@@ -260,7 +260,7 @@ public final class sqlHelper {
             for(int i=0;i<Fields.length-1;i++){
                 execSQL += Fields[i] + " " + SQL_Params[i] + ",";
             }
-            execSQL += Fields[Fields.length] + " " + SQL_Params[Fields.length] + ")";
+            execSQL += Fields[Fields.length-1] + " " + SQL_Params[Fields.length-1] + ")";
             db.execSQL(execSQL);
             //db.execSQL("create table if not exists "+table_name+" ("+Constants.Table_Chat_Fields[0]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[1]+" varchar NOT NULL,"
                     //+Constants.Table_Chat_Fields[2]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[3]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[4]+" varchar NOT NULL)");
