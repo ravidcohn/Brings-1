@@ -17,7 +17,7 @@ public class tab extends AppCompatActivity implements ServerAsyncResponse{
     private String KEY;
     private FragmentTransaction transaction;
     private SlidingTabs fragment;
-    private int cItem = 0;
+    private static int cItem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
