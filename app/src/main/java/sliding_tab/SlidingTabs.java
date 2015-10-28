@@ -65,7 +65,6 @@ public class SlidingTabs extends Fragment {
 
     private int layouts[] = {R.layout.event_main, R.layout.event_attending, R.layout.event_todo, R.layout.event_chat};
     private String[] tabName= {"MAIN", "ATTENDING", "TODO", "CHAT"};
-    public static int tab_position;
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
      * above, but is designed to give continuous feedback to the user when scrolling.
