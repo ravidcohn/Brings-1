@@ -161,10 +161,7 @@ public class SlidingTabs extends Fragment {
             return tabName[position];
         }
         // END_INCLUDE (pageradapter_getpagetitle)
-        @Override
-        public void setPrimaryItem(ViewGroup container, int position, Object object) {
-            tab_position = position;
-        }
+
         /**
          * Instantiate the {@link View} which should be displayed at {@code position}. Here we
          * inflate a add_friend from the apps resources and then change the text view to signify the position.
@@ -509,7 +506,8 @@ public class SlidingTabs extends Fragment {
                     return true;
                 }
             });
-
+            int last = Math.max(0,listview.getCount()-1);
+            listview.setSelection(last);
         }
 
 
