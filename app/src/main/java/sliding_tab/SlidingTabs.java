@@ -499,7 +499,8 @@ public class SlidingTabs extends Fragment {
                     return true;
                 }
             });
-
+            int last = Math.max(0,listview.getCount()-1);
+            listview.setSelection(last);
         }
 
 
