@@ -53,7 +53,7 @@ public class tab extends AppCompatActivity implements ServerAsyncResponse{
         if (from == 1 || from == 2) {
             cItem = from;
         }
-        cItem = SlidingTabs.tab_position;
+        cItem = fragment.getCurrentItem();
         fragment = new SlidingTabs();
         Bundle b = new Bundle();
         b.putString("KEY", KEY);
