@@ -27,7 +27,7 @@ import com.google.api.client.http.HttpRequestInitializer;
 
 import java.io.IOException;
 
-import utils.Constants;
+import utils.Constans.Constants;
 
 /**
  * Allows configuring Cloud Endpoint builders to support authenticated calls, as

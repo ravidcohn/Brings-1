@@ -14,14 +14,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 import server.EventFriend_AsyncTask_insert;
 import server.SendMessage_AsyncTask;
-import server.User_AsyncTask_get;
-import utils.Constants;
+import utils.Constans.Constants;
 import utils.Helper;
-import utils.sqlHelper;
 
 /**
  * Created by pinhas on 19/09/2015.
@@ -33,8 +29,8 @@ public class AddFriend extends AppCompatActivity {
     private EditText input2;
     private Button add;
     private Spinner permission_spinner;
-    private String KEY;
-    private String email;
+    private String Event_ID;
+    private String Friend_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +44,8 @@ public class AddFriend extends AppCompatActivity {
 
         Bundle b = getIntent().getExtras();
         final Context context = this;
-        email = "";
-        final Intent friendList = new Intent(this, FriendSelctor.class);
+        Friend_ID = "";
+        final Intent friendList = new Intent(this, friendSelector.class);
 
         input.setOnClickListener(new View.OnClickListener() {
 
@@ -60,25 +56,18 @@ public class AddFriend extends AppCompatActivity {
 
         });
 
-        KEY = b.getString("KEY");
+        Event_ID = b.getString("Event_ID");
         add.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                email = input2.getText().toString();
+                Friend_ID = input2.getText().toString();
                 boolean ok = saveData();
                 if (ok) {
-                    new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.New_Event + "|" + KEY, email);
-                    ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
-                    for(String to:dbResult[1]) {
-                        if(!to.equals(email)&&!to.equals(Constants.User_Name)) {
-                            new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.New_Attending + "|" + KEY + "^" + email, to);
-                        }
-                    }
-                    ArrayList<String>[] dbUsers = sqlHelper.select(null,Constants.Table_Users,new String[]{Constants.Table_Users_Fields[0]},new String[]{email},null);
-                    if(dbUsers[0].isEmpty()){
-                        new User_AsyncTask_get().execute(email);
-                    }
+                    new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.New_Event + "|" + Event_ID, Friend_ID);
+                    String message = Constants.New_Attending + "|" + Event_ID + "^" + Friend_ID;
+                    Helper.Send_Message_To_Friend_By_Event_Except_One(context, Event_ID, Friend_ID, message);
+                    Helper.User_Insert_MySQL(Friend_ID);
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "only description can by empty..", Toast.LENGTH_SHORT).show();
@@ -93,23 +82,22 @@ public class AddFriend extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == Activity.RESULT_OK){
             Bundle b = data.getExtras();
-            email = b.getString("email");
+            Friend_ID = b.getString("Friend_ID");
             input.setText(b.getString("name"));
         }
     }
 
     private boolean saveData(){
         boolean ok = false;
-        if(email.length() > 0) {
+        if(Friend_ID.length() > 0) {
            // ArrayList<String>[] list = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]
-                //    , Constants.Table_Events_Friends_Fields[1]}, new String[]{KEY, email}, null);
-            if(sqlHelper.select(null,Constants.Table_Events_Friends,new String[]{Constants.Table_Events_Friends_Fields[0],
-                    Constants.Table_Events_Friends_Fields[1]},new String[]{KEY,email},null)[0].isEmpty()){
-                String permission = Helper.getMyPermission(KEY);
-                String permission_value = permission_spinner.getSelectedItem().toString();
-                if(!(permission.equals(Constants.Editor) && permission_value.equals(Constants.Manager))) {
-                    sqlHelper.insert(Constants.Table_Events_Friends, new String[]{KEY, email, Constants.UnCheck, permission_value});
-                    new EventFriend_AsyncTask_insert(this).execute(KEY, email, Constants.UnCheck, permission_value);
+                //    , Constants.Table_Events_Friends_Fields[1]}, new String[]{Event_ID, Friend_ID}, null);
+            if(!Helper.isFriend_Exist_in_Event_MySql(Event_ID, Friend_ID)){
+                String permission = Helper.getMyPermission(Event_ID);
+                String Permission_Value = permission_spinner.getSelectedItem().toString();
+                if(!(permission.equals(Constants.Editor) && Permission_Value.equals(Constants.Manager))) {
+                    Helper.Event_Friend_Insert_MySQL(Event_ID, Friend_ID, Constants.UnCheck, Permission_Value);
+                    new EventFriend_AsyncTask_insert(this).execute(Event_ID, Friend_ID, Constants.UnCheck, Permission_Value);
                     ok = true;
                 }else{
                     Toast.makeText(this, "Editor can't give Manage permission", Toast.LENGTH_LONG).show();

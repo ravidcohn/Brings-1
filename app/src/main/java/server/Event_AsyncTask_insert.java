@@ -6,20 +6,11 @@ import android.os.AsyncTask;
 import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.ImagesPath;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-
-import utils.Constants;
-import utils.bitmapHelper;
 
 /**
  * Created by Ravid on 25/09/2015.
@@ -39,7 +30,7 @@ public class Event_AsyncTask_insert extends AsyncTask<String, Void, Void> {
         }
 
         try {
-            ImagesPath ipath = myApiService.eventInsert(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7]).execute();
+            ImagesPath ipath = myApiService.eventInsert(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9]).execute();
             File f = new File(params[6]);
             if(f.exists()) {
                 String urlP = ipath.getPath();

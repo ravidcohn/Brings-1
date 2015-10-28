@@ -1,4 +1,4 @@
-package utils;
+package utils.Constans;
 
 /**
  * Created by pinhas on 28/09/2015.
@@ -63,6 +63,7 @@ public final class Constants {
     public final static String Update_Task_Friend_ID = "Update_Task_Friend_ID";
     public final static String New_Chat_Message = "New_Chat_Message";
     public final static String Delete_Chat_Message = "Delete_Chat_Message";
+    /*
     public final static String Table_Events = "Events";
     public final static String[] Table_Events_Fields = new String[]{"ID","Name","Place","Start DATE","End Date","Description","imagePath","Update_Time"};
     public final static String Table_Tasks = "Tasks";
@@ -75,6 +76,7 @@ public final class Constants {
     public final static String[] Table_Users_Fields = new String[]{"Email","name"};
     public final static String Table_Chat = "Chat_";//The full name is: "Chat_"+EventID".
     public final static String[] Table_Chat_Fields = new String[]{"Message_ID","Friend_ID_Sender","Message","Date","Time"};
+    */
     public final static String Yes = "Yes";
     public final static String No = "No";
     public final static String Maybe = "Maybe";

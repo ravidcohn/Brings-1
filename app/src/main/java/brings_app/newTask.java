@@ -12,9 +12,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import server.SendMessage_AsyncTask;
 import server.Task_AsyncTask_insert;
-import utils.Constants;
+import utils.Constans.Constants;
+import utils.Constans.Table_Tasks;
+import utils.Helper;
 import utils.sqlHelper;
 
 /**
@@ -25,11 +26,11 @@ public class newTask extends AppCompatActivity {
     private EditText et_nt_task_ui;
     private EditText et_nt_description_ui;
     private Button bt_nt_create_task_ui;
-    private String imagePath = "";
-    private String USERNAME = "user 1";//TODO
-    private String KEY;
-    private int task_id;
-
+    private String Event_ID;
+    private int Task_ID_Number;
+    private  String Task_Name;
+    private String Description;
+    private String Friend_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,21 +42,15 @@ public class newTask extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
         final Context context = this;
 
-        //ID = b.getInt("ID");
-        //USERNAME = b.getString("USERNAME");
-        KEY = b.getString("KEY");
+        Event_ID = b.getString("Event_ID");
         bt_nt_create_task_ui.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 boolean ok = saveData();
                 if (ok) {
-                    ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{KEY}, null);
-                    for(String to:dbResult[1]) {
-                        if(!to.equals(Constants.User_Name)) {
-                            new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.New_Task + "|" + KEY + "^" + task_id, to);
-                        }
-                    }
+                    String message = Constants.New_Task + "|" + Event_ID + "^" + Task_ID_Number;
+                    Helper.Send_Message_To_All_My_Friend_By_Event(context, Event_ID, message);
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "only description can by empty..", Toast.LENGTH_SHORT).show();
@@ -69,20 +64,19 @@ public class newTask extends AppCompatActivity {
         boolean ok = false;
         if (et_nt_task_ui.getText().length() > 0) {
             ok = true;
-            task_id = 0;
+            Task_ID_Number = 0;
             ArrayList<Integer> allIDS = new ArrayList<>();
-            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{KEY}, null);
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Table_Tasks.Table_Name, new String[]{Table_Tasks.Event_ID}, new String[]{Event_ID}, null);
             for (String t_id : dbResult[1]) {
                 allIDS.add(Integer.parseInt(t_id));
             }
-            while (allIDS.contains(task_id)) {
-                task_id++;
+            while (allIDS.contains(Task_ID_Number)) {
+                Task_ID_Number++;
             }
-            String task_name = et_nt_task_ui.getText().toString();
-            String description = et_nt_description_ui.getText().toString();
-            sqlHelper.insert(Constants.Table_Tasks, new String[]{KEY, task_id + "", task_name, description, Constants.UnCheck});
-            new Task_AsyncTask_insert(this).execute(KEY, task_id + "", task_name, description, Constants.UnCheck);
-
+            Task_Name = et_nt_task_ui.getText().toString();
+            Description = et_nt_description_ui.getText().toString();
+            sqlHelper.insert(Table_Tasks.Table_Name, new String[]{Event_ID, Task_ID_Number + "", Task_Name, Description, Constants.UnCheck});
+            new Task_AsyncTask_insert(this).execute(Event_ID, Task_ID_Number + "", Task_Name, Description, Constants.UnCheck);
         }
         return ok;
     }

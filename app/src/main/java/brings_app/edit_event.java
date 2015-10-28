@@ -24,8 +24,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import server.Event_AsyncTask_update;
+import utils.Helper;
 import utils.bitmapHelper;
-import utils.sqlHelper;
 
 /**
  * Created by pinhas on 08/09/2015.
@@ -41,11 +41,10 @@ public class edit_event extends AppCompatActivity {
     private ImageButton ib_ee_pic_ui;
     private Button bt_ee_save_ui;
     private Button bt_ee_cancel_ui;
-    private int ID;
-    private String KEY;
-    private String imagePath = "";
+    private String Event_ID;
+    private String ImagePath = "";
     private String Update_Time;
-    private String location;
+    private String Location;
     //private String USERNAME = "user 1";//TODO
 
 
@@ -65,7 +64,7 @@ public class edit_event extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
         //ID = b.getInt("ID");
         //USERNAME = b.getString("USERNAME");
-        KEY = b.getString("KEY");
+        Event_ID = b.getString("Event_ID");
         store_value();
 
         final Intent maps = new Intent(this, google_map_location.class);
@@ -111,10 +110,9 @@ public class edit_event extends AppCompatActivity {
 
         SQLiteDatabase db =  db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
         //Cursor c = db.rawQuery("select * from Events where ID = '" + USERNAME + " - " + ID + "';", null);
-        Cursor c = db.rawQuery("select * from Events where ID = '" + KEY+ "';", null);
+        Cursor c = db.rawQuery("select * from Events where ID = '" + Event_ID + "';", null);
         c.moveToFirst();
-        imagePath = c.getString(6);
-
+        ImagePath = c.getString(6);
         et_ee_name_ui.setText(c.getString(1));
         et_ee_place_ui.setText(c.getString(2));
         et_ee_start_ui.setText(c.getString(3));
@@ -129,17 +127,16 @@ public class edit_event extends AppCompatActivity {
         boolean ok = false;
         if(et_ee_name_ui.getText().length() > 0 && et_ee_place_ui.length() > 0 && et_ee_start_ui.length() > 0 && et_ee_end_ui.length() > 0) {
             ok = true;
-
-            String name = et_ee_name_ui.getText().toString();
-            String place = location;
-            String start = et_ee_start_ui.getText().toString();
-            String end = et_ee_end_ui.getText().toString();
-            String description = et_ee_description_ui.getText().toString();
+            String Name = et_ee_name_ui.getText().toString();
+            String Start_Date = et_ee_start_ui.getText().toString();
+            String Start_Time = "";
+            String End_Date = et_ee_end_ui.getText().toString();
+            String End_Time = "";
+            String Description = et_ee_description_ui.getText().toString();
             Date time = Calendar.getInstance().getTime();
             Update_Time = time.toString();
-            sqlHelper.update("Events",new String[]{"Name","place","start","end","description","imagePath","Update_Time"},new String[]{name,place,start,end,description,imagePath,Update_Time},new String[]{"ID"},new String[]{KEY});
-            new Event_AsyncTask_update(this).execute(KEY, name, place, start, end, description, imagePath, Update_Time);
-
+            Helper.Event_Update_MySQL(Event_ID, Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, ImagePath, Update_Time);
+            new Event_AsyncTask_update(this).execute(Event_ID, Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, ImagePath, Update_Time);
         }
         return ok;
     }
@@ -262,18 +259,18 @@ public class edit_event extends AppCompatActivity {
                 int columnIndex = c.getColumnIndex(filePath[0]);
                 String picturePath = c.getString(columnIndex);
                 c.close();
-                imagePath = picturePath;
+                ImagePath = picturePath;
                 Bitmap thumbnail =  bitmapHelper.decodeSampledBitmapFromFile(picturePath, 100, 100);
                 ib_ee_pic_ui.setImageBitmap(thumbnail);
             }
             else if(requestCode == 26){
                 Bundle b = data.getExtras();
-                location = b.getString("location");
+                Location = b.getString("Location");
                 String locationTag = "";
-                for (int i = 0; i < location.length();i++){
-                    if(location.charAt(i)=='!'){
-                        locationTag = location.substring(i+1);
-                        i = location.length();
+                for (int i = 0; i < Location.length();i++){
+                    if(Location.charAt(i)=='!'){
+                        locationTag = Location.substring(i+1);
+                        i = Location.length();
                     }
                 }
                 et_ee_place_ui.setText(locationTag);

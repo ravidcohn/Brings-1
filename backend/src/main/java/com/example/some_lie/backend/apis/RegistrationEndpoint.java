@@ -197,7 +197,7 @@ public class RegistrationEndpoint {
     private boolean checkIfUserExist(String user) {
         boolean isUserExist = false;
         try {
-            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"email"}, new String[]{user}, new int[]{1});
+            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"Friend_ID"}, new String[]{user}, new int[]{1});
             if (rs.next()) {
                 isUserExist = true;
             }
@@ -227,7 +227,7 @@ public class RegistrationEndpoint {
     private boolean checkIfUserExist(String user, String pass) {
         boolean isUserExist = false;
         try {
-            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"email", "password"}, new String[]{user, pass}, new int[]{1});
+            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"Friend_ID", "password"}, new String[]{user, pass}, new int[]{1});
             if (rs.next()) {
                 isUserExist = true;
             }
@@ -261,7 +261,7 @@ public class RegistrationEndpoint {
         try {
             String email = "";
             String userName = "";
-            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"email", "password"}, new String[]{user, pass}, new int[]{1});
+            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"Friend_ID", "password"}, new String[]{user, pass}, new int[]{1});
             if (rs.next()) {
                 record = new RegistrationRecord();
                 email = user;
@@ -326,7 +326,7 @@ public class RegistrationEndpoint {
         try {
             if (checkIfUserExist(mail, password)) {
                 try {
-                    MySQL_Util.delete("Users", new String[]{"email"}, new String[]{mail}, new int[]{1});
+                    MySQL_Util.delete("Users", new String[]{"Friend_ID"}, new String[]{mail}, new int[]{1});
                     record.setRegistration_message("User was deleted");
 
                 } catch (Exception e) {

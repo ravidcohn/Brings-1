@@ -32,15 +32,11 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.util.ArrayList;
 
-import server.Chat_AsyncTask_deleteByEvent;
 import server.CloudEndpointBuilderHelper;
-import server.EventFriend_AsyncTask_delete_by_event;
-import server.Event_AsyncTask_delete;
 import server.GcmIntentService;
-import server.SendMessage_AsyncTask;
 import server.ServerAsyncResponse;
-import server.Task_AsyncTask_deleteByEvent;
-import utils.Constants;
+import utils.Constans.Constants;
+import utils.Constans.Table_Events;
 import utils.Helper;
 import utils.bitmapHelper;
 import utils.sqlHelper;
@@ -153,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
     private void sql() {
 
 
-        ArrayList<String>[] sqlresult = sqlHelper.select(null, Constants.Table_Events, null, null, null);
+        ArrayList<String>[] sqlresult = sqlHelper.select(null, Table_Events.Table_Name, null, null, null);
         for (String str : sqlresult[0]){
             String[] s = str.split(" - ");
             users_names.add(s[0]);
@@ -267,21 +263,8 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    ArrayList<String>[] attendingArray = sqlHelper.select(null, Constants.Table_Events_Friends, new String[]{"Event_ID"}, new String[]{Event_ID}, null);
-                                    sqlHelper.delete(Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{Event_ID}, new int[]{1});
-                                    sqlHelper.delete(Constants.Table_Events_Friends, new String[]{Constants.Table_Events_Friends_Fields[0]}, new String[]{Event_ID}, null);
-                                    sqlHelper.delete(Constants.Table_Tasks, new String[]{Constants.Table_Tasks_Fields[0]}, new String[]{Event_ID}, null);
-                                    sqlHelper.Delete_Table(Constants.Table_Chat + Helper.Clean_Event_ID(Event_ID));
-                                    new Event_AsyncTask_delete(context).execute(Event_ID);
-                                    new EventFriend_AsyncTask_delete_by_event(context).execute(Event_ID);
-                                    new Task_AsyncTask_deleteByEvent(context).execute(Event_ID);
-                                    String Chat_ID = Constants.Table_Chat + Helper.Clean_Event_ID(Event_ID);
-                                    new Chat_AsyncTask_deleteByEvent(context).execute(Chat_ID);
-                                    for (String to : attendingArray[1]) {
-                                        if (!to.equals(Constants.User_Name)) {
-                                            new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.Delete_Event + "|" + Event_ID, to);
-                                        }
-                                    }
+                                    Helper.Delete_Event_ServerSQL(context, Event_ID);
+                                    Helper.Delete_Event_MySQL(Event_ID);
                                     setList();
                                 }
                             })
@@ -315,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
                 Bundle data = new Bundle();
                 //data.putInt("ID", IDS.get(position));
                 //data.putString("USERNAME", users_names.get(position));
-                data.putString("KEY", users_names.get(position) + " - " + IDS.get(position));
+                data.putString("Event_ID", users_names.get(position) + " - " + IDS.get(position));
                 tabs.putExtras(data);
                 startActivity(tabs);
             }
@@ -370,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
             ImageView iv = (ImageView) convertView.findViewById(R.id.ivPic);
             TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
             TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
-            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events, new String[]{Constants.Table_Events_Fields[0]}, new String[]{users_names.get(position) + " - " + IDS.get(position)}, new int[]{1});
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Table_Events.Table_Name, new String[]{Table_Events.Event_ID}, new String[]{users_names.get(position) + " - " + IDS.get(position)}, new int[]{1});
             tvName.setText(dbResult[1].get(0));
             tvDate.setText(dbResult[3].get(0));
 

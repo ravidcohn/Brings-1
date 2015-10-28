@@ -9,50 +9,40 @@ import com.googlecode.objectify.annotation.Id;
 @Entity
 public class User {
     @Id
-    private String email;
-    private String name;
-    private String phone;
-    private String password;
+    private String Friend_ID;
+    private String Phone;
+    private String Nickname;
 
     public User() {
     }
 
-    public User(String email, String name, String phone, String password) {
-        this.email = email;
-        this.name = name;
-        this.phone = phone;
-        this.password = password;
+    public User(String friend_ID, String phone, String nickname) {
+        Friend_ID = friend_ID;
+        Phone = phone;
+        Nickname = nickname;
     }
 
-    public String getEmail() {
-        return email;
+    public String getFriend_ID() {
+        return Friend_ID;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setFriend_ID(String friend_ID) {
+        Friend_ID = friend_ID;
     }
 
     public String getPhone() {
-        return phone;
+        return Phone;
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        Phone = phone;
     }
 
-    public String getPassword() {
-        return password;
+    public String getNickname() {
+        return Nickname;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setNickname(String nickname) {
+        Nickname = nickname;
     }
 }

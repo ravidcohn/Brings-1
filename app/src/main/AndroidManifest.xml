@@ -61,7 +61,7 @@
         <activity android:name=".Task" />
         <activity android:name=".AddFriend" />
         <activity android:name=".Registration" />
-        <activity android:name=".FriendSelctor" />
+        <activity android:name=".friendSelector" />
         <activity android:name=".google_map_location" />
 
         <receiver

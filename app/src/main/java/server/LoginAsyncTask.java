@@ -9,7 +9,7 @@ import com.example.some_lie.backend.brings.model.RegistrationRecord;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import brings_app.MainActivity;
-import utils.Constants;
+import utils.Constans.Constants;
 
 /**
  * Created by pinhas on 12/10/2015.

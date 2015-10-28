@@ -5,7 +5,8 @@ import android.os.AsyncTask;
 import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.User;
 
-import utils.Constants;
+import utils.Constans.Constants;
+import utils.Constans.Table_Users;
 import utils.sqlHelper;
 
 /**
@@ -34,6 +35,8 @@ public class User_AsyncTask_get extends AsyncTask<String, Void, User> {
 
     @Override
     protected void onPostExecute(User result) {
-        sqlHelper.insert(Constants.Table_Users, new String[]{result.getEmail(), result.getName()});
+        if (result!=null) {
+            sqlHelper.insert(Table_Users.Table_Name, new String[]{result.getFriendID(), result.getPhone(), result.getNickname(), Constants.Yes});
+        }
     }
 }

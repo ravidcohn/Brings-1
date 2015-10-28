@@ -11,22 +11,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import utils.Constants;
-import utils.bitmapHelper;
+import utils.Constans.Constants;
+import utils.Constans.Table_Users;
 import utils.sqlHelper;
 
 /**
  * Created by pinhas on 15/10/2015.
  */
-public class FriendSelctor extends AppCompatActivity{
+public class friendSelector extends AppCompatActivity{
     private ListView lv;
-    private ArrayList<String> friends[];
+    private ArrayList<String> Users[];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +42,8 @@ public class FriendSelctor extends AppCompatActivity{
             public void onItemClick(final AdapterView<?> parent, final View view, final int position, long id) {
                 Intent _result = new Intent();
                 Bundle b = new Bundle();
-                b.putString("name",friends[0].get(position));
-                b.putString("email",friends[2].get(position));
+                b.putString(Table_Users.Friend_ID, Users[0].get(position));
+                b.putString(Table_Users.Nickname, Users[2].get(position));
                 _result.putExtras(b);
                 setResult(Activity.RESULT_OK, _result);
                 finish();
@@ -54,11 +53,11 @@ public class FriendSelctor extends AppCompatActivity{
     }
 
     private void fillList(){
-        friends = sqlHelper.select(null, Constants.Table_Friends, new String[]{"regester"}, new String[]{Constants.Yes}, null);
-        ArrayList<String>[] temp = sqlHelper.select(null, Constants.Table_Friends, new String[]{"regester"}, new String[]{Constants.No}, null);
+        Users = sqlHelper.select(null, Table_Users.Table_Name, new String[]{Table_Users.Register}, new String[]{Constants.Yes}, null);
+        ArrayList<String>[] temp = sqlHelper.select(null, Table_Users.Friend_ID, new String[]{Table_Users.Register}, new String[]{Constants.No}, null);
         for (int i = 0; i < temp[0].size(); i++){
             for (int j = 0; j < temp.length; j++){
-                friends[j].add(temp[j].get(i));
+                Users[j].add(temp[j].get(i));
             }
         }
     }
@@ -78,8 +77,8 @@ public class FriendSelctor extends AppCompatActivity{
             convertView = inflater.inflate(R.layout.friend_item_list, null);
 
             TextView tvName = (TextView) convertView.findViewById(R.id.tvFriendItemList);
-            tvName.setText(friends[0].get(position));
-            if(friends[3].get(position).equals(Constants.Yes)) {
+            tvName.setText(Users[0].get(position));
+            if(Users[3].get(position).equals(Constants.Yes)) {
                 tvName.setBackgroundColor(Color.GREEN);
             }
             else{
@@ -89,12 +88,12 @@ public class FriendSelctor extends AppCompatActivity{
         }
 
         public int getCount() {
-            return friends[0].size();
+            return Users[0].size();
         }
 
         @Override
         public Object getItem(int position) {
-            return friends[0].get(position);
+            return Users[0].get(position);
         }
 
         @Override

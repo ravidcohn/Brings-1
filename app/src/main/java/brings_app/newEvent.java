@@ -24,10 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import server.Chat_AsyncTask_CreateByEvent;
-import server.EventFriend_AsyncTask_insert;
-import server.Event_AsyncTask_insert;
-import utils.Constants;
+import utils.Constans.Constants;
+import utils.Constans.Table_Events;
 import utils.Helper;
 import utils.bitmapHelper;
 import utils.sqlHelper;
@@ -45,12 +43,16 @@ public class newEvent extends AppCompatActivity {
     private ImageView iv_ne_pic_ui;
     private Button bt_ne_pic_ui;
     private Button bt_ne_create_event_ui;
-    private int ID;
-    private String imagePath = "";
+    private String Event_ID;
+    private String Name;
+    private String Location;
+    private String Start_Date;
+    private String Start_Time = "";
+    private String End_Date;
+    private String End_Time = "";
+    private String Description;
+    private String ImagePath = "";
     private String Update_Time;
-    private String USERNAME = Constants.User_Name;//TODO
-    private String location ="";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,20 +88,18 @@ public class newEvent extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                Name = tv_ne_name_ui.getText().toString();
+                Location = tv_ne_place_ui.getText().toString();
+                Start_Date = tv_ne_start_ui.getText().toString();
+                Start_Time = "";
+                End_Date = tv_ne_end_ui.getText().toString();
+                End_Time = "";
+                Description = tv_ne_description_ui.getText().toString();
                 boolean ok = saveData();
                 if (ok) {
-                    String key = USERNAME + " - " + ID;
-                    String name = tv_ne_name_ui.getText().toString();
-                    String place = location;
-                    String start = tv_ne_start_ui.getText().toString();
-                    String end = tv_ne_end_ui.getText().toString();
-                    String description = tv_ne_description_ui.getText().toString();
-                    new Event_AsyncTask_insert(context).execute(key, name, place, start, end, description, imagePath, Update_Time);
-                    new EventFriend_AsyncTask_insert(context).execute(key, USERNAME, Constants.Yes, Constants.Manager);
-                    String Chat_ID = Constants.Table_Chat + Helper.Clean_Event_ID(key);
-                    new Chat_AsyncTask_CreateByEvent(context).execute(Chat_ID);
+                    Helper.Create_Event_ServerSQL(context, Event_ID, Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, ImagePath, Update_Time);
                     Bundle b = new Bundle();
-                    b.putString("KEY", key);
+                    b.putString(Table_Events.Event_ID, Event_ID);
                     //   b.putString("USERNAME",USERNAME);
                     tabs2.putExtras(b);
                     // startActivity(tabs);
@@ -120,28 +120,19 @@ public class newEvent extends AppCompatActivity {
         if (tv_ne_name_ui.getText().length() > 0 && tv_ne_place_ui.length() > 0 && tv_ne_start_ui.length() > 0 && tv_ne_end_ui.length() > 0) {
             ok = true;
             int id = 0;
-            String key = USERNAME + " - " + id;
+            Event_ID = Constants.User_Name + " - " + id;
             ArrayList<String> allIDS = new ArrayList<>();
-            ArrayList<String>[] dbResult = sqlHelper.select(null, Constants.Table_Events, null, null, null);
+            ArrayList<String>[] dbResult = sqlHelper.select(null, Table_Events.Table_Name, null, null, null);
             for (String t_id : dbResult[0]) {
                 allIDS.add(t_id);
             }
-            while (allIDS.contains(key)) {
+            while (allIDS.contains(Event_ID)) {
                 id++;
-                key = USERNAME + " - " + id;
+                Event_ID = Constants.User_Name + " - " + id;
             }
-            ID = id;
-            String name = tv_ne_name_ui.getText().toString();
-            String place = tv_ne_place_ui.getText().toString();
-            String start = tv_ne_start_ui.getText().toString();
-            String end = tv_ne_end_ui.getText().toString();
-            String description = tv_ne_description_ui.getText().toString();
             Date time = Calendar.getInstance().getTime();
             Update_Time = time.toString();
-            sqlHelper.insert(Constants.Table_Events, new String[]{key, name, place, start, end, description, imagePath, Update_Time});
-            sqlHelper.insert(Constants.Table_Events_Friends, new String[]{key, Constants.User_Name, Constants.Yes, Constants.Manager});
-            String Chat_ID = Constants.Table_Chat + Helper.Clean_Event_ID(key);
-            sqlHelper.Create_Table(Chat_ID);
+            Helper.Create_Event_MySQL(Event_ID, Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, ImagePath, Update_Time);
         }
         return ok;
     }
@@ -268,18 +259,18 @@ public class newEvent extends AppCompatActivity {
                 int columnIndex = c.getColumnIndex(filePath[0]);
                 String picturePath = c.getString(columnIndex);
                 c.close();
-                imagePath = picturePath;
+                ImagePath = picturePath;
                 Bitmap thumbnail = bitmapHelper.decodeSampledBitmapFromFile(picturePath, 100, 100);//(BitmapFactory.decodeFile(picturePath));
                 iv_ne_pic_ui.setImageBitmap(thumbnail);
             }
             else if(requestCode == 26){
                 Bundle b = data.getExtras();
-                location = b.getString("location");
+                Location = b.getString("Location");
                 String locationTag = "";
-                for (int i = 0; i < location.length();i++){
-                    if(location.charAt(i)=='!'){
-                        locationTag = location.substring(i+1);
-                        i = location.length();
+                for (int i = 0; i < Location.length();i++){
+                    if(Location.charAt(i)=='!'){
+                        locationTag = Location.substring(i+1);
+                        i = Location.length();
                     }
                 }
                 tv_ne_place_ui.setText(locationTag);

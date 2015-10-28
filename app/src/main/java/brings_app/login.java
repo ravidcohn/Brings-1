@@ -20,8 +20,9 @@ import java.util.HashMap;
 
 import server.LoginAsyncTask;
 import server.ServerAsyncResponse;
-import server.cheackFriendsRegistrationAsyncTask;
-import utils.Constants;
+import server.CheckFriendsRegistrationAsyncTask;
+import utils.Constans.Constants;
+import utils.Constans.Table_Users;
 import utils.sqlHelper;
 
 /**
@@ -41,7 +42,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         sqlHelper.setContext(this);
-        sqlHelper.createALLTabels();
+        sqlHelper.createALLTables();
         login();
         tvName = (TextView) findViewById(R.id.tv_login_name);
         tvPass = (TextView) findViewById(R.id.tv_login_password);
@@ -112,13 +113,13 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         HashMap<String, String> data = new HashMap<>();
         ArrayList<String> ph = new ArrayList<>();
         while (phones.moveToNext()) {
-            String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            String Nickname = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("-", "").replaceAll(" ", "");
-            if (data.get(name) == null) {
-                data.put(name, phone);
-                list = sqlHelper.select(null, Constants.Table_Friends, new String[]{"Name", "Phone"}, new String[]{name, phone}, new int[]{1});
+            if (data.get(Nickname) == null) {
+                data.put(Nickname, phone);
+                list = sqlHelper.select(null, Table_Users.Table_Name, new String[]{Table_Users.Phone}, new String[]{phone}, new int[]{1});
                 if (list[0].isEmpty()) {
-                    sqlHelper.insert(Constants.Table_Friends, new String[]{name, phone, "", Constants.No});
+                    sqlHelper.insert(Table_Users.Table_Name, new String[]{"", phone, Nickname, Constants.No});
                 }
                 ph.add(phone);
             }
@@ -143,7 +144,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
             for (int j = 0; j < 100 && count < ph.size(); j++, count++) {
                 arrPh[i].add(ph.get(count));
             }
-            new cheackFriendsRegistrationAsyncTask(this).execute(arrPh[i], gu);
+            new CheckFriendsRegistrationAsyncTask(this).execute(arrPh[i], gu);
         }
 
     }

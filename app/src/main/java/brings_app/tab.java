@@ -11,10 +11,10 @@ import android.view.MenuItem;
 import server.GcmIntentService;
 import server.ServerAsyncResponse;
 import sliding_tab.SlidingTabs;
-import utils.Constants;
+import utils.Constans.Constants;
 
 public class tab extends AppCompatActivity implements ServerAsyncResponse{
-    private String KEY;
+    private String Event_ID;
     private FragmentTransaction transaction;
     private SlidingTabs fragment;
     private int cItem = 0;
@@ -25,7 +25,7 @@ public class tab extends AppCompatActivity implements ServerAsyncResponse{
         setContentView(R.layout.tab);
         GcmIntentService.delegate = this;
         Bundle b = getIntent().getExtras();
-        KEY = b.getString("KEY");
+        Event_ID = b.getString("Event_ID");
 
         if (savedInstanceState == null) {
             transaction = getSupportFragmentManager().beginTransaction();
@@ -56,7 +56,7 @@ public class tab extends AppCompatActivity implements ServerAsyncResponse{
         cItem = fragment.getCurrentItem();
         fragment = new SlidingTabs();
         Bundle b = new Bundle();
-        b.putString("KEY", KEY);
+        b.putString("Event_ID", Event_ID);
         b.putInt("view_num", cItem);
 
         fragment.setArguments(b);
@@ -88,7 +88,7 @@ public class tab extends AppCompatActivity implements ServerAsyncResponse{
             case R.id.action_edit: {
                 final Intent edit = new Intent(this, edit_event.class);
                 Bundle b = new Bundle();
-                b.putString("KEY" ,KEY);
+                b.putString("Event_ID" , Event_ID);
                 cItem = fragment.getCurrentItem();
                 edit.putExtras(b);
                 startActivityForResult(edit, 1);

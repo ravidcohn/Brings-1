@@ -49,20 +49,19 @@ public class UserEndpoint {
     /**
      * Returns the {@link Event} with the corresponding ID.
      *
-     * @param id the ID of the entity to be retrieved
+     * @param Friend_ID the ID of the entity to be retrieved
      * @return the entity with the corresponding ID
      * @throws NotFoundException if there is no {@code Event} with the provided ID.
      */
     @ApiMethod( name = "UserGet",path = "UserGet")
-    public User Get(@Named("email") String email) {
+    public User Get(@Named("Friend_ID") String Friend_ID) {
         User user = new User();
         try {
-            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"email"}, new String[]{email}, new int[]{1});
+            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"Friend_ID"}, new String[]{Friend_ID}, new int[]{1});
             if(rs.next()) {
-                user.setEmail(rs.getString("email"));
-                user.setName(rs.getString("name"));
-                user.setPhone(rs.getString("phone"));
-                user.setPassword(rs.getString("password"));
+                user.setFriend_ID(rs.getString("Friend_ID"));
+                user.setPhone(rs.getString("Phone"));
+                user.setNickname(rs.getString("Nickname"));
 
             }
             rs.close();

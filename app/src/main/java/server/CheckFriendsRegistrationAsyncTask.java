@@ -10,17 +10,18 @@ import com.example.some_lie.backend.brings.model.RegistrationRecord;
 import java.util.ArrayList;
 import java.util.List;
 
-import utils.Constants;
+import utils.Constans.Constants;
+import utils.Constans.Table_Users;
 import utils.sqlHelper;
 
 /**
  * Created by pinhas on 14/10/2015.
  */
-public class cheackFriendsRegistrationAsyncTask extends AsyncTask<ArrayList<String>, Void, List<RegistrationRecord>> {
+public class CheckFriendsRegistrationAsyncTask extends AsyncTask<ArrayList<String>, Void, List<RegistrationRecord>> {
     private static Brings myApiService = null;
     private Context context;
     private ArrayList<String> phones;
-    public cheackFriendsRegistrationAsyncTask(Context context) {
+    public CheckFriendsRegistrationAsyncTask(Context context) {
         this.context = context;
     }
 
@@ -50,7 +51,8 @@ public class cheackFriendsRegistrationAsyncTask extends AsyncTask<ArrayList<Stri
     protected void onPostExecute(List<RegistrationRecord> result) {
         if (result != null) {
             for (int i = 0; i < result.size(); i++) {
-                sqlHelper.update("Friends",new String[]{"email","regester"},new String[]{result.get(i).getMail(),Constants.Yes},new String[]{"Phone"},new String[]{result.get(i).getPhone()});
+                sqlHelper.update(Table_Users.Table_Name,new String[]{Table_Users.Friend_ID, Table_Users.Register},
+                        new String[]{result.get(i).getMail(),Constants.Yes},new String[]{Table_Users.Phone},new String[]{result.get(i).getPhone()});
             }
         }
     }

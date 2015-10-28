@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import utils.Constants;
+import utils.Constans.Table_Tasks;
 import utils.sqlHelper;
 
 /**
@@ -19,8 +19,8 @@ public class Task extends AppCompatActivity {
 
     private TextView tv_et_task_info;
     private TextView tv_et_description_info;
-    private String KEY;
-    private int Task_ID;
+    private String Event_ID;
+    private int Task_ID_Number;
     private SQLiteDatabase db;
   //  private String task;
   //  private String description;
@@ -33,13 +33,13 @@ public class Task extends AppCompatActivity {
         tv_et_task_info = (TextView)findViewById(R.id.tv_et_task_info);
         tv_et_description_info = (TextView)findViewById(R.id.tv_et_description_info);
         Bundle b = getIntent().getExtras();
-        KEY = b.getString("KEY");
-        Task_ID = b.getInt("taskID");
+        Event_ID = b.getString("Event_ID");
+        Task_ID_Number = b.getInt("Task_ID_Number");
 
-        ArrayList<String>[] db = sqlHelper.select(null, Constants.Table_Tasks,new String[]{Constants.Table_Tasks_Fields[0],
-                Constants.Table_Tasks_Fields[1]},new String[]{KEY, Task_ID +""},new int[]{1});
-        tv_et_task_info.setText(db[2].get(0));
-        tv_et_description_info.setText(db[3].get(0));
+        ArrayList<String>[] dbTasks = sqlHelper.select(null, Table_Tasks.Table_Name,new String[]{Table_Tasks.Event_ID,
+                Table_Tasks.Task_ID_Number},new String[]{Event_ID, Task_ID_Number +""},new int[]{1});
+        tv_et_task_info.setText(dbTasks[2].get(0));
+        tv_et_description_info.setText(dbTasks[3].get(0));
 
     }
 

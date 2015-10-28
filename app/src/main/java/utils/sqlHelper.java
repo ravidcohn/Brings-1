@@ -11,6 +11,11 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 
 import server.add_logAsyncTask;
+import utils.Constans.Constants;
+import utils.Constans.Table_Events;
+import utils.Constans.Table_Events_Friends;
+import utils.Constans.Table_Tasks;
+import utils.Constans.Table_Users;
 
 
 /**
@@ -248,11 +253,17 @@ public final class sqlHelper {
         return null;
     }
 
-    public static void Create_Table(String table_name){
+    public static void Create_Table(String table_name, String[]Fields, String[]SQL_Params){
         try{
             SQLiteDatabase db = getConnection();
-            db.execSQL("create table if not exists "+table_name+" ("+Constants.Table_Chat_Fields[0]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[1]+" varchar NOT NULL,"
-                    +Constants.Table_Chat_Fields[2]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[3]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[4]+" varchar NOT NULL)");
+            String execSQL = "create table if not exists "+table_name+" (";
+            for(int i=0;i<Fields.length-1;i++){
+                execSQL += Fields[i] + " " + SQL_Params[i] + ",";
+            }
+            execSQL += Fields[Fields.length] + " " + SQL_Params[Fields.length] + ")";
+            db.execSQL(execSQL);
+            //db.execSQL("create table if not exists "+table_name+" ("+Constants.Table_Chat_Fields[0]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[1]+" varchar NOT NULL,"
+                    //+Constants.Table_Chat_Fields[2]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[3]+" varchar NOT NULL,"+Constants.Table_Chat_Fields[4]+" varchar NOT NULL)");
             db.close();
         }catch(Exception e){
             StringWriter sw = new StringWriter();
@@ -319,11 +330,16 @@ public final class sqlHelper {
             }
     }
 
-    public static void createALLTabels() {
-        try {
+    public static void createALLTables() {
+        Create_Table(Table_Events.Table_Name, Table_Events.getAllFields(), Table_Events.getAllSqlParams());
+        Create_Table(Table_Events_Friends.Table_Name, Table_Events_Friends.getAllFields(), Table_Events_Friends.getAllSqlParams());
+        Create_Table(Table_Tasks.Table_Name, Table_Tasks.getAllFields(), Table_Tasks.getAllSqlParams());
+        Create_Table(Table_Users.Table_Name, Table_Users.getAllFields(), Table_Users.getAllSqlParams());
+            /*
+     try {
             SQLiteDatabase db = getConnection();
             db.execSQL("create table if not exists " + Constants.Table_Events + "(" + Constants.Table_Events_Fields[0] + " varchar NOT NULL primary key," + Constants.Table_Events_Fields[1] + " varchar NOT NULL,"
-                    + Constants.Table_Events_Fields[2] + " VARCHAR NOT NULL," + Constants.Table_Events_Fields[3] + " not null," + Constants.Table_Events_Fields[4] + " not null,"
+                    + Constants.Table_Events_Fields[2] + " VARCHAR NOT NULL," + Constants.Table_Events_Fields[3] + "varchar not null," + Constants.Table_Events_Fields[4] + "varchar not null,"
                     + Constants.Table_Events_Fields[5] + " varchar," + Constants.Table_Events_Fields[6] + " varchar," + Constants.Table_Events_Fields[7] + " VARCHAR NOT NULL)");
             db.execSQL("create table if not exists " + Constants.Table_Tasks + "(" + Constants.Table_Tasks_Fields[0] + " varchar NOT NULL," + Constants.Table_Tasks_Fields[1] + " varchar NOT NULL primary key,"
                     + Constants.Table_Tasks_Fields[2] + "VARCHAR NOT NULL," + Constants.Table_Tasks_Fields[3] + "," + Constants.Table_Tasks_Fields[4] + ")");
@@ -332,7 +348,7 @@ public final class sqlHelper {
             db.execSQL("create table if not exists " + Constants.Table_Friends + "(Name varchar NOT NULL,Phone varchar NOT NULL,email varchar,regester varchar NOT NULL )");
             db.execSQL("create table if not exists " + Constants.Table_Users + "(" + Constants.Table_Users_Fields[0] + " varchar NOT NULL primary key," +
                     Constants.Table_Tasks_Fields[1] + " varchar NOT NULL)");
-            db.close();
+                    db.close();
         }catch(Exception e){
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
@@ -356,6 +372,7 @@ public final class sqlHelper {
             e1.printStackTrace();
         }
     }
+    */
     }
 
 

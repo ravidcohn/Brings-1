@@ -53,23 +53,25 @@ public class EventEndpoint {
     /**
      * Returns the {@link Event} with the corresponding ID.
      *
-     * @param id the ID of the entity to be retrieved
+     * @param Event_ID the ID of the entity to be retrieved
      * @return the entity with the corresponding ID
      * @throws NotFoundException if there is no {@code Event} with the provided ID.
      */
     @ApiMethod( name = "EventGet",path = "EventGet")
-    public Event Get(@Named("id") String id) {
+    public Event Get(@Named("Event_ID") String Event_ID) {
         Event event = new Event();
         try {
-            ResultSet rs = MySQL_Util.select(null,"Events",new String[]{"id"}, new String[]{id},new int[]{1});
+            ResultSet rs = MySQL_Util.select(null,"Events",new String[]{"Event_ID"}, new String[]{Event_ID},new int[]{1});
             if(rs.next()) {
-                event.setId(rs.getString("id"));
-                event.setName(rs.getString("name"));
-                event.setLocation(rs.getString("location"));
-                event.setStart_date(rs.getString("start_date"));
-                event.setEnd_date(rs.getString("end_date"));
-                event.setDescription(rs.getString("description"));
-                event.setImage_url(rs.getString("image_path"));
+                event.setId(rs.getString("Event_ID"));
+                event.setName(rs.getString("Name"));
+                event.setLocation(rs.getString("Location"));
+                event.setStart_date(rs.getString("Start_Date"));
+                event.setStart_time(rs.getString("Start_Time"));
+                event.setEnd_date(rs.getString("End_Date"));
+                event.setEnd_time(rs.getString("End_Time"));
+                event.setDescription(rs.getString("Description"));
+                event.setImage_url(rs.getString("Image_Path"));
                 event.setUpdate_time(rs.getString("update_time"));
             }
             rs.close();
@@ -99,13 +101,13 @@ public class EventEndpoint {
      * Inserts a new {@code Event}.
      */
     @ApiMethod(name = "EventInsert",path = "EventInsert")
-    public images_path Insert(@Named("AID")String id, @Named("BName")String name, @Named("CLocation")String location, @Named("DStart")String start,
-                       @Named("EEnd")String end, @Named("FDescription")String description,@Named("GImagePath")String imagePath,@Named("HUpdateTime")String updateTime) {
+    public images_path Insert(@Named("AEvent_ID")String Event_ID, @Named("BName")String Name, @Named("CLocation")String Location, @Named("DStart_Date")String Start_Date,
+             @Named("DStart_Time")String Start_Time, @Named("FEnd_Date")String End_Date, @Named("HEnd_Time")String End_Time, @Named("GDescription")String Description,
+                              @Named("IImage_Path")String Image_Path,@Named("JUpdate_Time")String Update_Time) {
         try {
             BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
             String uploadURL = blobstoreService.createUploadUrl("/images_servlet");
-           //MySQL_Util.insert("Events",new String[]{id,name,location,start,end,description,imagePath,updateTime});
-            MySQL_Util.insert("Events",new String[]{id,name,location,start,end,description,uploadURL,updateTime});
+            MySQL_Util.insert("Events",new String[]{Event_ID, Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, uploadURL, Update_Time});
             images_path im_path = new images_path();
             im_path.setPath(uploadURL);
             return im_path;
@@ -134,22 +136,16 @@ public class EventEndpoint {
     }
 
     /**
-     *
-     * @param id
-     * @param name
-     * @param start
-     * @param end
-     * @param description
-     * @param imagePath
-     * @param updateTime
+
      */
     @ApiMethod(name = "EventUpdate",path = "EventUpdate")
-    public void Update(@Named("AID")String id, @Named("BName")String name, @Named("CLocation")String location, @Named("DStart")String start,
-                       @Named("EEnd")String end, @Named("FDescription")String description,@Named("GImagePath")String imagePath,@Named("HUpdateTime")String updateTime){
+    public void Update(@Named("AEvent_ID")String Event_ID, @Named("BName")String Name, @Named("CLocation")String Location, @Named("DStart_Date")String Start_Date,
+                       @Named("DStart_Time")String Start_Time, @Named("FEnd_Date")String End_Date, @Named("HEnd_Time")String End_Time, @Named("GDescription")String Description,
+                       @Named("IImage_Path")String Image_Path,@Named("JUpdate_Time")String Update_Time){
         try {
-            MySQL_Util.update("Events",new String[]{"name","location","start_date","end_date","description","image_path","Update_Time"},
-                    new String[]{name,location,start,end,description,imagePath,updateTime},
-                    new String[]{"id"}, new String[]{id});
+            MySQL_Util.update("Events",new String[]{"Name", "Location", "Start_Date", "Start_Time", "End_Date", "End_Time", "Description", "Image_Path", "Update_Time"},
+                    new String[]{Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, Image_Path, Update_Time},
+                    new String[]{"Event_ID"}, new String[]{Event_ID});
 
         }catch(Exception e){
             StringWriter sw = new StringWriter();
@@ -172,17 +168,18 @@ public class EventEndpoint {
         }
     }
 
+
     /**
      * Deletes the specified {@code Event}.
      *
-     * @param id the ID of the entity to delete
+     * @param Event_ID the ID of the entity to delete
      * @throws NotFoundException if the {@code id} does not correspond to an existing
      *                           {@code Event}
      */
     @ApiMethod(name = "EventDelete",path = "EventDelete")
-    public void Delete(@Named("id") String id) {
+    public void Delete(@Named("Event_ID") String Event_ID) {
         try {
-            MySQL_Util.delete("Events",new String[]{"id"}, new String[]{id}, new int[]{1});
+            MySQL_Util.delete("Events",new String[]{"Event_ID"}, new String[]{Event_ID}, new int[]{1});
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));

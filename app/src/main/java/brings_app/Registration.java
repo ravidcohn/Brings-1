@@ -66,14 +66,14 @@ public class Registration extends AppCompatActivity  implements ServerAsyncRespo
 
 
     private void saveData(){
-        String mail = et_rg_mail_ui.getText().toString();
-        String name = et_rg_your_name_ui.getText().toString();
-        String phone = et_rg_phone_ui.getText().toString();
+        String Event_ID = et_rg_mail_ui.getText().toString();
+        String Nickname = et_rg_your_name_ui.getText().toString();
+        String Phone = et_rg_phone_ui.getText().toString();
         String password = et_rg_password_ui.getText().toString();
         String confirm_password = et_rg_confirm_password_ui.getText().toString();
-        if(mail.length()>0 && name.length()>0 && phone.length()>0 && password.length()>0 && confirm_password.length()>0) {
+        if(Event_ID.length()>0 && Nickname.length()>0 && Phone.length()>0 && password.length()>0 && confirm_password.length()>0) {
             if(password.equals(confirm_password)) {
-                new Registration_AsyncTask(this,this).execute(mail,name,phone,password);
+                new Registration_AsyncTask(this,this).execute(Event_ID,Phone,Nickname, password);
             }else {
                 Toast.makeText(getApplicationContext(), "password are not much", Toast.LENGTH_SHORT).show();
             }
