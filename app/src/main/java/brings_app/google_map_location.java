@@ -124,7 +124,7 @@ public class google_map_location extends AppCompatActivity implements OnItemClic
     public void onClick_saveLocation(View v){
         Intent _result = new Intent();
         Bundle b = new Bundle();
-        b.putString("location",LOCATION_BURNABY.latitude+"-"+LOCATION_BURNABY.longitude+"!"+location_str);
+        b.putString("Location",LOCATION_BURNABY.latitude+"-"+LOCATION_BURNABY.longitude+"!"+location_str);
         _result.putExtras(b);
         setResult(Activity.RESULT_OK, _result);
         finish();
