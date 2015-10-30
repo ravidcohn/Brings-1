@@ -49,7 +49,7 @@ public final class Constants {
     private Constants() { }
 
     public static String User_nickName;
-    public static String User_Name;
+    public static String MY_User_ID;
     public static String Password;
     public final static String New_Event = "New_Event";
     public final static String Delete_Event = "Delete_Event";

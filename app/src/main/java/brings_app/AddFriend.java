@@ -64,7 +64,7 @@ public class AddFriend extends AppCompatActivity {
                 Friend_ID = input2.getText().toString();
                 boolean ok = saveData();
                 if (ok) {
-                    new SendMessage_AsyncTask(context).execute(Constants.User_Name, Constants.New_Event + "|" + Event_ID, Friend_ID);
+                    new SendMessage_AsyncTask(context).execute(Constants.MY_User_ID, Constants.New_Event + "|" + Event_ID, Friend_ID);
                     String message = Constants.New_Attending + "|" + Event_ID + "^" + Friend_ID;
                     Helper.Send_Message_To_Friend_By_Event_Except_One(context, Event_ID, Friend_ID, message);
                     Helper.User_Insert_MySQL(Friend_ID);

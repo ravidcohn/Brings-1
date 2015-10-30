@@ -272,20 +272,20 @@ public class SlidingTabs extends Fragment {
                     if (chat_message.length() > 0) {
                         String Chat_ID = Table_Chat.Table_Name + Helper.Clean_Event_ID(Event_ID);
                         int id = 0;
-                        String message_ID = Constants.User_Name + " - " + id;
+                        String message_ID = Constants.MY_User_ID + " - " + id;
                         ArrayList<String> allIDS = new ArrayList<>();
-                        ArrayList<String>[] dbResult = sqlHelper.select(null, Chat_ID, new String[]{Table_Chat.Friend_ID}, new String[]{Constants.User_Name}, null);
+                        ArrayList<String>[] dbResult = sqlHelper.select(null, Chat_ID, new String[]{Table_Chat.Friend_ID}, new String[]{Constants.MY_User_ID}, null);
                         for (String t_id : dbResult[0]) {
                             allIDS.add(t_id);
                         }
                         while (allIDS.contains(message_ID)) {
                             id++;
-                            message_ID = Constants.User_Name + " - " + id;
+                            message_ID = Constants.MY_User_ID + " - " + id;
                         }
                         String date = Helper.getCurrentDate();
                         String time = Helper.getCurrentTime();
-                        sqlHelper.insert(Chat_ID, new String[]{message_ID, Constants.User_Name, chat_message, date, time});
-                        new Chat_AsyncTask_insert(getContext()).execute(Chat_ID, message_ID, Constants.User_Name, chat_message, date, time);
+                        sqlHelper.insert(Chat_ID, new String[]{message_ID, Constants.MY_User_ID, chat_message, date, time});
+                        new Chat_AsyncTask_insert(getContext()).execute(Chat_ID, message_ID, Constants.MY_User_ID, chat_message, date, time);
                         String update_massage = Constants.New_Chat_Message + "|" + Chat_ID + "^" + message_ID;
                         Helper.Send_Message_To_All_My_Friend_By_Event(getContext(), Event_ID, update_massage);
                         et_chat_message_ui.setText("");
@@ -321,8 +321,8 @@ public class SlidingTabs extends Fragment {
                     // TODO Auto-generated method stub
                     String name = members_keys.get(pos);
                     String permission = Helper.getMyPermission(Event_ID);
-                    if (!permission.equals(Constants.Participant) || name.equals(Constants.User_Name)){
-                        if(!(permission.equals(Constants.Manager) && name.equals(Constants.User_Name))){
+                    if (!permission.equals(Constants.Participant) || name.equals(Constants.MY_User_ID)){
+                        if(!(permission.equals(Constants.Manager) && name.equals(Constants.MY_User_ID))){
                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                             ArrayList<String>[] dbUsers = sqlHelper.select(null, Table_Users.Table_Name, new String[]{Table_Users.Friend_ID}, new String[]{members_keys.get(pos)}, new int[]{1});
                             if (!dbUsers[0].isEmpty()) {
@@ -338,12 +338,12 @@ public class SlidingTabs extends Fragment {
                                             new EventFriend_AsyncTask_delete(context).execute(Event_ID, Friend_ID);
                                             String message = Constants.Delete_Attending + "|" + Event_ID + "^" + Friend_ID;
                                             Helper.Send_Message_To_Friend_By_Event_Except_One(context, Event_ID, Friend_ID, message);
-                                            if (Friend_ID.equals(Constants.User_Name)) {
+                                            if (Friend_ID.equals(Constants.MY_User_ID)) {
                                                 Helper.Delete_Event_MySQL(Event_ID);
                                                 getActivity().finish();
                                             } else {
                                                 message = Constants.Delete_Event + "|" + Event_ID;
-                                                new SendMessage_AsyncTask(context).execute(Constants.User_Name, message, Friend_ID);
+                                                new SendMessage_AsyncTask(context).execute(Constants.MY_User_ID, message, Friend_ID);
                                                 sqlHelper.delete(Table_Events_Friends.Table_Name, new String[]{Table_Events_Friends.Event_ID,
                                                         Table_Events_Friends.Friend_ID}, new String[]{Event_ID, Friend_ID}, new int[]{1});
                                             }
@@ -466,7 +466,7 @@ public class SlidingTabs extends Fragment {
                                                final int pos, final long id) {
                     // TODO Auto-generated method stub
                     String sender_ID = dbChat[1].get(pos);
-                    if (sender_ID.equals(Constants.User_Name)) {
+                    if (sender_ID.equals(Constants.MY_User_ID)) {
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                         // set dialog message
                         alertDialogBuilder
@@ -589,10 +589,9 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
                 break;
             }
         }
-        if (!dbResult[1].get(position).equals(Constants.User_Name)) {
+        if (!dbResult[1].get(position).equals(Constants.MY_User_ID)) {
             for (int i = 0; i < radioGroup.getChildCount(); i++) {
                 radioGroup.getChildAt(i).setEnabled(false);
-                //radioGroup.getChildAt(i).setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
             }
         }
 
@@ -603,7 +602,7 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
         ArrayList<String>[] dbUsers = sqlHelper.select(null, Table_Users.Table_Name, new String[]{Table_Users.Friend_ID}, new String[]{Friend_ID}, new int[]{1});
         if (!dbUsers[0].isEmpty()) {
             return dbUsers[2].get(0);
-        } else if (Friend_ID.equals(Constants.User_Name)) {
+        } else if (Friend_ID.equals(Constants.MY_User_ID)) {
             return Constants.User_nickName;
         } else {
             return Friend_ID;
@@ -612,10 +611,10 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
 
     private void Update_Attending(ArrayList<String>[] dbResult, String attend, int pos) {
         if (!dbResult[2].get(pos).equals(attend)) {
-            new EventFriend_AsyncTask_UpdateAttending(context).execute(Event_ID, Constants.User_Name, attend);
+            new EventFriend_AsyncTask_UpdateAttending(context).execute(Event_ID, Constants.MY_User_ID, attend);
             sqlHelper.update(Table_Events_Friends.Table_Name, new String[]{Table_Events_Friends.Attending}, new String[]{attend},
-                    new String[]{Table_Events_Friends.Event_ID, Table_Events_Friends.Friend_ID}, new String[]{Event_ID, Constants.User_Name});
-            String message = Constants.Update_Attending + "|" + Event_ID + "^" + Constants.User_Name + "^" + attend;
+                    new String[]{Table_Events_Friends.Event_ID, Table_Events_Friends.Friend_ID}, new String[]{Event_ID, Constants.MY_User_ID});
+            String message = Constants.Update_Attending + "|" + Event_ID + "^" + Constants.MY_User_ID + "^" + attend;
             Helper.Send_Message_To_All_My_Friend_By_Event(context, Event_ID, message);
         }
     }
@@ -685,7 +684,7 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
         } else {
             task_do.setChecked(true);
         }
-        if (dbTasks[4].get(position).equals(Constants.User_Name)||dbTasks[4].get(position).equals(Constants.UnCheck)) {
+        if (dbTasks[4].get(position).equals(Constants.MY_User_ID)||dbTasks[4].get(position).equals(Constants.UnCheck)) {
             task_do.setEnabled(true);
             task_do.setVisibility(View.VISIBLE);
         } else {
@@ -722,11 +721,11 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
             String Friend_ID;
             if (task_do) {
                 new Task_AsyncTask_update(context).execute(dbTasks[0].get(pos), dbTasks[1].get(pos),
-                        dbTasks[2].get(pos), dbTasks[3].get(pos), Constants.User_Name);
-                sqlHelper.update(Table_Tasks.Table_Name, new String[]{Table_Tasks.Friend_ID}, new String[]{Constants.User_Name},
+                        dbTasks[2].get(pos), dbTasks[3].get(pos), Constants.MY_User_ID);
+                sqlHelper.update(Table_Tasks.Table_Name, new String[]{Table_Tasks.Friend_ID}, new String[]{Constants.MY_User_ID},
                         new String[]{Table_Tasks.Event_ID, Table_Tasks.Task_ID_Number},
                         new String[]{dbTasks[0].get(pos), dbTasks[1].get(pos)});
-                Friend_ID = Constants.User_Name;
+                Friend_ID = Constants.MY_User_ID;
             } else {
                 new Task_AsyncTask_update(context).execute(dbTasks[0].get(pos), dbTasks[1].get(pos),
                         dbTasks[2].get(pos), dbTasks[3].get(pos), Constants.UnCheck);
@@ -747,7 +746,7 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
         ArrayList<String>[] dbUsers = sqlHelper.select(null, Table_Users.Table_Name, new String[]{Table_Users.Friend_ID}, new String[]{Friend_ID}, new int[]{1});
         if (!dbUsers[0].isEmpty()) {
             return dbUsers[1].get(0);
-        } else if (Friend_ID.equals(Constants.User_Name)) {
+        } else if (Friend_ID.equals(Constants.MY_User_ID)) {
             return Constants.User_nickName;
         } else {
             return Friend_ID;
@@ -791,7 +790,7 @@ class StableArrayAdapterChat extends BaseAdapter implements View.OnClickListener
         ArrayList<String>[] dbUsers = sqlHelper.select(null, Table_Users.Table_Name, new String[]{Table_Users.Friend_ID}, new String[]{Friend_ID}, new int[]{1});
         if (!dbUsers[0].isEmpty()) {
             return dbUsers[1].get(0);
-        } else if (Friend_ID.equals(Constants.User_Name)) {
+        } else if (Friend_ID.equals(Constants.MY_User_ID)) {
             return Constants.User_nickName;
         } else {
             return Friend_ID;

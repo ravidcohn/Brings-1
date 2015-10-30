@@ -41,7 +41,7 @@ public class Helper {
 
     public static String getMyPermission(String Event_ID){
         ArrayList<String>[] dbResult = sqlHelper.select(null, Table_Events_Friends.Table_Name, new String[]{Table_Events_Friends.Event_ID,Table_Events_Friends.Friend_ID},
-                new String[]{Event_ID,Constants.User_Name}, null);
+                new String[]{Event_ID,Constants.MY_User_ID}, null);
         return dbResult[3].get(0);
     }
 
@@ -54,7 +54,7 @@ public class Helper {
     public static void Create_Event_MySQL(String Event_ID,String  Name, String  Location,String  Start_Date,String  Start_Time,String End_Date,
                                           String  End_Time, String  Description, String  ImagePath, String  Update_Time){
         sqlHelper.insert(Table_Events.Table_Name, new String[]{Event_ID, Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, ImagePath, Update_Time});
-        sqlHelper.insert(Table_Events_Friends.Table_Name, new String[]{Event_ID, Constants.User_Name, Constants.Yes, Constants.Manager});
+        sqlHelper.insert(Table_Events_Friends.Table_Name, new String[]{Event_ID, Constants.MY_User_ID, Constants.Yes, Constants.Manager});
         String Chat_ID = Table_Chat.Table_Name + Helper.Clean_Event_ID(Event_ID);
         sqlHelper.Create_Table(Chat_ID, Table_Chat.getAllFields(), Table_Chat.getAllSqlParams());
     }
@@ -70,7 +70,7 @@ public class Helper {
     public static void Create_Event_ServerSQL(Context context, String Event_ID,String  Name, String  Location, String  Start_Date, String  Start_Time, String End_Date,
                                           String  End_Time, String  Description, String  ImagePath, String  Update_Time){
         new Event_AsyncTask_insert(context).execute(Event_ID, Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, ImagePath, Update_Time);
-        new EventFriend_AsyncTask_insert(context).execute(Event_ID, Constants.User_Name, Constants.Yes, Constants.Manager);
+        new EventFriend_AsyncTask_insert(context).execute(Event_ID, Constants.MY_User_ID, Constants.Yes, Constants.Manager);
         String Chat_ID = Table_Chat.Table_Name + Helper.Clean_Event_ID(Event_ID);
         new Chat_AsyncTask_CreateByEvent(context).execute(Chat_ID);
     }
@@ -84,16 +84,16 @@ public class Helper {
     public static void Send_Message_To_All_My_Friend_By_Event(Context context, String Event_ID, String message){
         ArrayList<String>[] dbFriends = getFriends_From_Event(Event_ID);
         for(String to:dbFriends[1]) {
-            if(!to.equals(Constants.User_Name)) {
-                new SendMessage_AsyncTask(context).execute(Constants.User_Name, message, to);
+            if(!to.equals(Constants.MY_User_ID)) {
+                new SendMessage_AsyncTask(context).execute(Constants.MY_User_ID, message, to);
             }
         }
     }
     public static void Send_Message_To_Friend_By_Event_Except_One(Context context, String Event_ID, String Friend_ID, String message){
         ArrayList<String>[] dbFriends = getFriends_From_Event(Event_ID);
         for(String to:dbFriends[1]) {
-            if(!to.equals(Friend_ID) && !to.equals(Constants.User_Name)) {
-                new SendMessage_AsyncTask(context).execute(Constants.User_Name, message, to);
+            if(!to.equals(Friend_ID) && !to.equals(Constants.MY_User_ID)) {
+                new SendMessage_AsyncTask(context).execute(Constants.MY_User_ID, message, to);
             }
         }
     }

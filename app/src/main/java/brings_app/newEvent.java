@@ -120,7 +120,7 @@ public class newEvent extends AppCompatActivity {
         if (tv_ne_name_ui.getText().length() > 0 && tv_ne_place_ui.length() > 0 && tv_ne_start_ui.length() > 0 && tv_ne_end_ui.length() > 0) {
             ok = true;
             int id = 0;
-            Event_ID = Constants.User_Name + " - " + id;
+            Event_ID = Constants.MY_User_ID + " - " + id;
             ArrayList<String> allIDS = new ArrayList<>();
             ArrayList<String>[] dbResult = sqlHelper.select(null, Table_Events.Table_Name, null, null, null);
             for (String t_id : dbResult[0]) {
@@ -128,7 +128,7 @@ public class newEvent extends AppCompatActivity {
             }
             while (allIDS.contains(Event_ID)) {
                 id++;
-                Event_ID = Constants.User_Name + " - " + id;
+                Event_ID = Constants.MY_User_ID + " - " + id;
             }
             Date time = Calendar.getInstance().getTime();
             Update_Time = time.toString();

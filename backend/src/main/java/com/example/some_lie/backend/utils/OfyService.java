@@ -1,4 +1,4 @@
-package com.example.some_lie.backend;
+package com.example.some_lie.backend.utils;
 
 import com.example.some_lie.backend.models.Chat;
 import com.example.some_lie.backend.models.Event;

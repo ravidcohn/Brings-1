@@ -6,6 +6,7 @@
 
 package com.example.some_lie.backend.apis;
 
+import com.example.some_lie.backend.utils.Constans.Constants;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Result;
@@ -37,17 +38,17 @@ import javax.inject.Named;
  */
 @Api(name = "brings", version = "v1",
         namespace = @ApiNamespace(
-                ownerDomain = com.example.some_lie.backend.Constants.API_OWNER,
-                ownerName = com.example.some_lie.backend.Constants.API_OWNER,
-                packagePath = com.example.some_lie.backend.Constants.API_PACKAGE_PATH
+                ownerDomain = Constants.API_OWNER,
+                ownerName = Constants.API_OWNER,
+                packagePath = Constants.API_PACKAGE_PATH
         )
 )
 @ApiClass(resource = "messaging",
         clientIds = {
-                com.example.some_lie.backend.Constants.ANDROID_CLIENT_ID,
-                com.example.some_lie.backend.Constants.IOS_CLIENT_ID,
-                com.example.some_lie.backend.Constants.WEB_CLIENT_ID},
-        audiences = {com.example.some_lie.backend.Constants.AUDIENCE_ID}
+                Constants.ANDROID_CLIENT_ID,
+                Constants.IOS_CLIENT_ID,
+                Constants.WEB_CLIENT_ID},
+        audiences = {Constants.AUDIENCE_ID}
 )
 public class MessagingEndpoint {
     private static final Logger log = Logger.getLogger(MessagingEndpoint.class.getName());

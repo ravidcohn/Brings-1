@@ -1,6 +1,6 @@
 package com.example.some_lie.backend.utils;
 
-import com.example.some_lie.backend.Constants;
+import com.example.some_lie.backend.utils.Constans.Constants;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

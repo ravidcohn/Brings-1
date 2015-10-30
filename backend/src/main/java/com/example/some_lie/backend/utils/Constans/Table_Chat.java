@@ -1,4 +1,4 @@
-package utils.Constans;
+package com.example.some_lie.backend.utils.Constans;
 
 /**
  * Created by Ravid on 28/10/2015.

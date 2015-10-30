@@ -7,6 +7,7 @@
 package com.example.some_lie.backend.apis;
 
 import com.example.some_lie.backend.models.RegistrationRecord;
+import com.example.some_lie.backend.utils.Constans.Constants;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
@@ -37,17 +38,17 @@ import javax.inject.Named;
 
 @Api(name = "brings", version = "v1",
         namespace = @ApiNamespace(
-                ownerDomain = com.example.some_lie.backend.Constants.API_OWNER,
-                ownerName = com.example.some_lie.backend.Constants.API_OWNER,
-                packagePath = com.example.some_lie.backend.Constants.API_PACKAGE_PATH
+                ownerDomain = Constants.API_OWNER,
+                ownerName = Constants.API_OWNER,
+                packagePath = Constants.API_PACKAGE_PATH
         )
 )
 @ApiClass(resource = "registration",
         clientIds = {
-                com.example.some_lie.backend.Constants.ANDROID_CLIENT_ID,
-                com.example.some_lie.backend.Constants.IOS_CLIENT_ID,
-                com.example.some_lie.backend.Constants.WEB_CLIENT_ID},
-        audiences = {com.example.some_lie.backend.Constants.AUDIENCE_ID}
+                Constants.ANDROID_CLIENT_ID,
+                Constants.IOS_CLIENT_ID,
+                Constants.WEB_CLIENT_ID},
+        audiences = {Constants.AUDIENCE_ID}
 )
 public class RegistrationEndpoint {
 
@@ -58,8 +59,8 @@ public class RegistrationEndpoint {
      */
 
     @ApiMethod(name = "Register", httpMethod = "POST")
-    public RegistrationRecord registerDevice(@Named("mail") String mail, @Named("name") String name, @Named("phone") String phone
-            , @Named("password") String password, @Named("regId") String regId) {// throws UnauthorizedException {
+    public RegistrationRecord registerDevice(@Named("mail") String mail, @Named("name") String name, @Named("Phone") String Phone
+            , @Named("Password") String Password, @Named("regId") String regId) {// throws UnauthorizedException {
         // EndpointUtil.throwIfNotAuthenticated(user);
         RegistrationRecord record = new RegistrationRecord();
         //record.setRegistration_message(checkIfUserExist(mail));
@@ -67,13 +68,13 @@ public class RegistrationEndpoint {
         boolean isExist = checkIfUserExist(mail);
         if (!isExist) {
             try {
-                String _phone = phone;
-                if (phone.charAt(0) == '0') {
-                    _phone = "+972" + phone.substring(1);
+                String _phone = Phone;
+                if (Phone.charAt(0) == '0') {
+                    _phone = "+972" + Phone.substring(1);
                 }
                 _phone = _phone.replaceAll("-", "");
                 _phone = _phone.replaceAll(" ", "");
-                MySQL_Util.insert("Users", new String[]{mail, name, _phone, password});
+                MySQL_Util.insert("Users", new String[]{mail, _phone, name, Password});
                 ResultSet rs = MySQL_Util.select(new String[]{"reg_id"}, "UsersDevices", new String[]{"email"}, new String[]{mail}, new int[]{1});
                 boolean done = false;
                 while (rs.next() && !done) {
@@ -167,7 +168,7 @@ public class RegistrationEndpoint {
             }
             phone = phone.replaceAll("-", "");
             phone = phone.replaceAll(" ", "");
-            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"phone"}, new String[]{phone}, new int[]{1});
+            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"Phone"}, new String[]{phone}, new int[]{1});
             if (rs.next()) {
                 isUserExist = rs.getString(1);
             }
@@ -227,7 +228,7 @@ public class RegistrationEndpoint {
     private boolean checkIfUserExist(String user, String pass) {
         boolean isUserExist = false;
         try {
-            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"Friend_ID", "password"}, new String[]{user, pass}, new int[]{1});
+            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"Friend_ID", "Password"}, new String[]{user, pass}, new int[]{1});
             if (rs.next()) {
                 isUserExist = true;
             }
@@ -261,18 +262,18 @@ public class RegistrationEndpoint {
         try {
             String email = "";
             String userName = "";
-            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"Friend_ID", "password"}, new String[]{user, pass}, new int[]{1});
+            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"Friend_ID", "Password"}, new String[]{user, pass}, new int[]{1});
             if (rs.next()) {
                 record = new RegistrationRecord();
                 email = user;
                 userName = rs.getString(2);
                 rs.close();
             } else {
-                String phone = user.replaceAll("-","").replaceAll(" ","");
-                if(phone.charAt(0) == '0'){
-                    phone = "+972"+phone.substring(1);
+                String Phone = user.replaceAll("-","").replaceAll(" ","");
+                if(Phone.charAt(0) == '0'){
+                    Phone = "+972"+Phone.substring(1);
                 }
-                rs = MySQL_Util.select(null, "Users", new String[]{"phone", "password"}, new String[]{phone, pass}, new int[]{1});
+                rs = MySQL_Util.select(null, "Users", new String[]{"Phone", "Password"}, new String[]{Phone, pass}, new int[]{1});
                 if (rs.next()) {
                     email = rs.getString(1);
                     userName = rs.getString(2);
@@ -321,10 +322,10 @@ public class RegistrationEndpoint {
      * Unregister a device from the backend
      */
     @ApiMethod(name = "Unregister", httpMethod = "DELETE")
-    public RegistrationRecord unregisterDevice(@Named("mail") String mail, @Named("password") String password) {
+    public RegistrationRecord unregisterDevice(@Named("mail") String mail, @Named("Password") String Password) {
         RegistrationRecord record = new RegistrationRecord();
         try {
-            if (checkIfUserExist(mail, password)) {
+            if (checkIfUserExist(mail, Password)) {
                 try {
                     MySQL_Util.delete("Users", new String[]{"Friend_ID"}, new String[]{mail}, new int[]{1});
                     record.setRegistration_message("User was deleted");
@@ -334,7 +335,7 @@ public class RegistrationEndpoint {
                     e.printStackTrace(new PrintWriter(sw));
                 }
             } else {
-                record.setRegistration_message("email or password are wrong!");
+                record.setRegistration_message("email or Password are wrong!");
             }
         }catch(Exception e){
             StringWriter sw = new StringWriter();

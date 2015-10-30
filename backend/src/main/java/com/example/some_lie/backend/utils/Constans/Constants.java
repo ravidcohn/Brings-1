@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.some_lie.backend;
+package com.example.some_lie.backend.utils.Constans;
 
 /**
  * API Keys, Client Ids and Audience Ids for accessing APIs and configuring

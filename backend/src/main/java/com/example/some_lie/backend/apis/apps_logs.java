@@ -1,6 +1,6 @@
 package com.example.some_lie.backend.apis;
 
-import com.example.some_lie.backend.Constants;
+import com.example.some_lie.backend.utils.Constans.Constants;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;

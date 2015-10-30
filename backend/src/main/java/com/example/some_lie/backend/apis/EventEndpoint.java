@@ -1,6 +1,6 @@
 package com.example.some_lie.backend.apis;
 
-import com.example.some_lie.backend.Constants;
+import com.example.some_lie.backend.utils.Constans.Constants;
 import com.example.some_lie.backend.models.Event;
 import com.example.some_lie.backend.models.images_path;
 import com.example.some_lie.backend.utils.MySQL_Util;

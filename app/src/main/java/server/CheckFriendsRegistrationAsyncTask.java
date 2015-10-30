@@ -38,7 +38,7 @@ public class CheckFriendsRegistrationAsyncTask extends AsyncTask<ArrayList<Strin
                 old_regId = params[1].get(1);
             }
             this.phones = params[0];
-            CollectionResponseRegistrationRecord result = myApiService.checkfriendsRegistration(new_regId, old_regId, Constants.Password, phones, Constants.User_Name).execute();
+            CollectionResponseRegistrationRecord result = myApiService.checkfriendsRegistration(new_regId, old_regId, Constants.Password, phones, Constants.MY_User_ID).execute();
             return result.getItems();
         } catch (Exception e) {
             e.printStackTrace();
