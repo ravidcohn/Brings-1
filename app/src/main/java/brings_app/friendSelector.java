@@ -54,7 +54,7 @@ public class friendSelector extends AppCompatActivity{
 
     private void fillList(){
         Users = sqlHelper.select(null, Table_Users.Table_Name, new String[]{Table_Users.Register}, new String[]{Constants.Yes}, null);
-        ArrayList<String>[] temp = sqlHelper.select(null, Table_Users.Friend_ID, new String[]{Table_Users.Register}, new String[]{Constants.No}, null);
+        ArrayList<String>[] temp = sqlHelper.select(null, Table_Users.Table_Name, new String[]{Table_Users.Register}, new String[]{Constants.No}, null);
         for (int i = 0; i < temp[0].size(); i++){
             for (int j = 0; j < temp.length; j++){
                 Users[j].add(temp[j].get(i));
