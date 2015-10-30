@@ -59,13 +59,13 @@ public class RegistrationEndpoint {
      */
 
     @ApiMethod(name = "Register", httpMethod = "POST")
-    public RegistrationRecord registerDevice(@Named("mail") String mail, @Named("name") String name, @Named("Phone") String Phone
-            , @Named("Password") String Password, @Named("regId") String regId) {// throws UnauthorizedException {
+    public RegistrationRecord registerDevice(@Named("AMail") String Mail, @Named("BPhone") String Phone, @Named("CNikeName") String NikeName
+            , @Named("DPassword") String Password, @Named("regId") String regId) {// throws UnauthorizedException {
         // EndpointUtil.throwIfNotAuthenticated(user);
         RegistrationRecord record = new RegistrationRecord();
-        //record.setRegistration_message(checkIfUserExist(mail));
+        //record.setRegistration_message(checkIfUserExist(Mail));
         //return record;
-        boolean isExist = checkIfUserExist(mail);
+        boolean isExist = checkIfUserExist(Mail);
         if (!isExist) {
             try {
                 String _phone = Phone;
@@ -74,8 +74,8 @@ public class RegistrationEndpoint {
                 }
                 _phone = _phone.replaceAll("-", "");
                 _phone = _phone.replaceAll(" ", "");
-                MySQL_Util.insert("Users", new String[]{mail, _phone, name, Password});
-                ResultSet rs = MySQL_Util.select(new String[]{"reg_id"}, "UsersDevices", new String[]{"email"}, new String[]{mail}, new int[]{1});
+                MySQL_Util.insert("Users", new String[]{Mail, _phone, NikeName, Password});
+                ResultSet rs = MySQL_Util.select(new String[]{"reg_id"}, "UsersDevices", new String[]{"email"}, new String[]{Mail}, new int[]{1});
                 boolean done = false;
                 while (rs.next() && !done) {
                     if (regId.equals(rs.getString(1))) {
@@ -84,7 +84,7 @@ public class RegistrationEndpoint {
                 }
                 rs.close();
                 if (!done) {
-                    MySQL_Util.insert("UsersDevices", new String[]{mail, regId});
+                    MySQL_Util.insert("UsersDevices", new String[]{Mail, regId});
                 }
                 record.setRegistration_message("O.K");
             } catch(Exception e){
