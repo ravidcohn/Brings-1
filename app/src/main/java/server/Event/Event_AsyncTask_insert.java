@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import server.cloudStorage;
 import utils.Constans.Constants;
 
 import server.CloudEndpointBuilderHelper;
@@ -67,7 +68,7 @@ public class Event_AsyncTask_insert extends AsyncTask<String, Void, Void> {
             File f = new File(params[8]);
             if (f.exists()) {
                 String urlP = ipath.getPath();
-                cloudStorage.uploadFile(Constants.bucket_name,params[8],context);
+                cloudStorage.uploadFile(Constants.bucket_name, params[8], context);
   /*              urlP = "test";
                 GcsFilename filename = new GcsFilename(Constants.bucket_name, urlP);
                 GcsOutputChannel outputChannel =
