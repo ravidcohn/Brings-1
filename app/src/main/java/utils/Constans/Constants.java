@@ -43,6 +43,7 @@ public final class Constants {
 
     public static final String SQL_DIR = "/data/data/some_lie.brings/databases/";
     public static final String SQL_DB_NAME = "_edata";
+    public static final String bucket_name = "a_bucket";
     /**
      * Default constructor, never called.
      */
