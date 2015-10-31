@@ -571,7 +571,7 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
         });
         ArrayList<String>[] dbResult = Helper.getFriends_From_Event(Event_ID);
         //name.setText(dbResult[1].get(position));
-        name.setText(getName(dbResult[1].get(position)));
+        name.setText(Helper.getNickname(dbResult[1].get(position)));
         switch (dbResult[2].get(position)) {
             case Constants.Yes: {
                 radioGroup.check(R.id.rb_ea_list_yes);
@@ -596,17 +596,6 @@ class StableArrayAdapterAttending extends BaseAdapter implements View.OnClickLis
         }
 
         return convertView;
-    }
-
-    private String getName(String Friend_ID) {
-        ArrayList<String>[] dbUsers = sqlHelper.select(null, Table_Users.Table_Name, new String[]{Table_Users.Friend_ID}, new String[]{Friend_ID}, new int[]{1});
-        if (!dbUsers[0].isEmpty()) {
-            return dbUsers[2].get(0);
-        } else if (Friend_ID.equals(Constants.MY_User_ID)) {
-            return Constants.User_nickName;
-        } else {
-            return Friend_ID;
-        }
     }
 
     private void Update_Attending(ArrayList<String>[] dbResult, String attend, int pos) {
@@ -667,7 +656,7 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
                 ArrayList<String>[] dbTasks = sqlHelper.select(null, Table_Tasks.Table_Name, new String[]{Table_Tasks.Event_ID}, new String[]{Event_ID}, null);
                 if (isChecked) {
                     Update_Task_do(dbTasks, true, position);
-               //     task_friend.setText(Constants.User_nickName);
+               //     task_friend.setText(Constants.User_Nickname);
                 } else {
                     Update_Task_do(dbTasks, false, position);
                     task_friend.setText("");
@@ -677,7 +666,7 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
         });
         ArrayList<String>[] dbTasks = sqlHelper.select(null, Table_Tasks.Table_Name, new String[]{Table_Tasks.Event_ID}, new String[]{Event_ID}, null);
         task_tit.setText(dbTasks[2].get(position));
-        task_friend.setText(getName(dbTasks[4].get(position)));
+        task_friend.setText(Helper.getNickname(dbTasks[4].get(position)));
         task_friend.setTextColor(Color.BLACK);
         if (dbTasks[4].get(position).equals(Constants.UnCheck)) {
             task_do.setChecked(false);
@@ -739,20 +728,6 @@ class StableArrayAdapterTodo extends BaseAdapter implements View.OnClickListener
         }
     }
 
-    private String getName(String Friend_ID) {
-        if(Friend_ID.equals(Constants.UnCheck)){
-            return "";
-        }
-        ArrayList<String>[] dbUsers = sqlHelper.select(null, Table_Users.Table_Name, new String[]{Table_Users.Friend_ID}, new String[]{Friend_ID}, new int[]{1});
-        if (!dbUsers[0].isEmpty()) {
-            return dbUsers[1].get(0);
-        } else if (Friend_ID.equals(Constants.MY_User_ID)) {
-            return Constants.User_nickName;
-        } else {
-            return Friend_ID;
-        }
-
-    }
 }
 class StableArrayAdapterChat extends BaseAdapter implements View.OnClickListener {
 
@@ -777,7 +752,7 @@ class StableArrayAdapterChat extends BaseAdapter implements View.OnClickListener
         TextView chat_message = (TextView) convertView.findViewById(R.id.tv_chat_list_item_message);
 
         ArrayList<String>[] dbChat = sqlHelper.select(null, Table_Chat.Table_Name + Helper.Clean_Event_ID(Event_ID), null, null, null);
-        sender_name.setText(getName(dbChat[1].get(position)));
+        sender_name.setText(Helper.getNickname(dbChat[1].get(position)));
         sender_name.setTextColor(Color.BLACK);
         time.setText(dbChat[4].get(position));
         time.setTextColor(Color.BLACK);
@@ -785,18 +760,6 @@ class StableArrayAdapterChat extends BaseAdapter implements View.OnClickListener
         chat_message.setTextColor(Color.BLACK);
         return convertView;
     }
-
-    private String getName(String Friend_ID) {
-        ArrayList<String>[] dbUsers = sqlHelper.select(null, Table_Users.Table_Name, new String[]{Table_Users.Friend_ID}, new String[]{Friend_ID}, new int[]{1});
-        if (!dbUsers[0].isEmpty()) {
-            return dbUsers[1].get(0);
-        } else if (Friend_ID.equals(Constants.MY_User_ID)) {
-            return Constants.User_nickName;
-        } else {
-            return Friend_ID;
-        }
-    }
-
 
     public int getCount() {
         //return IDS.size();

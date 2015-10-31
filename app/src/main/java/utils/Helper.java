@@ -136,4 +136,19 @@ public class Helper {
         sqlHelper.update(Table_Events.Table_Name,Table_Events.getAllFields_Except_Event_ID(),new String[]{Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, ImagePath, Update_Time},
                 new String[]{Table_Events.Event_ID},new String[]{Event_ID});
     }
+
+    public static String getNickname(String Friend_ID){
+        if(Friend_ID.equals(Constants.UnCheck)){
+            return "";
+        }
+        ArrayList<String>[] dbUsers = sqlHelper.select(null, Table_Users.Table_Name, new String[]{Table_Users.Friend_ID}, new String[]{Friend_ID}, new int[]{1});
+        if (!dbUsers[0].isEmpty()) {
+            return dbUsers[2].get(0);
+        } else if (Friend_ID.equals(Constants.MY_User_ID)) {
+            return Constants.User_Nickname;
+        } else {
+            return Friend_ID;
+        }
+    }
+
 }
