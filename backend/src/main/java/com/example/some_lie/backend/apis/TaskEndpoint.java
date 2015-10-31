@@ -65,7 +65,7 @@ public class TaskEndpoint {
                                 task.setTask_ID_Number(rs.getString(Table_Tasks.Task_ID_Number));
                                 task.setTask_Name(rs.getString(Table_Tasks.Task_Name));
                                 task.setDescription(rs.getString(Table_Tasks.Description));
-                                task.setFriend_ID(rs.getString(Table_Tasks.Friend_ID));
+                                task.setUser_ID(rs.getString(Table_Tasks.User_ID));
                         }
                         rs.close();
                 } catch (Exception e) {
@@ -97,7 +97,7 @@ public class TaskEndpoint {
                         ResultSet rs = MySQL_Util.select(null,Table_Tasks.Table_Name,new String[]{Table_Tasks.Event_ID}, new String[]{Event_ID},null);
                         while(rs.next()){
                                 taskArrayList.add(new Task(rs.getString(Table_Tasks.Event_ID),rs.getString(Table_Tasks.Task_ID_Number),
-                                        rs.getString(Table_Tasks.Task_Name),rs.getString(Table_Tasks.Description),rs.getString(Table_Tasks.Friend_ID)));
+                                        rs.getString(Table_Tasks.Task_Name),rs.getString(Table_Tasks.Description),rs.getString(Table_Tasks.User_ID)));
                         }
                         rs.close();
                 } catch (Exception e) {
@@ -127,9 +127,9 @@ public class TaskEndpoint {
          */
         @ApiMethod(name = "TaskInsert",path = "TaskInsert")
         public void Insert(@Named("AEvent_ID")String Event_ID, @Named("BTask_ID_Number")String Task_ID_Number, @Named("CTask_Name")String Task_Name, @Named("DDescription")String Description,
-                           @Named("EFriend_ID")String Friend_ID) {
+                           @Named("EUser_ID")String User_ID) {
                 try {
-                        MySQL_Util.insert(Table_Tasks.Table_Name, new String[]{Event_ID, Task_ID_Number, Task_Name, Description, Friend_ID});
+                        MySQL_Util.insert(Table_Tasks.Table_Name, new String[]{Event_ID, Task_ID_Number, Task_Name, Description, User_ID});
 
                 }catch(Exception e){
                         StringWriter sw = new StringWriter();
@@ -159,10 +159,10 @@ public class TaskEndpoint {
          */
         @ApiMethod(name = "TaskUpdate",path = "TaskUpdate")
         public void Update(@Named("AEvent_ID")String Event_ID, @Named("BTask_ID_Number")String Task_ID_Number, @Named("CTask_Name")String Task_Name, @Named("DDescription")String Description,
-                           @Named("EFriend_ID")String Friend_ID){
+                           @Named("EUser_ID")String User_ID){
                 try {
-                        MySQL_Util.update(Table_Tasks.Table_Name, new String[]{Table_Tasks.Task_Name, Table_Tasks.Description, Table_Tasks.Friend_ID},
-                                new String[]{Task_Name, Description, Friend_ID},
+                        MySQL_Util.update(Table_Tasks.Table_Name, new String[]{Table_Tasks.Task_Name, Table_Tasks.Description, Table_Tasks.User_ID},
+                                new String[]{Task_Name, Description, User_ID},
                                 new String[]{Table_Tasks.Event_ID, Table_Tasks.Task_ID_Number}, new String[]{Event_ID, Task_ID_Number});
 
                 }catch(Exception e){

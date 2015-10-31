@@ -2,7 +2,7 @@ package com.example.some_lie.backend.utils;
 
 import com.example.some_lie.backend.models.Chat;
 import com.example.some_lie.backend.models.Event;
-import com.example.some_lie.backend.models.Event_Friend;
+import com.example.some_lie.backend.models.Event_User;
 import com.example.some_lie.backend.models.RegistrationRecord;
 import com.example.some_lie.backend.models.Task;
 import com.example.some_lie.backend.models.User;
@@ -19,7 +19,7 @@ public class OfyService {
     static {
         ObjectifyService.register(RegistrationRecord.class);
         ObjectifyService.register(Event.class);
-        ObjectifyService.register(Event_Friend.class);
+        ObjectifyService.register(Event_User.class);
         ObjectifyService.register(User.class);
         ObjectifyService.register(Task.class);
         ObjectifyService.register(Chat.class);

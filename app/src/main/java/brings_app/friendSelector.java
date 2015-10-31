@@ -42,7 +42,7 @@ public class friendSelector extends AppCompatActivity{
             public void onItemClick(final AdapterView<?> parent, final View view, final int position, long id) {
                 Intent _result = new Intent();
                 Bundle b = new Bundle();
-                b.putString(Table_Users.Friend_ID, Users[0].get(position));
+                b.putString(Table_Users.User_ID, Users[0].get(position));
                 b.putString(Table_Users.Nickname, Users[2].get(position));
                 _result.putExtras(b);
                 setResult(Activity.RESULT_OK, _result);

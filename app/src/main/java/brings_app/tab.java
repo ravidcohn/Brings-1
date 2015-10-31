@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import server.GcmIntentService;
+import server.Messageing.GcmIntentService;
 import server.ServerAsyncResponse;
 import sliding_tab.SlidingTabs;
 import utils.Constans.Constants;

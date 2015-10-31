@@ -33,7 +33,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.util.ArrayList;
 
 import server.CloudEndpointBuilderHelper;
-import server.GcmIntentService;
+import server.Messageing.GcmIntentService;
 import server.ServerAsyncResponse;
 import utils.Constans.Constants;
 import utils.Constans.Table_Events;

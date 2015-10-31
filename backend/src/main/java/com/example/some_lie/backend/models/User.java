@@ -9,25 +9,25 @@ import com.googlecode.objectify.annotation.Id;
 @Entity
 public class User {
     @Id
-    private String Friend_ID;
+    private String User_ID;
     private String Phone;
     private String Nickname;
 
     public User() {
     }
 
-    public User(String friend_ID, String phone, String nickname) {
-        Friend_ID = friend_ID;
+    public User(String user_ID, String phone, String nickname) {
+        User_ID = user_ID;
         Phone = phone;
         Nickname = nickname;
     }
 
-    public String getFriend_ID() {
-        return Friend_ID;
+    public String getUser_ID() {
+        return User_ID;
     }
 
-    public void setFriend_ID(String friend_ID) {
-        Friend_ID = friend_ID;
+    public void setUser_ID(String user_ID) {
+        User_ID = user_ID;
     }
 
     public String getPhone() {

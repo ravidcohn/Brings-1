@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import server.add_logAsyncTask;
 import utils.Constans.Constants;
 import utils.Constans.Table_Events;
-import utils.Constans.Table_Events_Friends;
+import utils.Constans.Table_Events_Users;
 import utils.Constans.Table_Tasks;
 import utils.Constans.Table_Users;
 
@@ -332,47 +332,9 @@ public final class sqlHelper {
 
     public static void createALLTables() {
         Create_Table(Table_Events.Table_Name, Table_Events.getAllFields(), Table_Events.getAllSqlParams());
-        Create_Table(Table_Events_Friends.Table_Name, Table_Events_Friends.getAllFields(), Table_Events_Friends.getAllSqlParams());
+        Create_Table(Table_Events_Users.Table_Name, Table_Events_Users.getAllFields(), Table_Events_Users.getAllSqlParams());
         Create_Table(Table_Tasks.Table_Name, Table_Tasks.getAllFields(), Table_Tasks.getAllSqlParams());
         Create_Table(Table_Users.Table_Name, Table_Users.getAllFields(), Table_Users.getAllSqlParams());
-            /*
-     try {
-            SQLiteDatabase db = getConnection();
-            db.execSQL("create table if not exists " + Constants.Table_Events + "(" + Constants.Table_Events_Fields[0] + " varchar NOT NULL primary key," + Constants.Table_Events_Fields[1] + " varchar NOT NULL,"
-                    + Constants.Table_Events_Fields[2] + " VARCHAR NOT NULL," + Constants.Table_Events_Fields[3] + "varchar not null," + Constants.Table_Events_Fields[4] + "varchar not null,"
-                    + Constants.Table_Events_Fields[5] + " varchar," + Constants.Table_Events_Fields[6] + " varchar," + Constants.Table_Events_Fields[7] + " VARCHAR NOT NULL)");
-            db.execSQL("create table if not exists " + Constants.Table_Tasks + "(" + Constants.Table_Tasks_Fields[0] + " varchar NOT NULL," + Constants.Table_Tasks_Fields[1] + " varchar NOT NULL primary key,"
-                    + Constants.Table_Tasks_Fields[2] + "VARCHAR NOT NULL," + Constants.Table_Tasks_Fields[3] + "," + Constants.Table_Tasks_Fields[4] + ")");
-            db.execSQL("create table if not exists " + Constants.Table_Events_Friends + "("+Constants.Table_Events_Friends_Fields[0]+" varchar NOT NULL,"+Constants.Table_Events_Friends_Fields[1]+" varchar NOT NULL,"
-                    +Constants.Table_Events_Friends_Fields[2]+"varchar NOT NULL,"+Constants.Table_Events_Friends_Fields[3]+" varchar NOT NULL)");
-            db.execSQL("create table if not exists " + Constants.Table_Friends + "(Name varchar NOT NULL,Phone varchar NOT NULL,email varchar,regester varchar NOT NULL )");
-            db.execSQL("create table if not exists " + Constants.Table_Users + "(" + Constants.Table_Users_Fields[0] + " varchar NOT NULL primary key," +
-                    Constants.Table_Tasks_Fields[1] + " varchar NOT NULL)");
-                    db.close();
-        }catch(Exception e){
-        StringWriter sw = new StringWriter();
-        e.printStackTrace(new PrintWriter(sw));
-        LocalDateTime now = LocalDateTime.now();
-        try {
-            int year = now.getYear();
-            int month = now.getMonthOfYear();
-            int day = now.getDayOfMonth();
-            int hour = now.getHourOfDay();
-            int minute = now.getMinuteOfHour();
-            int second = now.getSecondOfMinute();
-            int millis = now.getMillisOfSecond();
-            String date = day+"/"+month+"/"+year;
-            String time = hour+":"+minute+":"+second+":"+millis;
-            String eString = sw.toString();
-            if(eString.length() > 1000){
-                eString = eString.substring(0,1000)+"...";
-            }
-            new add_logAsyncTask().execute(eString, date, time);
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-    }
-    */
     }
 
 

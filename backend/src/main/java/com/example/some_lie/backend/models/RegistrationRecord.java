@@ -11,71 +11,61 @@ import com.googlecode.objectify.annotation.Index;
 public class RegistrationRecord {
 
     @Id
-    private String mail;
+    private String User_ID;
 
     @Index
-    private String regId;
-
-    private String phone;
-    private String password;
-    private String name;
+    private String Registration_ID;
+    private String Phone;
+    //private String password;
+    private String Nickname;
     private String registration_message;
 
 
     public RegistrationRecord() {
     }
 
-    public RegistrationRecord(String email, String phone) {
-        mail = email;
-        this.phone = phone;
+    public RegistrationRecord(String user_ID, String phone) {
+        User_ID = phone;
+        Phone = phone;
     }
 
-    public String getMail() {
-        return mail;
+    public String getUser_ID() {
+        return User_ID;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setUser_ID(String user_ID) {
+        User_ID = user_ID;
+    }
+
+    public String getRegistration_ID() {
+        return Registration_ID;
+    }
+
+    public void setRegistration_ID(String registration_ID) {
+        Registration_ID = registration_ID;
     }
 
     public String getPhone() {
-        return phone;
+        return Phone;
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        Phone = phone;
     }
 
-    public String getName() {
-        return name;
+    public String getNickname() {
+        return Nickname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNickname(String nickname) {
+        Nickname = nickname;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getMessage() {
+    public String getRegistration_message() {
         return registration_message;
     }
 
     public void setRegistration_message(String registration_message) {
         this.registration_message = registration_message;
     }
-    public String getRegId() {
-        return regId;
-    }
-
-    public void setRegId(String regId) {
-        this.regId = regId;
-    }
-
-
 }

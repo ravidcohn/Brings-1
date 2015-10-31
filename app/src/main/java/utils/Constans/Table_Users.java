@@ -6,8 +6,8 @@ package utils.Constans;
 public final class Table_Users {
     public final static String Table_Name = "Users";
 
-    public final static String Friend_ID = "Friend_ID";
-    private final static String Friend_ID_SQL_Params = "varchar NOT NULL";
+    public final static String User_ID = "User_ID";
+    private final static String User_ID_SQL_Params = "varchar NOT NULL";
     public final static String Phone = "Phone";
     private final static String Phone_SQL_Params = "varchar NOT NULL";
     public final static String Nickname = "Nickname";
@@ -16,11 +16,11 @@ public final class Table_Users {
     private final static String Register_SQL_Params = "varchar NOT NULL";
 
     public final static String[] getAllFields(){
-        return new String[]{Friend_ID, Phone, Nickname, Register};
+        return new String[]{User_ID, Phone, Nickname, Register};
     }
 
     public final static String[] getAllSqlParams(){
-        return new String[]{Friend_ID_SQL_Params, Phone_SQL_Params, Nickname_SQL_Params, Register_SQL_Params};
+        return new String[]{User_ID_SQL_Params, Phone_SQL_Params, Nickname_SQL_Params, Register_SQL_Params};
     }
 
     public static int Size(){

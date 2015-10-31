@@ -60,7 +60,7 @@ public final class Constants {
     public final static String New_Task = "New_Task";
     public final static String Delete_Task = "Delete_Task";
     public final static String Update_Task = "Update_Task";
-    public final static String Update_Task_Friend_ID = "Update_Task_Friend_ID";
+    public final static String Update_Task_User_ID = "Update_Task_User_ID";
     public final static String New_Chat_Message = "New_Chat_Message";
     public final static String Delete_Chat_Message = "Delete_Chat_Message";
     public final static String Yes = "Yes";

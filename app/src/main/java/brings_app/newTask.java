@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import server.Task_AsyncTask_insert;
+import server.Task.Task_AsyncTask_insert;
 import utils.Constans.Constants;
 import utils.Constans.Table_Tasks;
 import utils.Helper;
@@ -30,7 +30,7 @@ public class newTask extends AppCompatActivity {
     private int Task_ID_Number;
     private  String Task_Name;
     private String Description;
-    private String Friend_ID;
+    private String User_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

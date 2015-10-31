@@ -10,16 +10,16 @@ import com.googlecode.objectify.annotation.Id;
 public class Chat {
     @Id
     private String Message_ID;
-    private String Friend_ID_Sender;
+    private String User_ID_Sender;
     private String Message;
     private String Date;
     private String Time;
 
     public Chat() {}
 
-    public Chat(String message_ID, String friend_ID_Sender, String message, String date, String time) {
+    public Chat(String message_ID, String User_ID_Sender, String message, String date, String time) {
         Message_ID = message_ID;
-        Friend_ID_Sender = friend_ID_Sender;
+        this.User_ID_Sender = User_ID_Sender;
         Message = message;
         Date = date;
         Time = time;
@@ -33,12 +33,12 @@ public class Chat {
         Message_ID = message_ID;
     }
 
-    public String getFriend_ID_Sender() {
-        return Friend_ID_Sender;
+    public String getUser_ID_Sender() {
+        return User_ID_Sender;
     }
 
-    public void setFriend_ID_Sender(String friend_ID_Sender) {
-        Friend_ID_Sender = friend_ID_Sender;
+    public void setUser_ID_Sender(String user_ID_Sender) {
+        User_ID_Sender = user_ID_Sender;
     }
 
     public String getMessage() {

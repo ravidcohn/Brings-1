@@ -63,7 +63,7 @@ public class ChatEndpoint {
                         ResultSet rs = MySQL_Util.select(null, Chat_ID, new String[]{Table_Chat.Message_ID}, new String[]{Message_ID}, new int[]{1});
                         if(rs.next()) {
                                 chat.setMessage_ID(rs.getString(Table_Chat.Message_ID));
-                                chat.setFriend_ID_Sender(rs.getString(Table_Chat.Friend_ID));
+                                chat.setUser_ID_Sender(rs.getString(Table_Chat.User_ID));
                                 chat.setMessage(rs.getString(Table_Chat.Message));
                                 chat.setDate(rs.getString(Table_Chat.Date));
                                 chat.setTime(rs.getString(Table_Chat.Time));
@@ -97,7 +97,7 @@ public class ChatEndpoint {
                 try {
                         ResultSet rs = MySQL_Util.select(null,Chat_ID,null,null,null);
                         while(rs.next()){
-                                chatArrayList.add(new Chat(rs.getString(Table_Chat.Message_ID),rs.getString(Table_Chat.Friend_ID),
+                                chatArrayList.add(new Chat(rs.getString(Table_Chat.Message_ID),rs.getString(Table_Chat.User_ID),
                                         rs.getString(Table_Chat.Message),rs.getString(Table_Chat.Date),rs.getString(Table_Chat.Time)));
                         }
                         rs.close();
@@ -127,10 +127,10 @@ public class ChatEndpoint {
          * Inserts a new {@code Event}.
          */
         @ApiMethod(name = "ChatInsert",path = "ChatInsert")
-        public void Insert(@Named("AChat_ID")String Chat_ID, @Named("BMessage_ID")String Message_ID, @Named("CFriend_ID")String Friend_ID,
+        public void Insert(@Named("AChat_ID")String Chat_ID, @Named("BMessage_ID")String Message_ID, @Named("CUser_ID")String User_ID,
                            @Named("DMessage")String Message, @Named("EDate")String Date,  @Named("ETime")String Time) {
                 try {
-                        MySQL_Util.insert(Chat_ID, new String[]{Message_ID, Friend_ID, Message, Date, Time});
+                        MySQL_Util.insert(Chat_ID, new String[]{Message_ID, User_ID, Message, Date, Time});
 
                 }catch(Exception e){
                         StringWriter sw = new StringWriter();

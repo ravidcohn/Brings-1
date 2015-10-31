@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import server.Registration_AsyncTask;
+import server.Registration.Registration_AsyncTask;
 import server.ServerAsyncResponse;
 
 /**

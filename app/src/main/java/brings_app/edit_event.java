@@ -23,7 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import server.Event_AsyncTask_update;
+import server.Event.Event_AsyncTask_update;
 import utils.Helper;
 import utils.bitmapHelper;
 
