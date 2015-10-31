@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
                 //img.setCircular(true);
                 //iv.setImageDrawable(img);
             }
-            //iv.setImageBitmap(bitmapHelper.decodeSampledBitmapFromFile(dbResult[6].get(0), 100, 100));
+            iv.setImageBitmap(bitmap);
 
             return convertView;
         }
