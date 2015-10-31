@@ -1,9 +1,12 @@
 package brings_app;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,9 +21,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import server.Registration.CheckUsersRegistrationAsyncTask;
 import server.Registration.LoginAsyncTask;
 import server.ServerAsyncResponse;
-import server.Registration.CheckUsersRegistrationAsyncTask;
 import utils.Constans.Constants;
 import utils.Constans.Table_Users;
 import utils.sqlHelper;
@@ -37,6 +40,11 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
     private Button register;
     private GoogleCloudMessaging gcm;
 
+    ProgressDialog progressBar;
+    private int progressBarStatus = 0;
+    private Handler progressBarHandler = new Handler();
+    private Context context;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +58,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         etPass = (EditText) findViewById(R.id.et_login_password);
         login = (Button) findViewById(R.id.b_login_login);
         register = (Button) findViewById(R.id.b_login_register);
+        context = this;
     }
 
     public void signIn(View view) {
@@ -94,7 +103,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
 
             }
             try {
-                getFriends(regId, gcmUpdate);
+                getUsers(regId, gcmUpdate);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -105,14 +114,59 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         }
     }
 
-    private void getFriends(String gcmUpdate, String oldGCM) {
+    private void getUsers(String gcmUpdate, String oldGCM) {
+
+        progressBar = new ProgressDialog(context);
+        progressBar.setCancelable(true);
+        progressBar.setMessage("File downloading ...");
+        progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressBar.setProgress(0);
+        progressBar.setMax(100);
+        progressBar.show();
+        progressBarStatus = 0;
+        new Thread(new Runnable() {
+            public void run() {
+                while (progressBarStatus < 100) {
+
+                    // your computer is too fast, sleep 1 second
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Update the progress bar
+                    progressBarHandler.post(new Runnable() {
+                        public void run() {
+                            progressBar.setProgress(progressBarStatus);
+                        }
+                    });
+                }
+
+                // ok, file is downloaded,
+                if (progressBarStatus >= 100) {
+
+                    // sleep 2 seconds, so that you can see the 100%
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    // close the progress bar dialog
+                    progressBar.dismiss();
+                }
+            }
+        }).start();
 
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null, null, null);
         ArrayList<String>[] list;
         HashMap<String, String> data = new HashMap<>();
         ArrayList<String> ph = new ArrayList<>();
+        phones.getCount();
         while (phones.moveToNext()) {
+            progressBarStatus++;
             String Nickname = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("-", "").replaceAll(" ", "");
             if (data.get(Nickname) == null) {

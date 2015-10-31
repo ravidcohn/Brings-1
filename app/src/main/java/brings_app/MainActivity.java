@@ -353,11 +353,11 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
             ImageView iv = (ImageView) convertView.findViewById(R.id.ivPic);
             TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
             TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
-            ArrayList<String>[] dbResult = sqlHelper.select(null, Table_Events.Table_Name, new String[]{Table_Events.Event_ID}, new String[]{users_names.get(position) + " - " + IDS.get(position)}, new int[]{1});
-            tvName.setText(dbResult[1].get(0));
-            tvDate.setText(dbResult[3].get(0));
-
-            Bitmap bitmap = bitmapHelper.decodeSampledBitmapFromFile(dbResult[6].get(0), 100, 100);
+            ArrayList<String>[] dbEvent = sqlHelper.select(null, Table_Events.Table_Name, new String[]{Table_Events.Event_ID}, new String[]{users_names.get(position) + " - " + IDS.get(position)}, new int[]{1});
+            tvName.setText(dbEvent[Table_Events.parseInt(Table_Events.Name)].get(0));
+            tvDate.setText(dbEvent[Table_Events.parseInt(Table_Events.Start_Date)].get(0));
+            String Image_Path = dbEvent[Table_Events.parseInt(Table_Events.Image_Path)].get(0);
+            Bitmap bitmap = bitmapHelper.decodeSampledBitmapFromFile(Image_Path, 100, 100);
             if (bitmap!=null) {
                // RoundedBitmapDrawable img = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
                 //img.setCircular(true);
