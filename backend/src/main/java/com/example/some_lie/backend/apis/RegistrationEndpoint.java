@@ -8,6 +8,8 @@ package com.example.some_lie.backend.apis;
 
 import com.example.some_lie.backend.models.RegistrationRecord;
 import com.example.some_lie.backend.utils.Constans.Constants;
+import com.example.some_lie.backend.utils.Constans.Table_Users;
+import com.example.some_lie.backend.utils.Constans.Table_Users_Devices;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
@@ -59,13 +61,13 @@ public class RegistrationEndpoint {
      */
 
     @ApiMethod(name = "Register", httpMethod = "POST")
-    public RegistrationRecord registerDevice(@Named("AMail") String Mail, @Named("BPhone") String Phone, @Named("CNikeName") String NikeName
-            , @Named("DPassword") String Password, @Named("regId") String regId) {// throws UnauthorizedException {
+    public RegistrationRecord registerDevice(@Named("AUser_ID") String User_ID, @Named("BPhone") String Phone, @Named("CNikeName") String Nikename
+            , @Named("DPassword") String Password, @Named("ERegistration_ID") String Registration_ID) {// throws UnauthorizedException {
         // EndpointUtil.throwIfNotAuthenticated(user);
         RegistrationRecord record = new RegistrationRecord();
         //record.setRegistration_message(checkIfUserExist(Mail));
         //return record;
-        boolean isExist = checkIfUserExist(Mail);
+        boolean isExist = checkIfUserExist(User_ID);
         if (!isExist) {
             try {
                 String _phone = Phone;
@@ -74,17 +76,17 @@ public class RegistrationEndpoint {
                 }
                 _phone = _phone.replaceAll("-", "");
                 _phone = _phone.replaceAll(" ", "");
-                MySQL_Util.insert("Users", new String[]{Mail, _phone, NikeName, Password});
-                ResultSet rs = MySQL_Util.select(new String[]{"reg_id"}, "UsersDevices", new String[]{"email"}, new String[]{Mail}, new int[]{1});
+                MySQL_Util.insert(Table_Users.Table_Name, new String[]{User_ID, _phone, Nikename, Password});
+                ResultSet rs = MySQL_Util.select(new String[]{Table_Users_Devices.Registration_ID}, Table_Users_Devices.Table_Name, new String[]{Table_Users_Devices.User_ID}, new String[]{User_ID}, new int[]{1});
                 boolean done = false;
                 while (rs.next() && !done) {
-                    if (regId.equals(rs.getString(1))) {
+                    if (Registration_ID.equals(rs.getString(1))) {
                         done = true;
                     }
                 }
                 rs.close();
                 if (!done) {
-                    MySQL_Util.insert("UsersDevices", new String[]{Mail, regId});
+                    MySQL_Util.insert(Table_Users_Devices.Table_Name, new String[]{User_ID, Registration_ID});
                 }
                 record.setRegistration_message("O.K");
             } catch(Exception e){
@@ -108,31 +110,32 @@ public class RegistrationEndpoint {
             }
 
         } else {
-            record.setRegistration_message("User alrady exist!");
+            record.setRegistration_message("User already exist!");
         }
         //    record.setRegistration_message(isExist);
         return record;
     }
 
-    @ApiMethod(name = "CheckfriendsRegistration", path = "CheckfriendsRegistration", httpMethod = "POST")
-    public CollectionResponse<RegistrationRecord> CheckfriendsRegistration(@Named("user") String user, @Named("pass") String pass
-            , @Named("phones") ArrayList<String> phones, @Named("new_reg_id") String new_reg_id, @Named("old_reg_id") String old_reg_id) {
+    @ApiMethod(name = "CheckUserRegistration", path = "CheckUserRegistration", httpMethod = "POST")
+    public CollectionResponse<RegistrationRecord> CheckUserRegistration(@Named("AUser_ID") String User_ID, @Named("BPassword") String Password
+            , @Named("CPhones") ArrayList<String> Phones, @Named("Dnew_reg_id") String new_reg_id, @Named("Eold_reg_id") String old_reg_id) {
         try {
-            if (!checkIfUserExist(user, pass)) {
+            if (!checkIfUserExist(User_ID, Password)) {
                 return null;
             }
             if (!new_reg_id.equals("!")) {
                 try {
-                    MySQL_Util.update("UsersDevices", new String[]{"reg_id"}, new String[]{new_reg_id}, new String[]{"reg_id"}, new String[]{old_reg_id});
+                    MySQL_Util.update(Table_Users_Devices.Table_Name, new String[]{Table_Users_Devices.Registration_ID}, new String[]{new_reg_id},
+                            new String[]{Table_Users_Devices.Registration_ID}, new String[]{old_reg_id});
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
             List<RegistrationRecord> result = new ArrayList<>();
-            for (int i = 0; i < phones.size(); i++) {
-                String exist = checkIfUserExistByPhone(phones.get(i));
+            for (int i = 0; i < Phones.size(); i++) {
+                String exist = checkIfUserExistByPhone(Phones.get(i));
                 if (!exist.equals("")) {
-                    result.add(new RegistrationRecord(exist, phones.get(i)));
+                    result.add(new RegistrationRecord(exist, Phones.get(i)));
                 }
             }
 
@@ -168,9 +171,9 @@ public class RegistrationEndpoint {
             }
             phone = phone.replaceAll("-", "");
             phone = phone.replaceAll(" ", "");
-            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"Phone"}, new String[]{phone}, new int[]{1});
+            ResultSet rs = MySQL_Util.select(null, Table_Users.Table_Name, new String[]{Table_Users.Phone}, new String[]{phone}, new int[]{1});
             if (rs.next()) {
-                isUserExist = rs.getString(1);
+                isUserExist = rs.getString(Table_Users.User_ID);
             }
             rs.close();
         } catch(Exception e){
@@ -198,7 +201,7 @@ public class RegistrationEndpoint {
     private boolean checkIfUserExist(String user) {
         boolean isUserExist = false;
         try {
-            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"Friend_ID"}, new String[]{user}, new int[]{1});
+            ResultSet rs = MySQL_Util.select(null, Table_Users.Table_Name, new String[]{Table_Users.User_ID}, new String[]{user}, new int[]{1});
             if (rs.next()) {
                 isUserExist = true;
             }
@@ -228,7 +231,7 @@ public class RegistrationEndpoint {
     private boolean checkIfUserExist(String user, String pass) {
         boolean isUserExist = false;
         try {
-            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"Friend_ID", "Password"}, new String[]{user, pass}, new int[]{1});
+            ResultSet rs = MySQL_Util.select(null, Table_Users.Table_Name, new String[]{Table_Users.User_ID, Table_Users.Password}, new String[]{user, pass}, new int[]{1});
             if (rs.next()) {
                 isUserExist = true;
             }
@@ -256,44 +259,45 @@ public class RegistrationEndpoint {
     }
 
     @ApiMethod(name = "authentication", httpMethod = "POST")
-    public RegistrationRecord authentication(@Named("Email_OR_Phone") String user, @Named("Password") String pass,
-                                             @Named("regId") String regId) {
+    public RegistrationRecord authentication(@Named("Email_OR_Phone") String User, @Named("Password") String Password,
+                                             @Named("Registration_ID") String Registration_ID) {
         RegistrationRecord record = null;
         try {
-            String email = "";
+            String User_ID = "";
             String userName = "";
-            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"Friend_ID", "Password"}, new String[]{user, pass}, new int[]{1});
+            ResultSet rs = MySQL_Util.select(null, Table_Users.Table_Name, new String[]{Table_Users.User_ID, Table_Users.Password}, new String[]{User, Password}, new int[]{1});
             if (rs.next()) {
                 record = new RegistrationRecord();
-                email = user;
-                userName = rs.getString(2);
+                User_ID = User;
+                userName = rs.getString(Table_Users.Nickname);
                 rs.close();
             } else {
-                String Phone = user.replaceAll("-","").replaceAll(" ","");
+                String Phone = User.replaceAll("-","").replaceAll(" ","");
                 if(Phone.charAt(0) == '0'){
                     Phone = "+972"+Phone.substring(1);
                 }
-                rs = MySQL_Util.select(null, "Users", new String[]{"Phone", "Password"}, new String[]{Phone, pass}, new int[]{1});
+                rs = MySQL_Util.select(null, Table_Users.Table_Name, new String[]{Table_Users.Phone, Table_Users.Password}, new String[]{Phone, Password}, new int[]{1});
                 if (rs.next()) {
-                    email = rs.getString(1);
-                    userName = rs.getString(2);
+                    User_ID = rs.getString(Table_Users.User_ID);
+                    userName = rs.getString(Table_Users.Nickname);
                     record = new RegistrationRecord();
                 }
             }
             rs.close();
             if (record != null) {
-                record.setMail(email);
-                record.setName(userName);
-                rs = MySQL_Util.select(new String[]{"reg_id"}, "UsersDevices", new String[]{"email"}, new String[]{email}, new int[]{1});
+                record.setUser_ID(User_ID);
+                record.setNickname(userName);
+                rs = MySQL_Util.select(new String[]{Table_Users_Devices.Registration_ID}, Table_Users_Devices.Table_Name, new String[]{Table_Users_Devices.User_ID},
+                        new String[]{User_ID}, new int[]{1});
                 boolean done = false;
                 while (rs.next() && !done) {
-                    if (regId.equals(rs.getString(1))) {
+                    if (Registration_ID.equals(rs.getString(1))) {
                         done = true;
                     }
                 }
                 rs.close();
                 if (!done) {
-                    MySQL_Util.insert("UsersDevices", new String[]{email, regId});
+                    MySQL_Util.insert(Table_Users_Devices.Table_Name, new String[]{User_ID, Registration_ID});
                 }
             }
         }catch(Exception e){
@@ -327,7 +331,7 @@ public class RegistrationEndpoint {
         try {
             if (checkIfUserExist(mail, Password)) {
                 try {
-                    MySQL_Util.delete("Users", new String[]{"Friend_ID"}, new String[]{mail}, new int[]{1});
+                    MySQL_Util.delete(Table_Users.Table_Name, new String[]{Table_Users.User_ID}, new String[]{mail}, new int[]{1});
                     record.setRegistration_message("User was deleted");
 
                 } catch (Exception e) {

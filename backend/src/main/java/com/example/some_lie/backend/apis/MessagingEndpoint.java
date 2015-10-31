@@ -7,6 +7,7 @@
 package com.example.some_lie.backend.apis;
 
 import com.example.some_lie.backend.utils.Constans.Constants;
+import com.example.some_lie.backend.utils.Constans.Table_Users_Devices;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Result;
@@ -110,7 +111,8 @@ public class MessagingEndpoint {
 
     private void update(String email, String prevId, String RegId) {
         try {
-            MySQL_Util.update("UsersDevices", new String[]{"reg_id"}, new String[]{RegId}, new String[]{"email", "reg_id"}, new String[]{email, prevId});
+            MySQL_Util.update(Table_Users_Devices.Table_Name, new String[]{Table_Users_Devices.Registration_ID}, new String[]{RegId},
+                    new String[]{Table_Users_Devices.User_ID, Table_Users_Devices.Registration_ID}, new String[]{email, prevId});
         } catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
@@ -135,7 +137,7 @@ public class MessagingEndpoint {
     private ArrayList<String> checkIfUserExist(String user) {
         ArrayList<String> regID = new ArrayList<>();
         try {
-            ResultSet rs = MySQL_Util.select(null,"UsersDevices",new String[]{"email"},new String[]{user},null);
+            ResultSet rs = MySQL_Util.select(null,Table_Users_Devices.Table_Name,new String[]{Table_Users_Devices.User_ID},new String[]{user},null);
             while (rs.next()) {
                 regID.add(rs.getString(2));
             }

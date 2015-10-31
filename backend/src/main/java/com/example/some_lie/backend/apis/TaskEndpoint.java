@@ -3,6 +3,7 @@ package com.example.some_lie.backend.apis;
 import com.example.some_lie.backend.utils.Constans.Constants;
 import com.example.some_lie.backend.models.Event;
 import com.example.some_lie.backend.models.Task;
+import com.example.some_lie.backend.utils.Constans.Table_Tasks;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
@@ -57,13 +58,14 @@ public class TaskEndpoint {
         public Task Get(@Named("Event_ID") String Event_ID, @Named("Task_ID_Number") String Task_ID_Number) {
                 Task task = new Task();
                 try {
-                        ResultSet rs = MySQL_Util.select(null, "Tasks", new String[]{"Event_ID","Task_ID_Number"}, new String[]{Event_ID, Task_ID_Number}, new int[]{1});
+                        ResultSet rs = MySQL_Util.select(null, Table_Tasks.Table_Name, new String[]{Table_Tasks.Event_ID,Table_Tasks.Task_ID_Number},
+                                new String[]{Event_ID, Task_ID_Number}, new int[]{1});
                         if(rs.next()) {
-                                task.setEvent_ID(rs.getString("Event_ID"));
-                                task.setTask_ID_Number(rs.getString("Task_ID_Number"));
-                                task.setTask_Name(rs.getString("Task_Name"));
-                                task.setDescription(rs.getString("Description"));
-                                task.setFriend_ID(rs.getString("Friend_ID"));
+                                task.setEvent_ID(rs.getString(Table_Tasks.Event_ID));
+                                task.setTask_ID_Number(rs.getString(Table_Tasks.Task_ID_Number));
+                                task.setTask_Name(rs.getString(Table_Tasks.Task_Name));
+                                task.setDescription(rs.getString(Table_Tasks.Description));
+                                task.setUser_ID(rs.getString(Table_Tasks.User_ID));
                         }
                         rs.close();
                 } catch (Exception e) {
@@ -92,9 +94,10 @@ public class TaskEndpoint {
         public ArrayList<Task> GetAll(@Named("Event_ID") String Event_ID) {
                 ArrayList<Task> taskArrayList = new ArrayList<>();
                 try {
-                        ResultSet rs = MySQL_Util.select(null,"Tasks",new String[]{"Event_ID"}, new String[]{Event_ID},null);
+                        ResultSet rs = MySQL_Util.select(null,Table_Tasks.Table_Name,new String[]{Table_Tasks.Event_ID}, new String[]{Event_ID},null);
                         while(rs.next()){
-                                taskArrayList.add(new Task(rs.getString("Event_ID"),rs.getString("Task_ID_Number"),rs.getString("Task_Name"),rs.getString("Description"),rs.getString("Friend_ID")));
+                                taskArrayList.add(new Task(rs.getString(Table_Tasks.Event_ID),rs.getString(Table_Tasks.Task_ID_Number),
+                                        rs.getString(Table_Tasks.Task_Name),rs.getString(Table_Tasks.Description),rs.getString(Table_Tasks.User_ID)));
                         }
                         rs.close();
                 } catch (Exception e) {
@@ -124,9 +127,9 @@ public class TaskEndpoint {
          */
         @ApiMethod(name = "TaskInsert",path = "TaskInsert")
         public void Insert(@Named("AEvent_ID")String Event_ID, @Named("BTask_ID_Number")String Task_ID_Number, @Named("CTask_Name")String Task_Name, @Named("DDescription")String Description,
-                           @Named("EFriend_ID")String Friend_ID) {
+                           @Named("EUser_ID")String User_ID) {
                 try {
-                        MySQL_Util.insert("Tasks", new String[]{Event_ID, Task_ID_Number, Task_Name, Description, Friend_ID});
+                        MySQL_Util.insert(Table_Tasks.Table_Name, new String[]{Event_ID, Task_ID_Number, Task_Name, Description, User_ID});
 
                 }catch(Exception e){
                         StringWriter sw = new StringWriter();
@@ -156,11 +159,11 @@ public class TaskEndpoint {
          */
         @ApiMethod(name = "TaskUpdate",path = "TaskUpdate")
         public void Update(@Named("AEvent_ID")String Event_ID, @Named("BTask_ID_Number")String Task_ID_Number, @Named("CTask_Name")String Task_Name, @Named("DDescription")String Description,
-                           @Named("EFriend_ID")String Friend_ID){
+                           @Named("EUser_ID")String User_ID){
                 try {
-                        MySQL_Util.update("Tasks", new String[]{"Task_Name", "Description", "Friend_ID"},
-                                new String[]{Task_Name, Description, Friend_ID},
-                                new String[]{"Event_ID", "Task_ID_Number"}, new String[]{Event_ID, Task_ID_Number});
+                        MySQL_Util.update(Table_Tasks.Table_Name, new String[]{Table_Tasks.Task_Name, Table_Tasks.Description, Table_Tasks.User_ID},
+                                new String[]{Task_Name, Description, User_ID},
+                                new String[]{Table_Tasks.Event_ID, Table_Tasks.Task_ID_Number}, new String[]{Event_ID, Task_ID_Number});
 
                 }catch(Exception e){
                         StringWriter sw = new StringWriter();
@@ -193,7 +196,7 @@ public class TaskEndpoint {
         @ApiMethod(name = "TaskDelete",path = "TaskDelete")
         public void Delete(@Named("Event_ID") String Event_ID, @Named("Task_ID_Number") String Task_ID_Number){
                 try {
-                        MySQL_Util.delete("Tasks", new String[]{"Event_ID", "Task_ID_Number"}, new String[]{Event_ID, Task_ID_Number}, new int[]{1});
+                        MySQL_Util.delete(Table_Tasks.Table_Name, new String[]{Table_Tasks.Event_ID, Table_Tasks.Task_ID_Number}, new String[]{Event_ID, Task_ID_Number}, new int[]{1});
                 }catch(Exception e){
                         StringWriter sw = new StringWriter();
                         e.printStackTrace(new PrintWriter(sw));
@@ -218,7 +221,7 @@ public class TaskEndpoint {
         @ApiMethod(name = "TaskDeleteByEvent",path = "TaskDeleteByEvent")
         public void DeleteByEvent(@Named("Event_ID") String Event_ID){
                 try {
-                        MySQL_Util.delete("Tasks",new String[]{"Event_ID"}, new String[]{Event_ID}, new int[]{1});
+                        MySQL_Util.delete(Table_Tasks.Table_Name,new String[]{Table_Tasks.Event_ID}, new String[]{Event_ID}, new int[]{1});
                 }catch(Exception e){
                         StringWriter sw = new StringWriter();
                         e.printStackTrace(new PrintWriter(sw));

@@ -18,9 +18,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import server.LoginAsyncTask;
+import server.Registration.LoginAsyncTask;
 import server.ServerAsyncResponse;
-import server.CheckFriendsRegistrationAsyncTask;
+import server.Registration.CheckUsersRegistrationAsyncTask;
 import utils.Constans.Constants;
 import utils.Constans.Table_Users;
 import utils.sqlHelper;
@@ -68,7 +68,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         SharedPreferences prefs = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE);
         String restoredText = prefs.getString("USER", null);
         if (restoredText != null) {
-            Constants.User_nickName = prefs.getString("nickName", "No name defined");
+            Constants.User_Nickname = prefs.getString("Nickname", "No name defined");
             Constants.MY_User_ID = prefs.getString("Name", "No name defined");//"No name defined" is the default value.
             Constants.Password = prefs.getString("Pass", "No name defined");
 
@@ -144,7 +144,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
             for (int j = 0; j < 100 && count < ph.size(); j++, count++) {
                 arrPh[i].add(ph.get(count));
             }
-            new CheckFriendsRegistrationAsyncTask(this).execute(arrPh[i], gu);
+            new CheckUsersRegistrationAsyncTask(this).execute(arrPh[i], gu);
         }
 
     }
@@ -158,7 +158,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
             editor.putString("USER", "R-USER");
             editor.putString("Name", mail);
             editor.putString("Pass", password);
-            editor.putString("nickName", output[1]);
+            editor.putString("Nickname", output[1]);
             editor.commit();
             login();
         } else {

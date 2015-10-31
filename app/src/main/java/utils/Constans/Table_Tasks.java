@@ -14,15 +14,15 @@ public final class Table_Tasks {
     private final static String Task_Name_SQL_Params = "varchar NOT NULL";
     public final static String Description = "Description";
     private final static String Description_SQL_Params = "varchar NOT NULL";
-    public final static String Friend_ID = "Friend_ID";
-    private final static String Friend_ID_SQL_Params = "varchar NOT NULL";
+    public final static String User_ID = "User_ID";
+    private final static String User_ID_SQL_Params = "varchar NOT NULL";
 
     public final static String[] getAllFields(){
-        return new String[]{Event_ID, Task_ID_Number, Task_Name, Description, Friend_ID};
+        return new String[]{Event_ID, Task_ID_Number, Task_Name, Description, User_ID};
     }
 
     public final static String[] getAllSqlParams(){
-        return new String[]{Event_ID_SQL_Params, Task_ID_Number_SQL_Params, Task_Name_SQL_Params, Description_SQL_Params, Friend_ID_SQL_Params};
+        return new String[]{Event_ID_SQL_Params, Task_ID_Number_SQL_Params, Task_Name_SQL_Params, Description_SQL_Params, User_ID_SQL_Params};
     }
 
     public static int Size(){
