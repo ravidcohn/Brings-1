@@ -3,6 +3,7 @@ package com.example.some_lie.backend.apis;
 import com.example.some_lie.backend.utils.Constans.Constants;
 import com.example.some_lie.backend.models.Chat;
 import com.example.some_lie.backend.models.Event;
+import com.example.some_lie.backend.utils.Constans.Table_Chat;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
@@ -59,13 +60,13 @@ public class ChatEndpoint {
         public Chat Get(@Named("AChat_ID") String Chat_ID, @Named("BMessage_ID") String Message_ID) {
                 Chat chat = new Chat();
                 try {
-                        ResultSet rs = MySQL_Util.select(null, Chat_ID, new String[]{"Message_ID"}, new String[]{Message_ID}, new int[]{1});
+                        ResultSet rs = MySQL_Util.select(null, Chat_ID, new String[]{Table_Chat.Message_ID}, new String[]{Message_ID}, new int[]{1});
                         if(rs.next()) {
-                                chat.setMessage_ID(rs.getString("Message_ID"));
-                                chat.setFriend_ID_Sender(rs.getString("Friend_ID_Sender"));
-                                chat.setMessage(rs.getString("Message"));
-                                chat.setDate(rs.getString("Date"));
-                                chat.setTime(rs.getString("Time"));
+                                chat.setMessage_ID(rs.getString(Table_Chat.Message_ID));
+                                chat.setFriend_ID_Sender(rs.getString(Table_Chat.Friend_ID));
+                                chat.setMessage(rs.getString(Table_Chat.Message));
+                                chat.setDate(rs.getString(Table_Chat.Date));
+                                chat.setTime(rs.getString(Table_Chat.Time));
                         }
                         rs.close();
                 } catch (Exception e) {
@@ -96,8 +97,8 @@ public class ChatEndpoint {
                 try {
                         ResultSet rs = MySQL_Util.select(null,Chat_ID,null,null,null);
                         while(rs.next()){
-                                chatArrayList.add(new Chat(rs.getString("Message_ID"),rs.getString("Friend_ID_Sender"),
-                                        rs.getString("Message"),rs.getString("Date"),rs.getString("Time")));
+                                chatArrayList.add(new Chat(rs.getString(Table_Chat.Message_ID),rs.getString(Table_Chat.Friend_ID),
+                                        rs.getString(Table_Chat.Message),rs.getString(Table_Chat.Date),rs.getString(Table_Chat.Time)));
                         }
                         rs.close();
                 } catch (Exception e) {
@@ -126,10 +127,10 @@ public class ChatEndpoint {
          * Inserts a new {@code Event}.
          */
         @ApiMethod(name = "ChatInsert",path = "ChatInsert")
-        public void Insert(@Named("AChat_ID")String Chat_ID, @Named("BMessage_ID")String Message_ID, @Named("CFriend_ID_Sender")String Friend_ID_Sender,
+        public void Insert(@Named("AChat_ID")String Chat_ID, @Named("BMessage_ID")String Message_ID, @Named("CFriend_ID")String Friend_ID,
                            @Named("DMessage")String Message, @Named("EDate")String Date,  @Named("ETime")String Time) {
                 try {
-                        MySQL_Util.insert(Chat_ID, new String[]{Message_ID, Friend_ID_Sender, Message, Date, Time});
+                        MySQL_Util.insert(Chat_ID, new String[]{Message_ID, Friend_ID, Message, Date, Time});
 
                 }catch(Exception e){
                         StringWriter sw = new StringWriter();
@@ -163,7 +164,7 @@ public class ChatEndpoint {
         @ApiMethod(name = "ChatDelete",path = "ChatDelete")
         public void Delete(@Named("AChat_ID") String Chat_ID, @Named("BMessage_ID") String Message_ID){
                 try {
-                        MySQL_Util.delete(Chat_ID, new String[]{"Message_ID"}, new String[]{Message_ID}, new int[]{1});
+                        MySQL_Util.delete(Chat_ID, new String[]{Table_Chat.Message_ID}, new String[]{Message_ID}, new int[]{1});
                 }catch(Exception e){
                         StringWriter sw = new StringWriter();
                         e.printStackTrace(new PrintWriter(sw));
@@ -189,8 +190,7 @@ public class ChatEndpoint {
         @ApiMethod(name = "ChatCreateByEvent",path = "ChatCreateByEvent")
         public void CreateByEvent(@Named("Chat_ID") String Chat_ID){
                 try {
-                        MySQL_Util.createTable(Chat_ID, new String[]{"Message_ID","Friend_ID_Sender","Message","Date","Time"},
-                                new String[]{"VARCHAR(30) NOT NULL ","VARCHAR(30) NOT NULL","LONGTEXT NOT NULL","VARCHAR(30) NOT NULL","VARCHAR(30) NOT NULL"});
+                        MySQL_Util.createTable(Chat_ID, Table_Chat.getAllFields(), Table_Chat.getAllSqlParams());
                 }catch(Exception e){
                         StringWriter sw = new StringWriter();
                         e.printStackTrace(new PrintWriter(sw));

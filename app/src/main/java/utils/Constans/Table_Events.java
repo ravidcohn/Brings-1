@@ -23,18 +23,18 @@ public final class Table_Events {
     private final static String End_Time_SQL_Params = "varchar NOT NULL";
     public final static String Description = "Description";
     private final static String Description_SQL_Params = "varchar";
-    public final static String ImagePath = "ImagePath";
+    public final static String Image_Path = "Image_Path";
     private final static String ImagePath_SQL_Params = "varchar NOT NULL";
     public final static String Update_Time = "Update_Time";
     private final static String Update_Time_SQL_Params = "varchar NOT NULL";
 
 
     public final static String[] getAllFields(){
-        return new String[]{Event_ID, Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, ImagePath, Update_Time};
+        return new String[]{Event_ID, Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, Image_Path, Update_Time};
     }
 
     public final static String[] getAllFields_Except_Event_ID(){
-        return new String[]{Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, ImagePath, Update_Time};
+        return new String[]{Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, Image_Path, Update_Time};
     }
 
 

@@ -3,6 +3,7 @@ package com.example.some_lie.backend.apis;
 import com.example.some_lie.backend.utils.Constans.Constants;
 import com.example.some_lie.backend.models.Event;
 import com.example.some_lie.backend.models.User;
+import com.example.some_lie.backend.utils.Constans.Table_Users;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
@@ -57,11 +58,11 @@ public class UserEndpoint {
     public User Get(@Named("Friend_ID") String Friend_ID) {
         User user = new User();
         try {
-            ResultSet rs = MySQL_Util.select(null, "Users", new String[]{"Friend_ID"}, new String[]{Friend_ID}, new int[]{1});
+            ResultSet rs = MySQL_Util.select(null, Table_Users.Table_Name, new String[]{Table_Users.Friend_ID}, new String[]{Friend_ID}, new int[]{1});
             if(rs.next()) {
-                user.setFriend_ID(rs.getString("Friend_ID"));
-                user.setPhone(rs.getString("Phone"));
-                user.setNickname(rs.getString("Nickname"));
+                user.setFriend_ID(rs.getString(Table_Users.Friend_ID));
+                user.setPhone(rs.getString(Table_Users.Phone));
+                user.setNickname(rs.getString(Table_Users.Nickname));
 
             }
             rs.close();

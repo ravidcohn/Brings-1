@@ -2,6 +2,7 @@ package com.example.some_lie.backend.apis;
 
 import com.example.some_lie.backend.utils.Constans.Constants;
 import com.example.some_lie.backend.models.Event_Friend;
+import com.example.some_lie.backend.utils.Constans.Table_Events_Friends;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
@@ -49,7 +50,7 @@ public class Event_Friend_Endpoint {
     @ApiMethod(name = "EventFriendDeleteByFriend", path="EventFriendDeleteByFriend")
     public void DeleteBy_Friend(@Named("Friend_ID")String Friend_ID) {
         try {
-            MySQL_Util.delete("Events_Friends", new String[]{"Friend_ID"}, new String[]{Friend_ID}, null);
+            MySQL_Util.delete(Table_Events_Friends.Table_Name, new String[]{Table_Events_Friends.Friend_ID}, new String[]{Friend_ID}, null);
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
@@ -80,7 +81,7 @@ public class Event_Friend_Endpoint {
     @ApiMethod(name = "EventFriendDeleteByEvent", path="EventFriendDeleteByEvent")
     public void DeleteBy_Event(@Named("Event_ID")String Event_ID) {
         try {
-            MySQL_Util.delete("Events_Friends",new String[]{"Event_ID"}, new String[]{Event_ID},null);
+            MySQL_Util.delete(Table_Events_Friends.Table_Name,new String[]{Table_Events_Friends.Event_ID}, new String[]{Event_ID},null);
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
@@ -110,7 +111,7 @@ public class Event_Friend_Endpoint {
     @ApiMethod(name = "EventFriendDelete", path="EventFriendDelete")
     public void Delete(@Named("Event_ID")String Event_ID, @Named("Friend_ID")String Friend_ID) {
         try {
-            MySQL_Util.delete("Events_Friends",new String[]{"Event_ID", "Friend_ID"}, new String[]{Event_ID, Friend_ID},null);
+            MySQL_Util.delete(Table_Events_Friends.Table_Name,new String[]{Table_Events_Friends.Event_ID, Table_Events_Friends.Friend_ID}, new String[]{Event_ID, Friend_ID},null);
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
@@ -141,7 +142,7 @@ public class Event_Friend_Endpoint {
     @ApiMethod(name = "EventFriendInsert", path = "EventFriendInsert")
     public void Insert(@Named("AEvent_ID")String Event_ID,@Named("BFriend_ID")String Friend_ID,@Named("CAttending")String attending, @Named("DPermission")String permission) {
         try {
-            MySQL_Util.insert("Events_Friends", new String[]{Event_ID, Friend_ID, attending, permission});
+            MySQL_Util.insert(Table_Events_Friends.Table_Name, new String[]{Event_ID, Friend_ID, attending, permission});
 
         }catch(Exception e){
             StringWriter sw = new StringWriter();
@@ -167,16 +168,17 @@ public class Event_Friend_Endpoint {
     /**
      * This inserts a new <code>Event_Friend</code> object.
      *
-     * @param friend The object to be added.
+     * @param Friend_ID The object to be added.
      * @return The object to be added.
      */
     @ApiMethod(name = "EventFriendGetEvents", path="get_events")
-    public ArrayList<Event_Friend> GetEvents(@Named("friend") String friend) {
+    public ArrayList<Event_Friend> GetEvents(@Named("Friend_ID") String Friend_ID) {
         ArrayList<Event_Friend> eventFriendArrayList = new ArrayList<>();
         try {
-            ResultSet rs = MySQL_Util.select(null,"Events_Friends",new String[]{"Friend_ID"},new String[]{friend},null);
+            ResultSet rs = MySQL_Util.select(null,Table_Events_Friends.Table_Name,new String[]{Table_Events_Friends.Friend_ID},new String[]{Friend_ID},null);
             while(rs.next()){
-                eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Friend_ID"),rs.getString("Attending"),rs.getString("Permission")));
+                eventFriendArrayList.add(new Event_Friend(rs.getString(Table_Events_Friends.Event_ID),rs.getString(Table_Events_Friends.Friend_ID),
+                        rs.getString(Table_Events_Friends.Attending),rs.getString(Table_Events_Friends.Permission)));
             }
             rs.close();
         } catch (Exception e) {
@@ -204,16 +206,17 @@ public class Event_Friend_Endpoint {
     /**
      * This method gets the <code>Event_Friend</code> object associated with the specified <code>id</code>.
      *
-     * @param event The id of the object to be returned.
+     * @param Event_ID The id of the object to be returned.
      * @return The <code>Event_Friend</code> associated with <code>id</code>.
      */
     @ApiMethod(name = "EventFriendGetFriends", path="get_friends")
-    public ArrayList<Event_Friend> GetFriends(@Named("event") String event) {
+    public ArrayList<Event_Friend> GetFriends(@Named("Event_ID") String Event_ID) {
         ArrayList<Event_Friend> eventFriendArrayList = new ArrayList<>();
         try {
-            ResultSet rs = MySQL_Util.select(null,"Events_Friends",new String[]{"Event_ID"}, new String[]{event},null);
+            ResultSet rs = MySQL_Util.select(null,Table_Events_Friends.Table_Name,new String[]{Table_Events_Friends.Event_ID}, new String[]{Event_ID},null);
             while(rs.next()){
-                eventFriendArrayList.add(new Event_Friend(rs.getString("Event_ID"),rs.getString("Friend_ID"),rs.getString("Attending"),rs.getString("Permission")));
+                eventFriendArrayList.add(new Event_Friend(rs.getString(Table_Events_Friends.Event_ID),rs.getString(Table_Events_Friends.Friend_ID),
+                        rs.getString(Table_Events_Friends.Attending),rs.getString(Table_Events_Friends.Permission)));
             }
             rs.close();
         } catch (Exception e) {
@@ -241,18 +244,19 @@ public class Event_Friend_Endpoint {
     /**
      * This method gets the <code>Event_Friend</code> object associated with the specified <code>id</code>.
      *
-     * @param friend_id The id of the object to be returned.
+     * @param Friend_ID The id of the object to be returned.
      * @return The <code>Event_Friend</code> associated with <code>id</code>.
      */
     @ApiMethod(name = "EventFriendGet", path="EventFriendGet")
-    public Event_Friend Get(@Named("AEvent_ID") String event_id, @Named("BFriend_ID") String friend_id) {
+    public Event_Friend Get(@Named("AEvent_ID") String Event_ID, @Named("BFriend_ID") String Friend_ID) {
             Event_Friend event_friend = new Event_Friend();
         try {
-            ResultSet rs = MySQL_Util.select(null,"Events_Friends",new String[]{"Event_ID","Friend_ID"}, new String[]{event_id,friend_id},null);
-            event_friend.setEvent_name(rs.getString("Event_ID"));
-            event_friend.setFriend_name(rs.getString("Friend_ID"));
-            event_friend.setAttending(rs.getString("Attending"));
-            event_friend.setPermission(rs.getString("Permission"));
+            ResultSet rs = MySQL_Util.select(null,Table_Events_Friends.Table_Name,new String[]{Table_Events_Friends.Event_ID,Table_Events_Friends.Friend_ID},
+                    new String[]{Event_ID,Friend_ID},null);
+            event_friend.setEvent_name(rs.getString(Table_Events_Friends.Event_ID));
+            event_friend.setFriend_name(rs.getString(Table_Events_Friends.Friend_ID));
+            event_friend.setAttending(rs.getString(Table_Events_Friends.Attending));
+            event_friend.setPermission(rs.getString(Table_Events_Friends.Permission));
             rs.close();
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
@@ -277,11 +281,11 @@ public class Event_Friend_Endpoint {
     }
 
     @ApiMethod(name = "EventFriendUpdateAttending", path="EventFriendUpdateAttending")
-    public void UpdateAttending(@Named("AEvent_ID")String Event_ID,@Named("BFriend_ID")String Friend_ID,@Named("CAttending")String attending) {
+    public void UpdateAttending(@Named("AEvent_ID")String Event_ID,@Named("BFriend_ID")String Friend_ID,@Named("CAttending")String Attending) {
         try {
-            MySQL_Util.update("Events_Friends", new String[]{"Attending"},
-                    new String[]{attending},
-                    new String[]{"Event_ID", "Friend_ID"}, new String[]{Event_ID, Friend_ID});
+            MySQL_Util.update(Table_Events_Friends.Table_Name, new String[]{Table_Events_Friends.Attending},
+                    new String[]{Attending},
+                    new String[]{Table_Events_Friends.Event_ID, Table_Events_Friends.Event_ID}, new String[]{Event_ID, Friend_ID});
 
         }catch(Exception e){
             StringWriter sw = new StringWriter();
@@ -305,11 +309,11 @@ public class Event_Friend_Endpoint {
     }
 
     @ApiMethod(name = "EventFriendUpdatePermission", path="EventFriendUpdatePermission")
-    public void UpdatePermission(@Named("AEvent_ID")String Event_ID,@Named("BFriend_ID")String Friend_ID,@Named("CPermission")String permission) {
+    public void UpdatePermission(@Named("AEvent_ID")String Event_ID,@Named("BFriend_ID")String Friend_ID,@Named("CPermission")String Permission) {
         try {
-            MySQL_Util.update("Events_Friends", new String[]{"Permission"},
-                    new String[]{permission},
-                    new String[]{"Event_ID","Friend_ID"}, new String[]{Event_ID,Friend_ID});
+            MySQL_Util.update(Table_Events_Friends.Table_Name, new String[]{Table_Events_Friends.Permission},
+                    new String[]{Permission},
+                    new String[]{Table_Events_Friends.Event_ID,Table_Events_Friends.Event_ID}, new String[]{Event_ID,Friend_ID});
 
         }catch(Exception e){
             StringWriter sw = new StringWriter();

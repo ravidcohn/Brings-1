@@ -48,8 +48,8 @@ public final class Constants {
      */
     private Constants() { }
 
-    public static String User_Nickname;
     public static String MY_User_ID;
+    public static String User_Nickname;
     public static String Password;
     public final static String New_Event = "New_Event";
     public final static String Delete_Event = "Delete_Event";
@@ -63,20 +63,6 @@ public final class Constants {
     public final static String Update_Task_Friend_ID = "Update_Task_Friend_ID";
     public final static String New_Chat_Message = "New_Chat_Message";
     public final static String Delete_Chat_Message = "Delete_Chat_Message";
-    /*
-    public final static String Table_Events = "Events";
-    public final static String[] Table_Events_Fields = new String[]{"ID","Name","Place","Start DATE","End Date","Description","imagePath","Update_Time"};
-    public final static String Table_Tasks = "Tasks";
-    public final static String[] Table_Tasks_Fields = new String[]{"Event_ID","Task_ID_Number","Task_Name","Description","Friend_ID"};
-    public final static String Table_Events_Friends = "Events_Friends";
-    public final static String[] Table_Events_Friends_Fields = new String[]{"Event_ID","Friend_ID","Attending","Permission"};
-    public final static String Table_Friends = "Friends";
-    public final static String[] Table_Friends_Fields = new String[]{"Name","Phone","email","regester"};
-    public final static String Table_Users = "Users";
-    public final static String[] Table_Users_Fields = new String[]{"Email","name"};
-    public final static String Table_Chat = "Chat_";//The full name is: "Chat_"+EventID".
-    public final static String[] Table_Chat_Fields = new String[]{"Message_ID","Friend_ID_Sender","Message","Date","Time"};
-    */
     public final static String Yes = "Yes";
     public final static String No = "No";
     public final static String Maybe = "Maybe";

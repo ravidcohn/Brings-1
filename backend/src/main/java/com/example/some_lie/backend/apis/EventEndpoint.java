@@ -3,6 +3,7 @@ package com.example.some_lie.backend.apis;
 import com.example.some_lie.backend.utils.Constans.Constants;
 import com.example.some_lie.backend.models.Event;
 import com.example.some_lie.backend.models.images_path;
+import com.example.some_lie.backend.utils.Constans.Table_Events;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiClass;
@@ -61,18 +62,18 @@ public class EventEndpoint {
     public Event Get(@Named("Event_ID") String Event_ID) {
         Event event = new Event();
         try {
-            ResultSet rs = MySQL_Util.select(null,"Events",new String[]{"Event_ID"}, new String[]{Event_ID},new int[]{1});
+            ResultSet rs = MySQL_Util.select(null, Table_Events.Table_Name,new String[]{Table_Events.Event_ID}, new String[]{Event_ID},new int[]{1});
             if(rs.next()) {
-                event.setId(rs.getString("Event_ID"));
-                event.setName(rs.getString("Name"));
-                event.setLocation(rs.getString("Location"));
-                event.setStart_date(rs.getString("Start_Date"));
-                event.setStart_time(rs.getString("Start_Time"));
-                event.setEnd_date(rs.getString("End_Date"));
-                event.setEnd_time(rs.getString("End_Time"));
-                event.setDescription(rs.getString("Description"));
-                event.setImage_url(rs.getString("Image_Path"));
-                event.setUpdate_time(rs.getString("update_time"));
+                event.setId(rs.getString(Table_Events.Event_ID));
+                event.setName(rs.getString(Table_Events.Name));
+                event.setLocation(rs.getString(Table_Events.Location));
+                event.setStart_date(rs.getString(Table_Events.Start_Date));
+                event.setStart_time(rs.getString(Table_Events.Start_Time));
+                event.setEnd_date(rs.getString(Table_Events.End_Date));
+                event.setEnd_time(rs.getString(Table_Events.End_Time));
+                event.setDescription(rs.getString(Table_Events.Description));
+                event.setImage_url(rs.getString(Table_Events.Image_Path));
+                event.setUpdate_time(rs.getString(Table_Events.Update_Time));
             }
             rs.close();
         } catch (Exception e) {
@@ -107,7 +108,7 @@ public class EventEndpoint {
         try {
             BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
             String uploadURL = blobstoreService.createUploadUrl("/images_servlet");
-            MySQL_Util.insert("Events",new String[]{Event_ID, Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, uploadURL, Update_Time});
+            MySQL_Util.insert(Table_Events.Table_Name,new String[]{Event_ID, Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, uploadURL, Update_Time});
             images_path im_path = new images_path();
             im_path.setPath(uploadURL);
             return im_path;
@@ -143,9 +144,9 @@ public class EventEndpoint {
                        @Named("DStart_Time")String Start_Time, @Named("FEnd_Date")String End_Date, @Named("HEnd_Time")String End_Time, @Named("GDescription")String Description,
                        @Named("IImage_Path")String Image_Path,@Named("JUpdate_Time")String Update_Time){
         try {
-            MySQL_Util.update("Events",new String[]{"Name", "Location", "Start_Date", "Start_Time", "End_Date", "End_Time", "Description", "Image_Path", "Update_Time"},
+            MySQL_Util.update(Table_Events.Table_Name,Table_Events.getAllFields_Except_Event_ID(),
                     new String[]{Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, Image_Path, Update_Time},
-                    new String[]{"Event_ID"}, new String[]{Event_ID});
+                    new String[]{Table_Events.Event_ID}, new String[]{Event_ID});
 
         }catch(Exception e){
             StringWriter sw = new StringWriter();
@@ -179,7 +180,7 @@ public class EventEndpoint {
     @ApiMethod(name = "EventDelete",path = "EventDelete")
     public void Delete(@Named("Event_ID") String Event_ID) {
         try {
-            MySQL_Util.delete("Events",new String[]{"Event_ID"}, new String[]{Event_ID}, new int[]{1});
+            MySQL_Util.delete(Table_Events.Table_Name,new String[]{Table_Events.Event_ID}, new String[]{Event_ID}, new int[]{1});
         }catch(Exception e){
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
