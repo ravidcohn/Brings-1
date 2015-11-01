@@ -106,8 +106,7 @@ public class EventEndpoint {
              @Named("DStart_Time")String Start_Time, @Named("FEnd_Date")String End_Date, @Named("HEnd_Time")String End_Time, @Named("GDescription")String Description,
                               @Named("IImage_Path")String Image_Path,@Named("JUpdate_Time")String Update_Time) {
         try {
-            BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-            String uploadURL = blobstoreService.createUploadUrl("/images_servlet");
+            String uploadURL = Event_ID+"_pic0";
             MySQL_Util.insert(Table_Events.Table_Name,new String[]{Event_ID, Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, uploadURL, Update_Time});
             images_path im_path = new images_path();
             im_path.setPath(uploadURL);
