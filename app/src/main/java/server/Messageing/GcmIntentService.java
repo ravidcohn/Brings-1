@@ -17,6 +17,7 @@ import com.example.some_lie.backend.brings.model.Task;
 import com.example.some_lie.backend.brings.model.TaskCollection;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -24,6 +25,7 @@ import java.util.logging.Logger;
 
 import server.CloudEndpointBuilderHelper;
 import server.ServerAsyncResponse;
+import server.cloudStorage;
 import utils.Constans.Constants;
 import utils.Constans.Table_Chat;
 import utils.Constans.Table_Events;
@@ -67,6 +69,8 @@ public class GcmIntentService extends IntentService{
                 switch (action){
                     case Constants.New_Event: {
                         String[] event = getEvent(details);
+                        String picName = event[8];
+                        event[8] = Constants.imageSaveLocation+"/"+picName;
                         ArrayList<String[]> allAttending = getAllAttending(details);
                         ArrayList<String[]> allTasks = getAllTasks(details);
                         String Chat_ID = Table_Chat.Table_Name + Helper.Clean_Event_ID(details);
@@ -85,6 +89,11 @@ public class GcmIntentService extends IntentService{
                             for(String[] chat:allChat){
                                 sqlHelper.insert(Chat_ID, chat);
                             }
+                        }
+                        try {
+                            cloudStorage.downloadFile(Constants.bucket_name,picName,getApplicationContext());
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                         break;
                     }
@@ -304,6 +313,5 @@ public class GcmIntentService extends IntentService{
         }
         return result;
     }
-
 
 }

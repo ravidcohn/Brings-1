@@ -80,15 +80,16 @@ public class cloudStorage {
         }
     }
 
-    public static void downloadFile(String bucketName, String fileName, String destinationDirectory,Context _context) throws Exception {
+    public static void downloadFile(String bucketName, String fileName,Context _context) throws Exception {
         if(context == null) {
             context = _context;
         }
-        File directory = new File(destinationDirectory);
-        if(!directory.isDirectory()) {
-            throw new Exception("Provided destinationDirectory path is not a directory");
+        File dir = new File (Constants.imageSaveLocation);
+        if(!dir.exists()) {
+            dir.mkdirs();
         }
-        File file = new File(directory.getAbsolutePath() + "/" + fileName);
+
+        File file = new File(dir.getAbsolutePath() + "/" + fileName);
 
         Storage storage = getStorage();
 

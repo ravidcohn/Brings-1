@@ -54,6 +54,7 @@ public final class Constants {
     public static final String cloudPRIVATE_KEY_PATH_PROPERTY = Uri.parse("android.resource://raw/test_de42c51fc994").getPath();
     public static final String cloudEmail = "192098515949-evapq8mcu9v6btbnp7d0lqm7o0rf4jet@developer.gserviceaccount.com";
     public static final String cloudPassword = "notasecret";
+    public static final String imageSaveLocation = android.os.Environment.getExternalStorageDirectory().getAbsolutePath()+ "/Brings/images";
     /**
      * Default constructor, never called.
      */
