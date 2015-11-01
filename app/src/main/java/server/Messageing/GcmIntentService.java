@@ -103,7 +103,12 @@ public class GcmIntentService extends IntentService{
                     }
                     case Constants.Update_Event:{
                         String[] event = getEvent(details);
-                        Helper.Event_Update_MySQL(event[0], event[1], event[2], event[3], event[4], event[5], event[6], event[7], event[8], event[9]);
+                        Helper.Event_Update_MySQL(event[0], event[1], event[2], event[3], event[4], event[5], event[6], event[7], Constants.imageSaveLocation+"/"+event[8], event[9]);
+                        try {
+                            cloudStorage.downloadFile(Constants.bucket_name,event[8],getApplicationContext());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         break;
                     }
                     case Constants.New_Attending:{
