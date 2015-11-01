@@ -4,6 +4,8 @@ package utils.Constans;
  * Created by pinhas on 28/09/2015.
  */
 
+import android.net.Uri;
+
 import brings_app.BuildConfig;
 
 /**
@@ -43,7 +45,15 @@ public final class Constants {
 
     public static final String SQL_DIR = "/data/data/some_lie.brings/databases/";
     public static final String SQL_DB_NAME = "_edata";
+
+
     public static final String bucket_name = "a_bucket";
+    public static final String cloudStorageScope = "https://www.googleapis.com/auth/devstorage.read_write";
+    public static final String projectName = "Brings";
+    public static final String cloudACCOUNT_ID_PROPERTY = "de42c51fc9947859ae15a25bd4e170f4fbb85fde";
+    public static final String cloudPRIVATE_KEY_PATH_PROPERTY = Uri.parse("android.resource://raw/test_de42c51fc994").getPath();
+    public static final String cloudEmail = "192098515949-evapq8mcu9v6btbnp7d0lqm7o0rf4jet@developer.gserviceaccount.com";
+    public static final String cloudPassword = "notasecret";
     /**
      * Default constructor, never called.
      */

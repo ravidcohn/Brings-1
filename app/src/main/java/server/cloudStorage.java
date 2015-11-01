@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.InputStreamContent;
@@ -29,6 +28,7 @@ import com.google.api.services.storage.model.Bucket;
 import com.google.api.services.storage.model.StorageObject;
 
 import brings_app.R;
+import utils.Constans.Constants;
 
 /**
  * Simple wrapper around the Google Cloud Storage API
@@ -37,11 +37,11 @@ public class cloudStorage {
 
     private static Properties properties;
     private static Storage storage;
-    private static String STORAGE_SCOPE = "https://www.googleapis.com/auth/devstorage.read_write";
-    private static final String PROJECT_ID_PROPERTY = "192098515949";
-    private static final String APPLICATION_NAME_PROPERTY = "test";
-    private static final String ACCOUNT_ID_PROPERTY = "de42c51fc9947859ae15a25bd4e170f4fbb85fde";
-    private static final String PRIVATE_KEY_PATH_PROPERTY = Uri.parse("android.resource://raw/test_de42c51fc994").getPath();
+    private static String STORAGE_SCOPE = Constants.cloudStorageScope;
+    private static final String PROJECT_ID_PROPERTY = Constants.SENDER_ID;
+    private static final String APPLICATION_NAME_PROPERTY = Constants.projectName;
+    private static final String ACCOUNT_ID_PROPERTY = Constants.cloudACCOUNT_ID_PROPERTY;
+    private static final String PRIVATE_KEY_PATH_PROPERTY = Constants.cloudPRIVATE_KEY_PATH_PROPERTY;
     private static Context context;
     /**
      * Uploads a file to a bucket. Filename and content type will be based on
@@ -53,7 +53,7 @@ public class cloudStorage {
      *            Absolute path of the file to upload
      * @throws Exception
      */
-    public static void uploadFile(String bucketName, String filePath,Context _context)
+    public static void uploadFile(String bucketName, String filePath,Context _context,String file_name)
             throws Exception {
         context = _context;
         Storage storage = getStorage();
@@ -72,7 +72,7 @@ public class cloudStorage {
 
             Storage.Objects.Insert insert = storage.objects().insert(
                     bucketName, null, content);
-            insert.setName(file.getName());
+            insert.setName(file_name);
 
             insert.execute();
         } finally {
@@ -80,8 +80,10 @@ public class cloudStorage {
         }
     }
 
-    public static void downloadFile(String bucketName, String fileName, String destinationDirectory) throws Exception {
-
+    public static void downloadFile(String bucketName, String fileName, String destinationDirectory,Context _context) throws Exception {
+        if(context == null) {
+            context = _context;
+        }
         File directory = new File(destinationDirectory);
         if(!directory.isDirectory()) {
             throw new Exception("Provided destinationDirectory path is not a directory");
@@ -224,42 +226,18 @@ public class cloudStorage {
             scopes.add(StorageScopes.DEVSTORAGE_FULL_CONTROL);
             KeyStore keystore = KeyStore.getInstance("PKCS12");
             keystore.load(context.getResources().openRawResource(R.raw.test),
-                    "notasecret".toCharArray());
+                    Constants.cloudPassword.toCharArray());
 
-            PrivateKey key = (PrivateKey) keystore.getKey("privatekey", "notasecret".toCharArray());
+            PrivateKey key = (PrivateKey) keystore.getKey("privatekey", Constants.cloudPassword.toCharArray());
 
             GoogleCredential credential = new GoogleCredential.Builder()
                     .setTransport(httpTransport)
                     .setJsonFactory(jsonFactory)
                     .setServiceAccountPrivateKey(key)
-                    .setServiceAccountId("192098515949-evapq8mcu9v6btbnp7d0lqm7o0rf4jet@developer.gserviceaccount.com")
+                    .setServiceAccountId(Constants.cloudEmail)
                     .setServiceAccountScopes(Collections.singleton(STORAGE_SCOPE))
-                            // .setServiceAccountUser(SERVICE_ACCOUNT_EMAIL)
-                            // .setClientSecrets(CLIENT_ID, CLIENT_SECRET)
                     .build();
             credential.refreshToken();
-  /*          Credential credential = new GoogleCredential.Builder()
-                    .setTransport(httpTransport)
-                    .setJsonFactory(jsonFactory)
-                    .setServiceAccountId(
-                            getProperties().getProperty(ACCOUNT_ID_PROPERTY))
-                    .setServiceAccountPrivateKeyFromP12File(
-                            new File(getProperties().getProperty(
-                                    PRIVATE_KEY_PATH_PROPERTY)))
-                    .setServiceAccountScopes(scopes).build();
-*/
-            /*storage = new Storage.Builder(httpTransport, jsonFactory,
-                    credential).setApplicationName(
-                    getProperties().getProperty(APPLICATION_NAME_PROPERTY))
-                    .build();*/
-            /*
-            String URI = "https://storage.googleapis.com/" + BUCKET_NAME;
-            HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
-            GenericUrl url = new GenericUrl(URI);
-            HttpRequest request = requestFactory.buildGetRequest(url);
-            HttpResponse response = request.execute();
-            String content = response.parseAsString();
-            Log.d("testing", "response content is: " + content);*/
             storage = new Storage.Builder(httpTransport, jsonFactory, credential)
                     .setApplicationName("test").build();
         }
