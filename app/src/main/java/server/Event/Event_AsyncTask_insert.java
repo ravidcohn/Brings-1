@@ -1,10 +1,7 @@
 package server.Event;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.Brings;
 import com.example.some_lie.backend.brings.model.ImagesPath;
@@ -16,33 +13,19 @@ import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.StorageScopes;
 import com.google.api.services.storage.model.ObjectAccessControl;
 import com.google.api.services.storage.model.StorageObject;
-import com.google.appengine.tools.cloudstorage.GcsFileOptions;
-import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.appengine.tools.cloudstorage.GcsInputChannel;
-import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.appengine.tools.cloudstorage.RetryParams;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.RandomAccessFile;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import server.cloudStorage;
-import utils.Constans.Constants;
 
 import server.CloudEndpointBuilderHelper;
+import server.cloudStorage;
+import utils.Constans.Constants;
 
 /**
  * Created by Ravid on 25/09/2015.
