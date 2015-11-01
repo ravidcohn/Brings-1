@@ -207,17 +207,17 @@ public class SlidingTabs extends Fragment {
             return view;
         }
         private void setMainTab(View view){
-            ArrayList<String>[] dbResult = sqlHelper.select(null, Table_Events.Table_Name,new String[]{Table_Events.Event_ID},new String[]{Event_ID},new int[]{1});
+            ArrayList<String>[] dbEvent = sqlHelper.select(null, Table_Events.Table_Name,new String[]{Table_Events.Event_ID},new String[]{Event_ID},new int[]{1});
             TextView name = (TextView) view.findViewById(R.id.tv_em_name_ui);
-            TextView place = (TextView) view.findViewById(R.id.tv_em_place_ui);
-            TextView start = (TextView) view.findViewById(R.id.tv_em_start_ui);
-            TextView end = (TextView) view.findViewById(R.id.tv_em_end_ui);
+            TextView location = (TextView) view.findViewById(R.id.tv_em_place_ui);
+            TextView start_date = (TextView) view.findViewById(R.id.tv_em_start_ui);
+            TextView end_date = (TextView) view.findViewById(R.id.tv_em_end_ui);
             TextView description = (TextView) view.findViewById(R.id.tv_em_description_ui);
-            name.setText(dbResult[1].get(0));
-            place.setText(dbResult[2].get(0));
-            start.setText(dbResult[3].get(0));
-            end.setText(dbResult[4].get(0));
-            description.setText(dbResult[5].get(0));
+            name.setText(dbEvent[Table_Events.parseInt(Table_Events.Name)].get(0));
+            location.setText(dbEvent[Table_Events.parseInt(Table_Events.Location)].get(0));
+            start_date.setText(dbEvent[Table_Events.parseInt(Table_Events.Start_Date)].get(0));
+            end_date.setText(dbEvent[Table_Events.parseInt(Table_Events.End_Date)].get(0));
+            description.setText(dbEvent[Table_Events.parseInt(Table_Events.Description)].get(0));
             }
         private void setAttendingTab(final View view){
             ImageButton addFriend = (ImageButton) view.findViewById(R.id.ib_ea_add_friend);

@@ -3,7 +3,6 @@ package brings_app;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,13 +18,16 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 import server.Event.Event_AsyncTask_update;
+import utils.Constans.Table_Events;
 import utils.Helper;
 import utils.bitmapHelper;
+import utils.sqlHelper;
 
 /**
  * Created by pinhas on 08/09/2015.
@@ -64,7 +66,7 @@ public class edit_event extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
         //ID = b.getInt("ID");
         //USERNAME = b.getString("USERNAME");
-        Event_ID = b.getString("Event_ID");
+        Event_ID = b.getString(Table_Events.Event_ID);
         store_value();
 
         final Intent maps = new Intent(this, google_map_location.class);
@@ -107,20 +109,15 @@ public class edit_event extends AppCompatActivity {
 
     private void store_value() {
 
-
-        SQLiteDatabase db =  db = openOrCreateDatabase("_edata", MODE_PRIVATE, null);
         //Cursor c = db.rawQuery("select * from Events where ID = '" + USERNAME + " - " + ID + "';", null);
-        Cursor c = db.rawQuery("select * from Events where ID = '" + Event_ID + "';", null);
-        c.moveToFirst();
-        ImagePath = c.getString(6);
-        et_ee_name_ui.setText(c.getString(1));
-        et_ee_place_ui.setText(c.getString(2));
-        et_ee_start_ui.setText(c.getString(3));
-        et_ee_end_ui.setText(c.getString(4));
-        et_ee_description_ui.setText(c.getString(5));
-        ib_ee_pic_ui.setImageBitmap(bitmapHelper.decodeSampledBitmapFromFile(c.getString(6), 100, 100));
-        c.close();
-        db.close();
+        ArrayList<String>[] dbEvent = sqlHelper.select(null, Table_Events.Table_Name, new String[]{Table_Events.Event_ID}, new String[]{Event_ID}, new int[]{1});
+        et_ee_name_ui.setText(dbEvent[Table_Events.parseInt(Table_Events.Name)].get(0));
+        et_ee_place_ui.setText(dbEvent[Table_Events.parseInt(Table_Events.Location)].get(0));
+        et_ee_start_ui.setText(dbEvent[Table_Events.parseInt(Table_Events.Start_Date)].get(0));
+        et_ee_end_ui.setText(dbEvent[Table_Events.parseInt(Table_Events.End_Date)].get(0));
+        et_ee_description_ui.setText(dbEvent[Table_Events.parseInt(Table_Events.Description)].get(0));
+        ImagePath = dbEvent[Table_Events.parseInt(Table_Events.Image_Path)].get(0);
+        ib_ee_pic_ui.setImageBitmap(bitmapHelper.decodeSampledBitmapFromFile(ImagePath, 100, 100));
     }
 
     private boolean saveData(){

@@ -47,4 +47,20 @@ public final class Table_Events {
         return getAllFields().length;
     }
 
+    public static int parseInt(String Field){
+        switch (Field) {
+            case Event_ID: {return 0; }
+            case Name: {return 1; }
+            case Location: {return 2; }
+            case Start_Date: {return 3; }
+            case Start_Time: {return 4; }
+            case End_Date: {return 5;}
+            case End_Time: {return 6; }
+            case Description: {return 7; }
+            case Image_Path: {return 8; }
+            case Update_Time: {return 9; }
+        }
+        return -1;
+    }
+
 }
