@@ -60,8 +60,8 @@ public class newEvent extends AppCompatActivity {
         setContentView(R.layout.new_event);
         tv_ne_name_ui = (EditText) findViewById(R.id.tv_ne_name_ui);
         tv_ne_place_ui = (EditText) findViewById(R.id.tv_ne_place_ui);
-        tv_ne_start_ui = (EditText) findViewById(R.id.tv_ne_start_ui);
-        tv_ne_end_ui = (EditText) findViewById(R.id.tv_ne_end_ui);
+        tv_ne_start_ui = (EditText) findViewById(R.id.tv_ne_start_date_ui);
+        tv_ne_end_ui = (EditText) findViewById(R.id.tv_ne_end_date_ui);
         tv_ne_description_ui = (EditText) findViewById(R.id.tv_ne_description_ui);
         iv_ne_pic_ui = (ImageView) findViewById(R.id.iv_ne_pic_ui);
         bt_ne_pic_ui = (Button) findViewById(R.id.bt_ne_pic_ui);

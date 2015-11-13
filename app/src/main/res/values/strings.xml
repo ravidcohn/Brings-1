@@ -8,11 +8,12 @@
     <string name="action_edit">Edit</string>
     <string name="action_search">Search</string>
     <string name="action_add">Add</string>
+    <string name="action_choose_view">Choose View</string>
 
     <string name="tv_name_title">Event Name</string>
-    <string name="tv_place_title">Place</string>
-    <string name="tv_start_title">Start</string>
-    <string name="tv_end_title">End</string>
+    <string name="tv_location_title">Location</string>
+    <string name="tv_start_date_title">Start</string>
+    <string name="tv_end_date_title">End</string>
     <string name="tv_description_title">Description</string>
     <string name="tv_pic_title">Picture</string>
     <string name="bt_pic_ui">Load Picture</string>

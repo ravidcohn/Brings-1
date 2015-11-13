@@ -49,7 +49,7 @@
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/spin_af_permission_ui"
+        android:id="@+id/spin_of_permission_ui"
         android:entries="@array/permission_arrays"
         android:layout_alignBottom="@+id/et_addFriend2"
         android:layout_alignRight="@+id/et_addFriend"

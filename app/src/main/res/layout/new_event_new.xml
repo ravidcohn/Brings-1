@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1">
+
+        <ImageButton
+            android:layout_width="fill_parent"
+            android:layout_height="150dp"
+            android:id="@+id/ib_ne_event_image_ui"
+            android:src="@drawable/ic_insert_photo_black_48dp"
+            android:layout_marginTop="55dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/tv_name_title"
+            android:id="@+id/tv_ne_name_tit"
+            android:layout_below="@+id/ib_ne_event_image_ui"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/tv_description_title"
+            android:id="@+id/tv_ne_description_tit"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="11"
+            android:id="@+id/tv_ne_name_ui"
+            android:layout_above="@+id/tv_ne_description_tit"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="date"
+            android:focusableInTouchMode="true"
+            android:imeOptions="actionDone"
+            android:ems="6"
+            android:id="@+id/tv_ne_start_date_ui"
+            android:layout_alignBottom="@+id/iv_ne_event_date_ui"
+            android:layout_alignLeft="@+id/tv_ne_location_ui"
+            android:layout_alignStart="@+id/tv_ne_location_ui"
+            android:layout_marginLeft="5dp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:focusableInTouchMode="false"
+            android:ems="6"
+            android:id="@+id/tv_ne_end_date_ui"
+            android:layout_below="@+id/tv_ne_start_date_ui"
+            android:layout_alignLeft="@+id/tv_ne_start_date_ui"
+            android:layout_alignStart="@+id/tv_ne_start_date_ui"
+            android:layout_marginTop="-5dp"
+            android:inputType="date" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:imeOptions="actionDone"
+            android:id="@+id/tv_ne_description_ui"
+            android:layout_below="@+id/tv_ne_description_tit"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:focusableInTouchMode="false"
+            android:ems="10"
+            android:id="@+id/tv_ne_location_ui"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/tv_ne_description_ui"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/ib_ne_event_location_ui"
+            android:layout_alignBottom="@+id/tv_ne_location_ui"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="all day"
+            android:id="@+id/checkBox"
+            android:checked="false"
+            android:layout_below="@+id/iv_ne_event_date_ui"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="time"
+            android:imeOptions="actionDone"
+            android:focusableInTouchMode="false"
+            android:ems="6"
+            android:id="@+id/tv_ne_start_time_ui"
+            android:layout_alignTop="@+id/tv_ne_start_date_ui"
+            android:layout_toRightOf="@+id/tv_ne_start_date_ui"
+            android:layout_toEndOf="@+id/tv_ne_start_date_ui"
+            android:layout_marginLeft="10dp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="time"
+            android:imeOptions="actionDone"
+            android:focusableInTouchMode="false"
+            android:ems="6"
+            android:id="@+id/tv_ne_end_time_ui"
+            android:layout_alignTop="@+id/tv_ne_end_date_ui"
+            android:layout_alignLeft="@+id/tv_ne_start_time_ui"
+            android:layout_alignStart="@+id/tv_ne_start_time_ui" />
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/iv_ne_event_date_ui"
+            android:src="@drawable/ic_insert_photo_black_48dp"
+            android:layout_below="@+id/ib_ne_event_location_ui"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp" />
+
+
+    </RelativeLayout>
+</LinearLayout>

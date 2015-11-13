@@ -40,7 +40,7 @@ public class AddFriend extends AppCompatActivity {
         input = (EditText)findViewById(R.id.et_addFriend);
         input2 = (EditText)findViewById(R.id.et_addFriend2);
         add = (Button)findViewById(R.id.bt_addFriend);
-        permission_spinner = (Spinner)findViewById(R.id.spin_af_permission_ui);
+        permission_spinner = (Spinner)findViewById(R.id.spin_of_permission_ui);
 
         Bundle b = getIntent().getExtras();
         final Context context = this;
