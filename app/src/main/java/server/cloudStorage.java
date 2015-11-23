@@ -77,6 +77,23 @@ public class cloudStorage {
             insert.execute();
         } finally {
             stream.close();
+            File dir = new File (Constants.imageSaveLocation);
+            if(!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            File _file = new File(dir.getAbsolutePath() + "/" + file_name+".jpg");
+
+
+            Storage.Objects.Get get = storage.objects().get(bucketName, file_name);
+            FileOutputStream _stream = new FileOutputStream(_file);
+            try {
+                get.executeAndDownloadTo(_stream);
+            }catch(Exception e){
+                e.printStackTrace();
+            } finally {
+                _stream.close();
+            }
         }
     }
 
@@ -89,7 +106,7 @@ public class cloudStorage {
             dir.mkdirs();
         }
 
-        File file = new File(dir.getAbsolutePath() + "/" + fileName);
+        File file = new File(dir.getAbsolutePath() + "/" + fileName+".jpg");
 
         Storage storage = getStorage();
 
@@ -97,7 +114,11 @@ public class cloudStorage {
         FileOutputStream stream = new FileOutputStream(file);
         try {
             get.executeAndDownloadTo(stream);
-        } finally {
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+        finally
+        {
             stream.close();
         }
     }
