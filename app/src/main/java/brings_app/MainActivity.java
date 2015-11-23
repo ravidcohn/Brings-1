@@ -1,5 +1,6 @@
 package brings_app;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,8 +8,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.DataSetObserver;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,11 +20,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +38,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import server.CloudEndpointBuilderHelper;
 import server.Messageing.GcmIntentService;
@@ -58,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private Brings BringsApi;
     private Event event;
+    private String mode_view;
     /**
      * Google Cloud Messaging API.
      */
@@ -83,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
        // setOnClick();
        // tvSearch.setText("Search  ");
         listview = (ListView) findViewById(R.id.lvMain);
+        mode_view = Constants.Big_List_View;
         setList();
     }
 
@@ -203,11 +213,110 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
     }
     */
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_activity_main, menu);
+        MenuItem item = (MenuItem)menu.findItem(R.id.spinner_view);
+        Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
+        SpinnerAdapter spinnerAdapter = new SpinnerAdapter() {
+            String[] name = new String[]{"s","ss"};
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                TextView textView = new TextView(getApplicationContext());
+                textView.setText(name[position]);
+                return textView;
+            }
+
+            @Override
+            public void registerDataSetObserver(DataSetObserver observer) {
+
+            }
+
+            @Override
+            public void unregisterDataSetObserver(DataSetObserver observer) {
+
+            }
+
+            @Override
+            public int getCount() {
+                return name.length;
+            }
+
+            @Override
+            public Object getItem(int position) {
+                return null;
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return 0;
+            }
+
+            @Override
+            public boolean hasStableIds() {
+                return false;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView textView = new TextView(getApplicationContext());
+                textView.setText(name[position]);
+                return textView;
+            }
+
+            @Override
+            public int getItemViewType(int position) {
+                return 0;
+            }
+
+            @Override
+            public int getViewTypeCount() {
+                return 1;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return false;
+            }
+        };
+        //spinner.setAdapter(spinnerAdapter); // set the adapter to provide layout of rows and content
+        List<String> list = new ArrayList<String>();
+        list.add("normal");
+        list.add("list");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(dataAdapter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            spinner.setDropDownVerticalOffset(10);
+        }
+        spinner.setOnItemSelectedListener(new SpinnerOnItemSelectedListener());
         return true;
+    }
+
+    public class SpinnerOnItemSelectedListener implements AdapterView.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) {
+            switch (pos) {
+                case 0: {
+                    mode_view = Constants.Big_List_View;
+                    setList();
+                    break;
+                }
+                case 1:{
+                    mode_view = Constants.Small_List_View;
+                    setList();
+                    break;
+                }
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> arg0) {
+            // TODO Auto-generated method stub
+        }
+
     }
 
     @Override
@@ -245,8 +354,19 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
         listview.setClickable(true);
         final Intent tabs =  new Intent(this,tab.class);
         final Context context = this;
-        StableArrayAdapter adapter = new StableArrayAdapter(this);
-        listview.setAdapter(adapter);
+        switch (mode_view){
+            case Constants.Small_List_View:{
+                StableArrayAdapter_small_view adapter = new StableArrayAdapter_small_view(this);
+                listview.setAdapter(adapter);
+                break;
+            }
+            case Constants.Big_List_View:{
+                StableArrayAdapter_big_view adapter = new StableArrayAdapter_big_view(this);
+                listview.setAdapter(adapter);
+
+                break;
+            }
+        }
 
         listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
@@ -337,22 +457,22 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
 
 
-    private static class StableArrayAdapter extends BaseAdapter implements View.OnClickListener {
+    private static class StableArrayAdapter_small_view extends BaseAdapter implements View.OnClickListener {
 
         private Context context;
 
-        public StableArrayAdapter(Context context) {
+        public StableArrayAdapter_small_view(Context context) {
             this.context = context;
         }
 
         public View getView(int position, View convertView, ViewGroup viewGroup) {
                 LayoutInflater inflater = (LayoutInflater) context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.activity_main_list_item, null);
+            convertView = inflater.inflate(R.layout.activity_main_small_list_item, null);
 
             ImageView iv = (ImageView) convertView.findViewById(R.id.ivPic);
-            TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
-            TextView tvDate = (TextView) convertView.findViewById(R.id.tvDate);
+            TextView tvName = (TextView) convertView.findViewById(R.id.tv_ambli_name);
+            TextView tvDate = (TextView) convertView.findViewById(R.id.tv_ambli_date);
             ArrayList<String>[] dbEvent = sqlHelper.select(null, Table_Events.Table_Name, new String[]{Table_Events.Event_ID}, new String[]{users_names.get(position) + " - " + IDS.get(position)}, new int[]{1});
             tvName.setText(dbEvent[Table_Events.parseInt(Table_Events.Name)].get(0));
             tvDate.setText(dbEvent[Table_Events.parseInt(Table_Events.Start_Date)].get(0));
@@ -388,5 +508,58 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
         }
     }
+
+    private static class StableArrayAdapter_big_view extends BaseAdapter implements View.OnClickListener {
+
+        private Context context;
+
+        public StableArrayAdapter_big_view(Context context) {
+            this.context = context;
+        }
+
+        public View getView(int position, View convertView, ViewGroup viewGroup) {
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.activity_main_big_list_item, null);
+
+            ImageView iv = (ImageView) convertView.findViewById(R.id.iv_ambli_image);
+            TextView tvName = (TextView) convertView.findViewById(R.id.tv_ambli_name);
+            TextView tvDate = (TextView) convertView.findViewById(R.id.tv_ambli_date);
+            ArrayList<String>[] dbEvent = sqlHelper.select(null, Table_Events.Table_Name, new String[]{Table_Events.Event_ID}, new String[]{users_names.get(position) + " - " + IDS.get(position)}, new int[]{1});
+            tvName.setText(dbEvent[Table_Events.parseInt(Table_Events.Name)].get(0));
+            tvDate.setText(dbEvent[Table_Events.parseInt(Table_Events.Start_Date)].get(0));
+            String Image_Path = dbEvent[Table_Events.parseInt(Table_Events.Image_Path)].get(0);
+            Bitmap bitmap = bitmapHelper.decodeSampledBitmapFromFile(Image_Path, 100, 100);
+            if (bitmap!=null) {
+                // RoundedBitmapDrawable img = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+                //img.setCircular(true);
+                //iv.setImageDrawable(img);
+            }
+            iv.setImageBitmap(bitmap);
+
+            return convertView;
+        }
+
+        public int getCount() {
+            return IDS.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            String s = users_names.get(position)+" - "+IDS.get(position);
+            return s;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public void onClick(View v) {
+
+        }
+    }
+
 
 }

@@ -23,7 +23,7 @@
         android:textSize="20dp"
         android:text="@string/tv_name"
         android:paddingTop="10dp"
-        android:id="@+id/tvName"
+        android:id="@+id/tv_ambli_name"
         android:layout_marginTop="8dp"
         android:layout_centerHorizontal="true" />
 
@@ -32,10 +32,10 @@
         android:layout_height="wrap_content"
         android:textSize="20dp"
         android:text="@string/tv_date"
-        android:id="@+id/tvDate"
+        android:id="@+id/tv_ambli_date"
         android:layout_marginRight="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_alignBottom="@+id/tvName"
+        android:layout_alignBottom="@+id/tv_ambli_name"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 

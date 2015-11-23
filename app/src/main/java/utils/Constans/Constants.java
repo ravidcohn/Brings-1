@@ -83,5 +83,8 @@ public final class Constants {
     public final static String Editor = "Editor";
     public final static String Participant = "Participant";
     public final static String Update_Activity = "Update_Activity";
+    public final static String Small_List_View = "Small_List_View";
+    public final static String Big_List_View = "Big_List_View";
+
 
 }

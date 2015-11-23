@@ -13,8 +13,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/tv_place_title"
-            android:id="@+id/tv_ne_place_tit"
+            android:text="@string/tv_location_title"
+            android:id="@+id/tv_ne_location_tit"
             android:layout_weight="0.05"
             android:layout_marginTop="41dp"
             android:layout_below="@+id/tv_ne_name_tit"
@@ -36,10 +36,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/tv_start_title"
-            android:id="@+id/tv_ne_start_tit"
+            android:text="@string/tv_start_date_title"
+            android:id="@+id/tv_ne_start_date_tit"
             android:layout_marginTop="51dp"
-            android:layout_below="@+id/tv_ne_place_tit"
+            android:layout_below="@+id/tv_ne_location_tit"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignRight="@+id/tv_ne_name_tit"
@@ -49,9 +49,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/tv_end_title"
-            android:id="@+id/tv_ne_end_tit"
-            android:layout_below="@+id/tv_ne_start_tit"
+            android:text="@string/tv_end_date_title"
+            android:id="@+id/tv_ne_end_date_tit"
+            android:layout_below="@+id/tv_ne_start_date_tit"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="45dp" />
@@ -62,7 +62,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/tv_description_title"
             android:id="@+id/tv_ne_description_tit"
-            android:layout_below="@+id/tv_ne_end_tit"
+            android:layout_below="@+id/tv_ne_end_date_tit"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="49dp" />
@@ -86,8 +86,8 @@
             android:focusableInTouchMode="false"
             android:imeOptions="actionDone"
             android:ems="10"
-            android:id="@+id/tv_ne_start_ui"
-            android:layout_alignBottom="@+id/tv_ne_start_tit"
+            android:id="@+id/tv_ne_start_date_ui"
+            android:layout_alignBottom="@+id/tv_ne_start_date_tit"
             android:layout_alignLeft="@+id/tv_ne_name_ui"
             android:layout_alignStart="@+id/tv_ne_name_ui" />
 
@@ -98,10 +98,10 @@
             android:imeOptions="actionDone"
             android:focusableInTouchMode="false"
             android:ems="10"
-            android:id="@+id/tv_ne_end_ui"
-            android:layout_alignBottom="@+id/tv_ne_end_tit"
-            android:layout_alignLeft="@+id/tv_ne_start_ui"
-            android:layout_alignStart="@+id/tv_ne_start_ui" />
+            android:id="@+id/tv_ne_end_date_ui"
+            android:layout_alignBottom="@+id/tv_ne_end_date_tit"
+            android:layout_alignLeft="@+id/tv_ne_start_date_ui"
+            android:layout_alignStart="@+id/tv_ne_start_date_ui" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -111,8 +111,8 @@
             android:imeOptions="actionDone"
             android:id="@+id/tv_ne_description_ui"
             android:layout_alignBottom="@+id/tv_ne_description_tit"
-            android:layout_alignLeft="@+id/tv_ne_end_ui"
-            android:layout_alignStart="@+id/tv_ne_end_ui" />
+            android:layout_alignLeft="@+id/tv_ne_end_date_ui"
+            android:layout_alignStart="@+id/tv_ne_end_date_ui" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -121,7 +121,7 @@
             android:focusableInTouchMode="false"
             android:ems="10"
             android:id="@+id/tv_ne_place_ui"
-            android:layout_alignTop="@+id/tv_ne_place_tit"
+            android:layout_alignTop="@+id/tv_ne_location_tit"
             android:layout_alignLeft="@+id/tv_ne_name_ui"
             android:layout_alignStart="@+id/tv_ne_name_ui" />
 
@@ -158,8 +158,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/iv_ne_pic_ui"
-            android:layout_alignRight="@+id/tv_ne_end_ui"
-            android:layout_alignEnd="@+id/tv_ne_end_ui"
+            android:layout_alignRight="@+id/tv_ne_end_date_ui"
+            android:layout_alignEnd="@+id/tv_ne_end_date_ui"
             android:layout_toRightOf="@+id/bt_ne_create_event_ui"
             android:layout_toEndOf="@+id/bt_ne_create_event_ui"
             android:layout_below="@+id/tv_ne_description_ui"
