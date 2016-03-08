@@ -711,12 +711,12 @@ public class New_Event extends AppCompatActivity {
                                 relativeLayout_location_titles.setVisibility(View.VISIBLE);
                                 recyclerView_location.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
                                 List<ExpandableListAdapter_New_Event_Vote_Location.Item> data = new ArrayList<>();
-                                if (Event_Helper.vote_date.size() == 0) {
+                                if (Event_Helper.vote_location.size() == 0) {
                                     data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, 1));
-                                    Event_Helper.vote_date.put(1, new Vote_Date_Helper("dd/mm/yyyy", "dd/mm/yyyy", Constants.No, "hh:mm", "hh:mm"));
+                                    Event_Helper.vote_location.put(1, new Vote_Location_Helper(""));
                                     Event_Helper.vote_date_ID_generator++;
                                 } else {
-                                    for (int vote_id : Event_Helper.vote_date.keySet()) {
+                                    for (int vote_id : Event_Helper.vote_location.keySet()) {
                                         data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, vote_id));
                                     }
                                 }
