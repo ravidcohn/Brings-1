@@ -46,6 +46,8 @@ public final class Event_Helper {
         vote_date.clear();
         vote_location.clear();
         task_ID_generator = 0;
+        vote_date_ID_generator = 0;
+        vote_location_ID_generator = 0;
     }
 
     public static void make_copy() {
