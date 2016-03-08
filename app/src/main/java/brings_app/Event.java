@@ -245,7 +245,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                     Switch switcher_location = (Switch) rootView.findViewById(R.id.switcher_location);
                     final RecyclerView recyclerView_date = (RecyclerView) rootView.findViewById(R.id.recyclerView_date);
                     final RelativeLayout relativeLayout_date = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date);
-                    final RelativeLayout relativeLayout_titles = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_titles);
+                    final RelativeLayout relativeLayout_titles = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date_titles);
                     RelativeLayout relativeLayout_date_vote = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date_vote);
                     //Set description.
                     if (Event_Helper.details[Table_Events.Description_num].equals("")) {
@@ -276,7 +276,6 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                         }
                     } else {
                         location.setText(R.string.press_for_vote);
-                        location.setTextColor(getResources().getColor(R.color.colorAccent));
                         switcher_location.setChecked(true);
                     }
                     if (my_permission.equals(Constants.Owner)) {
@@ -286,12 +285,10 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                                 if (isChecked) {
                                     Helper.update_Event_details_field(getContext(), Event_Helper.details[Table_Events.Event_ID_num], Table_Events.Vote_Location, Constants.Yes);
                                     location.setText(R.string.press_for_vote);
-                                    location.setTextColor(getResources().getColor(R.color.colorAccent));
 
                                 } else {
                                     Helper.update_Event_details_field(getContext(), Event_Helper.details[Table_Events.Event_ID_num], Table_Events.Vote_Location, Constants.No);
                                     location.setText(Event_Helper.details[Table_Events.Location_num]);
-                                    location.setTextColor(getResources().getColor(R.color.secondaryText_icons));
 
                                 }
                             }
@@ -299,18 +296,6 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                     } else {
                         switcher_location.setVisibility(View.GONE);
                     }
-                    location.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (location.getText().toString().equals(getResources().getString(R.string.press_for_vote))) {
-                                Intent intent = new Intent(v.getContext(), Vote.class);
-                                Bundle data = new Bundle();
-                                data.putString("vote_type", Constants.Vote_Location);
-                                intent.putExtras(data);
-                                v.getContext().startActivity(intent);
-                            }
-                        }
-                    });
 
                     final RecyclerView recyclerview = (RecyclerView) rootView.findViewById(R.id.recyclerView);
                     recyclerview.setLayoutManager(new LinearLayoutManager(rootView.getContext()));

@@ -58,6 +58,7 @@ import utils.Event_Helper_Package.Event_Helper;
 import utils.Event_Helper_Package.Friend_Helper;
 import utils.Event_Helper_Package.Task_Helper;
 import utils.Event_Helper_Package.Vote_Date_Helper;
+import utils.Event_Helper_Package.Vote_Location_Helper;
 import utils.Helper;
 
 public class New_Event extends AppCompatActivity {
@@ -562,7 +563,7 @@ public class New_Event extends AppCompatActivity {
                         //Check if start date is before end date.
                         boolean ok_date = Helper.Is_date1_after_date2(Event_Helper.details[Table_Events.End_Date_num], Event_Helper.details[Table_Events.Start_Date_num]);
                         //Check if start time is before end time.
-                        if (ok_date || !Helper.Is_time1_after_time2(Event_Helper.details[Table_Events.Start_Time_num],time)) {
+                        if (ok_date || !Helper.Is_time1_after_time2(Event_Helper.details[Table_Events.Start_Time_num], time)) {
                             Event_Helper.details[Table_Events.End_Time_num] = time;
                             time_view2.setText(Helper.format_time(time));
                             dialog.dismiss();
@@ -588,8 +589,6 @@ public class New_Event extends AppCompatActivity {
                     final LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.linearLayout);
                     EditText editText_name = (EditText) rootView.findViewById(R.id.editText_name);
                     EditText editText_description = (EditText) rootView.findViewById(R.id.editText_description);
-                    EditText editText_location = (EditText) rootView.findViewById(R.id.editText_location);
-                    final Switch switcher_vote_location = (Switch) rootView.findViewById(R.id.switcher_location);
                     final TextView date1 = (TextView) rootView.findViewById(R.id.date1);
                     final TextView date2 = (TextView) rootView.findViewById(R.id.date2);
                     final TextView time1 = (TextView) rootView.findViewById(R.id.time1);
@@ -599,19 +598,20 @@ public class New_Event extends AppCompatActivity {
                     final RecyclerView recyclerView_date = (RecyclerView) rootView.findViewById(R.id.recyclerView_date);
                     final RelativeLayout relativeLayout_all_day = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_all_day);
                     final RelativeLayout relativeLayout_date = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date);
-                    final RelativeLayout relativeLayout_titles = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_titles);
+                    final RelativeLayout relativeLayout_date_titles = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date_titles);
+                    EditText editText_location = (EditText) rootView.findViewById(R.id.editText_location);
+                    final Switch switcher_vote_location = (Switch) rootView.findViewById(R.id.switcher_location);
+                    final RecyclerView recyclerView_location = (RecyclerView) rootView.findViewById(R.id.recyclerView_location);
+                    final RelativeLayout relativeLayout_location = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_location);
+                    final RelativeLayout relativeLayout_location_titles = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_location_titles);
                     //Set all values.
                     editText_name.setText(Event_Helper.details[Table_Events.Name_num]);
                     editText_description.setText(Event_Helper.details[Table_Events.Description_num]);
                     editText_location.setText(Event_Helper.details[Table_Events.Location_num]);
-                    if (!Event_Helper.details[Table_Events.Start_Date_num].equals("")) {
-                        date1.setText(Event_Helper.details[Table_Events.Start_Date_num]);
-                        date2.setText(Event_Helper.details[Table_Events.End_Date_num]);
-                    }
-                    if (!Event_Helper.details[Table_Events.Start_Time_num].equals("")) {
-                        time1.setText(Event_Helper.details[Table_Events.Start_Time_num]);
-                        time2.setText(Event_Helper.details[Table_Events.End_Time_num]);
-                    }
+                    date1.setText(Helper.format_date(Event_Helper.details[Table_Events.Start_Date_num]));
+                    date2.setText(Helper.format_date(Event_Helper.details[Table_Events.End_Date_num]));
+                    time1.setText(Helper.format_time(Event_Helper.details[Table_Events.Start_Time_num]));
+                    time2.setText(Helper.format_time(Event_Helper.details[Table_Events.End_Time_num]));
                     if (Event_Helper.details[Table_Events.All_Day_Time_num].equals(Constants.Yes)) {
                         all_day.setChecked(true);
                         time1.setVisibility(View.GONE);
@@ -627,16 +627,7 @@ public class New_Event extends AppCompatActivity {
                             }
                         }
                     });
-                    switcher_vote_location.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            if (isChecked) {
-                                Event_Helper.details[Table_Events.Vote_Location_num] = Constants.Yes;
-                            } else {
-                                Event_Helper.details[Table_Events.Vote_Location_num] = Constants.No;
-                            }
-                        }
-                    });
+                    //date.
                     date1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -683,7 +674,7 @@ public class New_Event extends AppCompatActivity {
                                 relativeLayout_date.setVisibility(View.GONE);
                                 relativeLayout_all_day.setVisibility(View.GONE);
                                 recyclerView_date.setVisibility(View.VISIBLE);
-                                relativeLayout_titles.setVisibility(View.VISIBLE);
+                                relativeLayout_date_titles.setVisibility(View.VISIBLE);
                                 recyclerView_date.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
                                 List<ExpandableListAdapter_New_Event_Vote_Date.Item> data = new ArrayList<>();
                                 if (Event_Helper.vote_date.size() == 0) {
@@ -703,12 +694,46 @@ public class New_Event extends AppCompatActivity {
                             } else {
                                 Event_Helper.details[Table_Events.Vote_Time_num] = Constants.No;
                                 recyclerView_date.setVisibility(View.GONE);
-                                relativeLayout_titles.setVisibility(View.GONE);
+                                relativeLayout_date_titles.setVisibility(View.GONE);
                                 relativeLayout_date.setVisibility(View.VISIBLE);
                                 relativeLayout_all_day.setVisibility(View.VISIBLE);
                             }
                         }
                     });
+                    //location.
+                    switcher_vote_location.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            if (isChecked) {
+                                Event_Helper.details[Table_Events.Vote_Location_num] = Constants.Yes;
+                                relativeLayout_location.setVisibility(View.GONE);
+                                recyclerView_location.setVisibility(View.VISIBLE);
+                                relativeLayout_location_titles.setVisibility(View.VISIBLE);
+                                recyclerView_location.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
+                                List<ExpandableListAdapter_New_Event_Vote_Location.Item> data = new ArrayList<>();
+                                if (Event_Helper.vote_date.size() == 0) {
+                                    data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, 1));
+                                    Event_Helper.vote_date.put(1, new Vote_Date_Helper("dd/mm/yyyy", "dd/mm/yyyy", Constants.No, "hh:mm", "hh:mm"));
+                                    Event_Helper.vote_date_ID_generator++;
+                                } else {
+                                    for (int vote_id : Event_Helper.vote_date.keySet()) {
+                                        data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, vote_id));
+                                    }
+                                }
+                                int recyclerView_height_dp = (data.size() * 57) + 34;//57 + 34.
+                                data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Add, 0));
+                                recyclerView_location.setAdapter(new ExpandableListAdapter_New_Event_Vote_Location(data, recyclerView_location));
+                                int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, getResources().getDisplayMetrics());
+                                recyclerView_location.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
+                            } else {
+                                Event_Helper.details[Table_Events.Vote_Location_num] = Constants.No;
+                                recyclerView_location.setVisibility(View.GONE);
+                                relativeLayout_location_titles.setVisibility(View.GONE);
+                                relativeLayout_location.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
+
                     return rootView;
                 }
                 case 2: {
@@ -858,7 +883,7 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
             }
             case Vote_Add: {
                 inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.new_event_detail_vote_date_add, parent, false);
+                view = inflater.inflate(R.layout.new_event_detail_vote_add, parent, false);
                 ViewHolder_Vote_Add viewHolder_vote_add = new ViewHolder_Vote_Add(view);
                 return viewHolder_vote_add;
             }
@@ -973,11 +998,11 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
         String current_date;
         if (isStartDate) {
             current_date = vote_date_pointer.get(vote_id).getStart_Date();
-            date_view1.setText(current_date);
+            date_view1.setText(Helper.format_date(current_date));
 
         } else {
             current_date = vote_date_pointer.get(vote_id).getEnd_Date();
-            date_view2.setText(current_date);
+            date_view2.setText(Helper.format_date(current_date));
         }
         if (!current_date.equals("dd/mm/yyyy")) {
             datePicker.updateDate(Integer.parseInt(current_date.split("/")[2]), Integer.parseInt(current_date.split("/")[1]) - 1, Integer.parseInt(current_date.split("/")[0]));
@@ -991,12 +1016,12 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
                 if (isStartDate) {
                     vote_date_pointer.get(vote_id).setStart_Date(date);
                     vote_date_pointer.get(vote_id).setEnd_Date(date);
-                    date_view1.setText(date);
-                    date_view2.setText(date);
+                    date_view1.setText(Helper.format_date(date));
+                    date_view2.setText(Helper.format_date(date));
 
                 } else {
                     vote_date_pointer.get(vote_id).setEnd_Date(date);
-                    date_view2.setText(date);
+                    date_view2.setText(Helper.format_date(date));
                 }
                 dialog.dismiss();
             }
@@ -1013,10 +1038,10 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
         String current_time;
         if (isStartTime) {
             current_time = vote_date_pointer.get(vote_id).getStart_Time();
-            time_view1.setText(current_time);
+            time_view1.setText(Helper.format_time(current_time));
         } else {
             current_time = vote_date_pointer.get(vote_id).getEnd_Time();
-            time_view2.setText(current_time);
+            time_view2.setText(Helper.format_time(current_time));
         }
         if (!current_time.equals("hh:mm")) {
             timePicker.setHour(Integer.parseInt(current_time.split(":")[0]));
@@ -1031,12 +1056,12 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
                 if (isStartTime) {
                     vote_date_pointer.get(vote_id).setStart_Time(time);
                     vote_date_pointer.get(vote_id).setEnd_Time(time);
-                    time_view1.setText(time);
-                    time_view2.setText(time);
+                    time_view1.setText(Helper.format_time(time));
+                    time_view2.setText(Helper.format_time(time));
 
                 } else {
                     vote_date_pointer.get(vote_id).setEnd_Time(time);
-                    time_view2.setText(time);
+                    time_view2.setText(Helper.format_time(time));
                 }
                 dialog.dismiss();
             }
@@ -1061,6 +1086,139 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
             time1 = (TextView) itemView.findViewById(R.id.time1);
             time2 = (TextView) itemView.findViewById(R.id.time2);
             all_day = (Switch) itemView.findViewById(R.id.all_day);
+            cancel = (ImageButton) itemView.findViewById(R.id.cancel);
+        }
+    }
+
+    private static class ViewHolder_Vote_Add extends RecyclerView.ViewHolder {
+        public Item refferalItem;
+        public ImageButton imageButton;
+
+        public ViewHolder_Vote_Add(View itemView) {
+            super(itemView);
+            imageButton = (ImageButton) itemView.findViewById(R.id.imageButton);
+        }
+    }
+
+    public static class Item {
+        public int type;
+        public int Vote_ID;
+
+        public List<Item> invisibleChildren;
+
+        public Item() {
+        }
+
+        public Item(int type, int Vote_ID) {
+            this.type = type;
+            this.Vote_ID = Vote_ID;
+        }
+    }
+}
+
+class ExpandableListAdapter_New_Event_Vote_Location extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public static final int Vote_Location = 0;
+    public static final int Vote_Add = 1;
+
+    private List<Item> data;
+    private RecyclerView recyclerView;
+    private int recyclerView_height_dp;
+    private HashMap<Integer, Vote_Location_Helper> vote_location_pointer;
+
+    private int Vote_ID;
+
+    public List<Item> getData() {
+        return data;
+    }
+
+    public ExpandableListAdapter_New_Event_Vote_Location(List<Item> data, RecyclerView recyclerView) {
+        this.data = data;
+        this.recyclerView = recyclerView;
+        if (Event_Helper.newEvent_edit_mode.equals(Constants.New_Event)) {
+            this.vote_location_pointer = Event_Helper.vote_location;
+        } else {
+            this.vote_location_pointer = Event_Helper.vote_location_tmp;
+        }
+        recyclerView_height_dp = (data.size() - 1) * 57 + 34;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = null;
+        LayoutInflater inflater;
+        switch (viewType) {
+            case Vote_Location: {
+                inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.new_event_detail_vote_location, parent, false);
+                ViewHolder_Vote_Location viewHolder_vote_location = new ViewHolder_Vote_Location(view);
+                viewHolder_vote_location.option.setText("Option " + Vote_ID);
+                return viewHolder_vote_location;
+            }
+            case Vote_Add: {
+                inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.new_event_detail_vote_add, parent, false);
+                ViewHolder_Vote_Add viewHolder_vote_add = new ViewHolder_Vote_Add(view);
+                return viewHolder_vote_add;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        final Item item = data.get(position);
+        final View view = holder.itemView;
+        switch (item.type) {
+            case Vote_Location: {
+                final ViewHolder_Vote_Location itemController = (ViewHolder_Vote_Location) holder;
+                itemController.refferalItem = item;
+                Vote_ID = itemController.refferalItem.Vote_ID;
+                itemController.editText.setText(vote_location_pointer.get(Vote_ID).getDescription());
+                break;
+            }
+            case Vote_Add: {
+                final ViewHolder_Vote_Add itemController = (ViewHolder_Vote_Add) holder;
+                itemController.refferalItem = item;
+                itemController.imageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        data.add(data.size() - 1, new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, data.size()));
+                        Event_Helper.vote_location_ID_generator++;
+                        vote_location_pointer.put(Event_Helper.vote_location_ID_generator, new Vote_Location_Helper(""));
+                        notifyItemInserted(data.size() - 1);
+                        recyclerView_height_dp += 56;
+                        int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getContext().getResources().getDisplayMetrics());
+                        recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
+                    }
+                });
+                break;
+            }
+        }
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return data.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        this.Vote_ID = data.get(position).Vote_ID;
+        return data.get(position).type;
+    }
+
+
+    private static class ViewHolder_Vote_Location extends RecyclerView.ViewHolder {
+        public Item refferalItem;
+        public TextView option;
+        public EditText editText;
+        public ImageButton cancel;
+
+        public ViewHolder_Vote_Location(View itemView) {
+            super(itemView);
+            option = (TextView) itemView.findViewById(R.id.option);
+            editText = (EditText) itemView.findViewById(R.id.editText);
             cancel = (ImageButton) itemView.findViewById(R.id.cancel);
         }
     }

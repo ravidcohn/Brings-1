@@ -32,6 +32,9 @@ import server.User.User_AsyncTask_get;
 import server.Vote_Date.Vote_Date_AsyncTask_deleteByEvent;
 import server.Vote_Date.Vote_Date_AsyncTask_delete_vote_user_id;
 import server.Vote_Date.Vote_Date_AsyncTask_insert;
+import server.Vote_Location.Vote_Location_AsyncTask_deleteByEvent;
+import server.Vote_Location.Vote_Location_AsyncTask_delete_vote_user_id;
+import server.Vote_Location.Vote_Location_AsyncTask_insert;
 import utils.Constans.Constants;
 import utils.Constans.Table_Chat;
 import utils.Constans.Table_Events;
@@ -170,6 +173,24 @@ public class Helper {
         String Event_ID = Event_Helper.details[Table_Events.Event_ID_num];
         delete_vote_date_User_ID_MySQL(Event_ID, Vote_ID, User_ID);
         delete_vote_date_User_ID_ServerSQL(context, Event_ID, Vote_ID, User_ID);
+        //Send message to all users.
+        String message = Constants.Delete_Vote_Date + "|" + Event_ID + "^" + Vote_ID + "^" + User_ID;
+        Send_Message_To_All_My_Friend_By_Event_ServerSQL(context, Event_ID, message);
+    }
+
+    public static void add_vote_location_User_ID(Context context, int Vote_ID, String User_ID) {
+        String Event_ID = Event_Helper.details[Table_Events.Event_ID_num];
+        add_vote_location_User_ID_MySQL(Event_ID, Vote_ID, User_ID);
+        add_vote_location_User_ID_ServerSQL(context, Event_ID, Vote_ID, User_ID);
+        //Send message to all users.
+        String message = Constants.Insert_Vote_Date + "|" + Event_ID + "^" + Vote_ID + "^" + User_ID;
+        Send_Message_To_All_My_Friend_By_Event_ServerSQL(context, Event_ID, message);
+    }
+
+    public static void delete_vote_location_User_ID(Context context, int Vote_ID, String User_ID) {
+        String Event_ID = Event_Helper.details[Table_Events.Event_ID_num];
+        delete_vote_location_User_ID_MySQL(Event_ID, Vote_ID, User_ID);
+        delete_vote_location_User_ID_ServerSQL(context, Event_ID, Vote_ID, User_ID);
         //Send message to all users.
         String message = Constants.Delete_Vote_Date + "|" + Event_ID + "^" + Vote_ID + "^" + User_ID;
         Send_Message_To_All_My_Friend_By_Event_ServerSQL(context, Event_ID, message);
@@ -366,6 +387,15 @@ public class Helper {
         sqlHelper.insert(Table_Vote_Location.Table_Name, vote_location);
     }
 
+    private static void add_vote_location_User_ID_MySQL(String event_id, int vote_id, String user_id) {
+        String[] vote_location = new String[Table_Vote_Location.Size()];
+        vote_location[Table_Vote_Location.Event_ID_num] = event_id;
+        vote_location[Table_Vote_Location.Vote_ID_num] = vote_id + "";
+        vote_location[Table_Vote_Location.Description_num] = "";
+        vote_location[Table_Vote_Location.User_ID_num] = user_id;
+        sqlHelper.insert(Table_Vote_Location.Table_Name, vote_location);
+    }
+
     public static void mark_task_and_subTasks_MySQL(String Event_ID, int task_id, String mark) {
         sqlHelper.update(Table_Tasks.Table_Name, new String[]{Table_Tasks.Mark}, new String[]{mark},
                 new String[]{Table_Tasks.Event_ID, Table_Tasks.Task_ID_Number}, new String[]{Event_ID, task_id + ""});
@@ -405,9 +435,15 @@ public class Helper {
     }
 
     private static void delete_vote_date_User_ID_MySQL(String Event_ID, int Vote_ID, String User_ID) {
-        sqlHelper.delete(Table_Events.Table_Name, new String[]{Table_Vote_Date.Event_ID, Table_Vote_Date.Vote_ID, Table_Vote_Date.User_ID},
+        sqlHelper.delete(Table_Vote_Date.Table_Name, new String[]{Table_Vote_Date.Event_ID, Table_Vote_Date.Vote_ID, Table_Vote_Date.User_ID},
                 new String[]{Event_ID, Vote_ID + "", User_ID}, new int[]{1});
     }
+
+    private static void delete_vote_location_User_ID_MySQL(String Event_ID, int Vote_ID, String User_ID) {
+        sqlHelper.delete(Table_Vote_Location.Table_Name, new String[]{Table_Vote_Location.Event_ID, Table_Vote_Location.Vote_ID, Table_Vote_Location.User_ID},
+                new String[]{Event_ID, Vote_ID + "", User_ID}, new int[]{1});
+    }
+
 
     //----------------------------------------------Server SQL Functions----------------------------------------------
     public static void Create_Event_ServerSQL(Context context) {
@@ -441,6 +477,11 @@ public class Helper {
             Vote_Date_Helper vote_date_helper = Event_Helper.vote_date.get(vote_id);
             new Vote_Date_AsyncTask_insert(context).execute(Event_Helper.details[Table_Events.Event_ID_num], vote_id + "", vote_date_helper.getStart_Date(), vote_date_helper.getEnd_Date(),
                     vote_date_helper.getAll_Day(), vote_date_helper.getStart_Time(), vote_date_helper.getEnd_Time(), Constants.UnCheck);
+        }
+        //Add vote_dates.
+        for (int vote_id : Event_Helper.vote_location.keySet()) {
+            Vote_Location_Helper vote_location_helper = Event_Helper.vote_location.get(vote_id);
+            new Vote_Location_AsyncTask_insert(context).execute(Event_Helper.details[Table_Events.Event_ID_num], vote_id + "", vote_location_helper.getDescription(), Constants.UnCheck);
         }
     }
 
@@ -522,6 +563,8 @@ public class Helper {
         new Chat_AsyncTask_deleteByEvent(context).execute(Chat_ID);
         //Delete vote_date.
         new Vote_Date_AsyncTask_deleteByEvent(context).execute(Event_ID);
+        //Delete vote_location.
+        new Vote_Location_AsyncTask_deleteByEvent(context).execute(Event_ID);
     }
 
     public static void update_attending_ServerSQL(Context context, String Event_ID, String User_ID, String attending) {
@@ -558,8 +601,18 @@ public class Helper {
         new Vote_Date_AsyncTask_insert(context).execute(Event_ID, Vote_ID + "", "", "", "", "", "", User_ID);
     }
 
+    private static void add_vote_location_User_ID_ServerSQL(Context context, String Event_ID, int Vote_ID, String User_ID) {
+        new Vote_Location_AsyncTask_insert(context).execute(Event_ID, Vote_ID + "", User_ID);
+    }
+
     private static void delete_vote_date_User_ID_ServerSQL(Context context, String Event_ID, int Vote_ID, String User_ID) {
         new Vote_Date_AsyncTask_delete_vote_user_id(context).execute(Event_ID, Vote_ID + "", User_ID);
+
+
+    }
+
+    private static void delete_vote_location_User_ID_ServerSQL(Context context, String Event_ID, int Vote_ID, String User_ID) {
+        new Vote_Location_AsyncTask_delete_vote_user_id(context).execute(Event_ID, Vote_ID + "", User_ID);
 
 
     }
@@ -611,6 +664,7 @@ public class Helper {
         }
         return User_ID;
     }
+
     //Check id date1 is later than date2.
     public static boolean Is_date1_after_date2(String date1, String date2) {
         if (date1.equals("dd/mm/yyyy"))
