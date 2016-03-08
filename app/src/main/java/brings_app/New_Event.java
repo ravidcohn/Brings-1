@@ -599,7 +599,7 @@ public class New_Event extends AppCompatActivity {
                     final RecyclerView recyclerView_date = (RecyclerView) rootView.findViewById(R.id.recyclerView_date);
                     final RelativeLayout relativeLayout_all_day = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_all_day);
                     final RelativeLayout relativeLayout_date = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date);
-                    final RelativeLayout relativeLayout_titles = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_titles);
+                    final RelativeLayout relativeLayout_titles = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date_titles);
                     //Set all values.
                     editText_name.setText(Event_Helper.details[Table_Events.Name_num]);
                     editText_description.setText(Event_Helper.details[Table_Events.Description_num]);
@@ -858,7 +858,7 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
             }
             case Vote_Add: {
                 inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.new_event_detail_vote_date_add, parent, false);
+                view = inflater.inflate(R.layout.new_event_detail_vote_add, parent, false);
                 ViewHolder_Vote_Add viewHolder_vote_add = new ViewHolder_Vote_Add(view);
                 return viewHolder_vote_add;
             }

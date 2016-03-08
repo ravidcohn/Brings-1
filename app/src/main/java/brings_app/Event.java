@@ -245,7 +245,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                     Switch switcher_location = (Switch) rootView.findViewById(R.id.switcher_location);
                     final RecyclerView recyclerView_date = (RecyclerView) rootView.findViewById(R.id.recyclerView_date);
                     final RelativeLayout relativeLayout_date = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date);
-                    final RelativeLayout relativeLayout_titles = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_titles);
+                    final RelativeLayout relativeLayout_titles = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date_titles);
                     RelativeLayout relativeLayout_date_vote = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date_vote);
                     //Set description.
                     if (Event_Helper.details[Table_Events.Description_num].equals("")) {

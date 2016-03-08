@@ -202,7 +202,7 @@ public class Vote_DateEndpoint {
      *                           {@code Event}
      */
     @ApiMethod(name = "Vote_DateDelete", path = "Vote_DateDelete")
-    public void Delete_Task(@Named("A_Event_ID") String Event_ID, @Named("B_Vote_ID") String Vote_ID, @Named("G_User_ID") String User_ID) {
+    public void Delete_Vote(@Named("A_Event_ID") String Event_ID, @Named("B_Vote_ID") String Vote_ID, @Named("C_User_ID") String User_ID) {
         try {
             MySQL_Util.delete(Table_Vote_Date.Table_Name, new String[]{Table_Vote_Date.Event_ID, Table_Vote_Date.Vote_ID, Table_Vote_Date.User_ID},
                     new String[]{Event_ID, Vote_ID, User_ID}, new int[]{1});
