@@ -775,6 +775,246 @@ class ExpandableListAdapter_Event_Vote_Date extends RecyclerView.Adapter<Recycle
     }
 }
 
+class ExpandableListAdapter_Event_Vote_Location extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public static final int Vote_Location_Parent = 0;
+    public static final int Vote_Location_Child = 1;
+
+    private List<Item> data;
+    private int recyclerView_height_px;
+    private RecyclerView recyclerView;
+
+    private int Vote_ID;
+    private String User_ID;
+
+    public List<Item> getData() {
+        return data;
+    }
+
+    private int parent_height;
+    private int child_height;
+
+
+    public ExpandableListAdapter_Event_Vote_Location(List<Item> data, RecyclerView recyclerView) {
+        this.data = data;
+        this.recyclerView = recyclerView;
+        parent_height = 164;//px
+        child_height = 140;//px
+        recyclerView_height_px = data.size() * parent_height;
+        recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = null;
+        LayoutInflater inflater;
+        switch (viewType) {
+            case Vote_Location_Parent: {
+                inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.event_detail_vote_location_parent, parent, false);
+                ViewHolder_Vote_Location_Parent viewHolder_vote_location_parent = new ViewHolder_Vote_Location_Parent(view);
+                /*
+                final ViewTreeObserver observer = view.getViewTreeObserver();
+                final View finalView = view;
+                observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (parent_height == 0) {
+                            parent_height = finalView.getHeight();
+                            recyclerView_height_dp = (data.size() - 1) * parent_height;
+                            int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, finalView.getContext().getResources().getDisplayMetrics());
+                            recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, parent_height));
+                        }
+                        finalView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+                    }
+                });*/
+                return viewHolder_vote_location_parent;
+            }
+            case Vote_Location_Child: {
+                inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.event_detail_vote_child, parent, false);
+                ViewHolder_Vote_Location_Child viewHolder_vote_location_child = new ViewHolder_Vote_Location_Child(view);
+                return viewHolder_vote_location_child;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        final Item item = data.get(position);
+        final View view = holder.itemView;
+        switch (item.type) {
+            case Vote_Location_Parent: {
+                final ViewHolder_Vote_Location_Parent itemController = (ViewHolder_Vote_Location_Parent) holder;
+                itemController.refferalItem = item;
+                Vote_ID = itemController.refferalItem.Vote_ID;
+                //Set values.
+                itemController.count.setText(Event_Helper.vote_location.get(Vote_ID).getVotes().size() + "");
+                if (Event_Helper.vote_location.get(Vote_ID).getVotes().get(Constants.MY_User_ID) != null) {
+                    itemController.checkBox.setChecked(true);
+                } else {
+                    itemController.checkBox.setChecked(false);
+                }
+                itemController.option.setText("Option " + Vote_ID);
+                //Set CheckBox
+                itemController.checkBox.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Vote_ID = itemController.refferalItem.Vote_ID;
+                        int pos = data.indexOf(itemController.refferalItem);
+                        if (itemController.checkBox.isChecked()) {
+                            Event_Helper.vote_location.get(Vote_ID).getVotes().put(Constants.MY_User_ID, Constants.MY_User_ID);
+                            Helper.add_vote_date_User_ID(v.getContext(), Vote_ID, Constants.MY_User_ID);
+                            if (itemController.refferalItem.invisibleChildren == null) {
+                                itemController.refferalItem.invisibleChildren = new ArrayList<>();
+                                itemController.refferalItem.invisibleChildren.add(new ExpandableListAdapter_Event_Vote_Location.Item(Vote_Location_Child, Vote_ID, Constants.MY_User_ID));
+                            } else {
+                                data.add(pos + 1, new ExpandableListAdapter_Event_Vote_Location.Item(Vote_Location_Child, Vote_ID, Constants.MY_User_ID));
+                                notifyItemInserted(pos + 1);
+                                recyclerView_height_px += child_height;
+                                recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
+                            }
+                        } else {
+                            Event_Helper.vote_location.get(Vote_ID).getVotes().remove(Constants.MY_User_ID);
+                            Helper.delete_vote_date_User_ID(v.getContext(), Vote_ID, Constants.MY_User_ID);
+                            if (itemController.refferalItem.invisibleChildren == null) {
+                                int i = 0;
+                                while (!data.get(pos + i).User_ID.equals(Constants.MY_User_ID))
+                                    i++;
+                                data.remove(data.get(pos + i));
+                                notifyItemRemoved(pos + i);
+                                recyclerView_height_px -= child_height;
+                                recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
+                            } else {
+                                int i = 0;
+                                while (!itemController.refferalItem.invisibleChildren.get(i).User_ID.equals(Constants.MY_User_ID))
+                                    i++;
+                                itemController.refferalItem.invisibleChildren.remove(itemController.refferalItem.invisibleChildren.get(i));
+                                if (itemController.refferalItem.invisibleChildren.size() == 0)
+                                    itemController.refferalItem.invisibleChildren = null;
+                            }
+                        }
+                        itemController.count.setText(Event_Helper.vote_location.get(Vote_ID).getVotes().size() + "");
+
+                    }
+                });
+                //Set expand view.
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (item.invisibleChildren == null) {
+                            item.invisibleChildren = new ArrayList<Item>();
+                            int pos = data.indexOf(itemController.refferalItem);
+                            int count = 0;
+                            while (data.size() > pos + 1 && data.get(pos + 1).type == Vote_Location_Child) {
+                                item.invisibleChildren.add(data.remove(pos + 1));
+                                count++;
+                            }
+                            if (count > 0) {
+                                notifyItemRangeRemoved(pos + 1, count);
+                                itemController.expand_arrow.setImageResource(R.mipmap.ic_expand_arrow);
+                                recyclerView_height_px -= child_height * count;
+                                recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
+                            }
+                        } else {
+                            int pos = data.indexOf(itemController.refferalItem);
+                            int index = pos + 1;
+                            for (Item i : item.invisibleChildren) {
+                                data.add(index, i);
+                                index++;
+                            }
+                            notifyItemRangeInserted(pos + 1, index - pos - 1);
+                            itemController.expand_arrow.setImageResource(R.mipmap.ic_collapse_arrow);
+                            item.invisibleChildren = null;
+                            recyclerView_height_px += child_height * (index - pos - 1);
+                            recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
+                        }
+
+                    }
+                });
+                break;
+            }
+            case Vote_Location_Child: {
+                final ViewHolder_Vote_Location_Child itemController = (ViewHolder_Vote_Location_Child) holder;
+                itemController.refferalItem = item;
+                Vote_ID = itemController.refferalItem.Vote_ID;
+                User_ID = itemController.refferalItem.User_ID;
+                //Set values.
+                if (User_ID.equals(Constants.MY_User_ID))
+                    itemController.textView.setText(Constants.User_Nickname);
+                else
+                    itemController.textView.setText(Contacts_List.contacts.get(User_ID));
+                itemController.textView_phone.setText(User_ID);
+                break;
+            }
+        }
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return data.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        this.Vote_ID = data.get(position).Vote_ID;
+        this.User_ID = data.get(position).User_ID;
+        return data.get(position).type;
+    }
+
+
+    private static class ViewHolder_Vote_Location_Parent extends RecyclerView.ViewHolder {
+        public Item refferalItem;
+        public TextView option;
+        public TextView location;
+        public TextView count;
+        public CheckBox checkBox;
+        public ImageView expand_arrow;
+
+
+        public ViewHolder_Vote_Location_Parent(View itemView) {
+            super(itemView);
+            option = (TextView) itemView.findViewById(R.id.option);
+            location = (TextView) itemView.findViewById(R.id.location);
+            count = (TextView) itemView.findViewById(R.id.count);
+            checkBox = (CheckBox) itemView.findViewById(R.id.checkBox);
+            expand_arrow = (ImageView) itemView.findViewById(R.id.expand_arrow);
+
+        }
+    }
+
+    private static class ViewHolder_Vote_Location_Child extends RecyclerView.ViewHolder {
+        public Item refferalItem;
+        public TextView textView;
+        public TextView textView_phone;
+
+        public ViewHolder_Vote_Location_Child(View itemView) {
+            super(itemView);
+            textView = (TextView) itemView.findViewById(R.id.textView);
+            textView_phone = (TextView) itemView.findViewById(R.id.textView_phone);
+        }
+    }
+
+    public static class Item {
+        public int type;
+        public int Vote_ID;
+        public String User_ID;
+
+        public List<Item> invisibleChildren;
+
+        public Item() {
+        }
+
+        public Item(int type, int Vote_ID, String User_ID) {
+            this.type = type;
+            this.Vote_ID = Vote_ID;
+            this.User_ID = User_ID;
+        }
+    }
+}
+
 class ExpandableListAdapter_Event_Friends extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int User = 0;
     public static final int User_Child = 1;
