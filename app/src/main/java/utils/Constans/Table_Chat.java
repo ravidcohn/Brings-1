@@ -18,6 +18,12 @@ public final class Table_Chat {
     private final static String Time_SQL_Params = "varchar NOT NULL";
 
 
+    public final static int Message_ID_num = 0;
+    public final static int User_ID_num = 1;
+    public final static int Message_num = 2;
+    public final static int Date_num = 3;
+    public final static int Time_num = 4;
+
     public final static String[] getAllFields(){
         return new String[]{Message_ID, User_ID, Message, Date, Time};
     }

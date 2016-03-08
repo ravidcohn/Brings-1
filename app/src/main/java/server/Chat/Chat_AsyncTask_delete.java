@@ -20,12 +20,12 @@ public class Chat_AsyncTask_delete extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... params) {
-        if(myApiService == null) { // Only do this once
+        if (myApiService == null) { // Only do this once
             myApiService = CloudEndpointBuilderHelper.getEndpoints();
         }
 
         try {
-            myApiService.chatDelete(params[0],params[1]).execute();
+            myApiService.chatDelete(params[0], params[1], params[2]).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }

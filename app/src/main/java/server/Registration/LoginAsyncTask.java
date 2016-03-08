@@ -54,6 +54,8 @@ public class LoginAsyncTask extends AsyncTask<String, Void, RegistrationRecord> 
         if(result != null) {
             message = result.getUserID();
             delegate.processFinish(message, result.getNickname());
+        }else{
+            delegate.processFinish(Constants.Not_Register);
         }
     }
 }

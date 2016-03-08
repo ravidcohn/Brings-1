@@ -16,6 +16,8 @@ import utils.Constans.Table_Events;
 import utils.Constans.Table_Events_Users;
 import utils.Constans.Table_Tasks;
 import utils.Constans.Table_Users;
+import utils.Constans.Table_Vote_Date;
+import utils.Constans.Table_Vote_Location;
 
 
 /**
@@ -331,10 +333,14 @@ public final class sqlHelper {
     }
 
     public static void createALLTables() {
+        //Delete_Table(Table_Events.Table_Name);
         Create_Table(Table_Events.Table_Name, Table_Events.getAllFields(), Table_Events.getAllSqlParams());
         Create_Table(Table_Events_Users.Table_Name, Table_Events_Users.getAllFields(), Table_Events_Users.getAllSqlParams());
         Create_Table(Table_Tasks.Table_Name, Table_Tasks.getAllFields(), Table_Tasks.getAllSqlParams());
         Create_Table(Table_Users.Table_Name, Table_Users.getAllFields(), Table_Users.getAllSqlParams());
+        Create_Table(Table_Vote_Date.Table_Name, Table_Vote_Date.getAllFields(), Table_Vote_Date.getAllSqlParams());
+        Create_Table(Table_Vote_Location.Table_Name, Table_Vote_Location.getAllFields(), Table_Vote_Location.getAllSqlParams());
+
     }
 
 

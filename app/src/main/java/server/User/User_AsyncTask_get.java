@@ -8,6 +8,7 @@ import com.example.some_lie.backend.brings.model.User;
 import server.CloudEndpointBuilderHelper;
 import utils.Constans.Constants;
 import utils.Constans.Table_Users;
+import utils.Event_Helper_Package.Contacts_List;
 import utils.sqlHelper;
 
 /**
@@ -36,8 +37,10 @@ public class User_AsyncTask_get extends AsyncTask<String, Void, User> {
 
     @Override
     protected void onPostExecute(User result) {
-        if (result!=null) {
-            sqlHelper.insert(Table_Users.Table_Name, new String[]{result.getUserID(), result.getPhone(), result.getNickname(), Constants.Yes});
+        if (result != null) {
+            sqlHelper.insert(Table_Users.Table_Name, new String[]{result.getUserID(), result.getNickname(), Constants.Yes});
+            //Add User to Contacts_List.
+            Contacts_List.contacts.put(result.getUserID(), result.getNickname());
         }
     }
 }

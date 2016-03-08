@@ -15,6 +15,11 @@ public final class Table_Events_Users {
     public final static String Permission = "Permission";
     private final static String Permission_SQL_Params = "varchar NOT NULL";
 
+    public final static int Event_ID_num = 0;
+    public final static int User_ID_num = 1;
+    public final static int Attending_num = 2;
+    public final static int Permission_num = 3;
+
     public final static String[] getAllFields(){
         return new String[]{Event_ID, User_ID, Attending, Permission};
     }

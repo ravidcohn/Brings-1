@@ -13,9 +13,6 @@ import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.StorageScopes;
 import com.google.api.services.storage.model.ObjectAccessControl;
 import com.google.api.services.storage.model.StorageObject;
-import com.google.appengine.tools.cloudstorage.GcsService;
-import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
-import com.google.appengine.tools.cloudstorage.RetryParams;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +21,6 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 import server.CloudEndpointBuilderHelper;
-import server.cloudStorage;
-import utils.Constans.Constants;
 
 /**
  * Created by Ravid on 25/09/2015.
@@ -33,9 +28,10 @@ import utils.Constans.Constants;
 public class Event_AsyncTask_insert extends AsyncTask<String, Void, Void> {
     private static Brings myApiService = null;
     private Context context;
-    private final GcsService gcsService =
-            GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
+    //private final GcsService gcsService =
+            //GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
     private static Storage storageService;
+
     public Event_AsyncTask_insert(Context context) {
         this.context = context;
     }
@@ -47,11 +43,12 @@ public class Event_AsyncTask_insert extends AsyncTask<String, Void, Void> {
         }
 
         try {
-            ImagesPath ipath = myApiService.eventInsert(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9]).execute();
+            ImagesPath ipath = myApiService.eventInsert(params[0], params[1], params[2], params[3], params[4], params[5], params[6],
+                    params[7], params[8], params[9], params[10], params[11], params[12]).execute();
             File f = new File(params[8]);
             if (f.exists()) {
                 String file_name = ipath.getPath();
-                cloudStorage.uploadFile(Constants.bucket_name, params[8], context, file_name);
+                //cloudStorage.uploadFile(Constants.bucket_name, params[8], context, file_name);
 
             }
         } catch (Exception e) {
@@ -60,6 +57,7 @@ public class Event_AsyncTask_insert extends AsyncTask<String, Void, Void> {
 
         return null;
     }
+
     public static void uploadStream(
             String name, String contentType, InputStream stream, String bucketName)
             throws IOException, GeneralSecurityException {
@@ -78,7 +76,9 @@ public class Event_AsyncTask_insert extends AsyncTask<String, Void, Void> {
                 bucketName, objectMetadata, contentStream);
 
         insertRequest.execute();
-    }private static Storage getService() throws IOException, GeneralSecurityException {
+    }
+
+    private static Storage getService() throws IOException, GeneralSecurityException {
         if (null == storageService) {
             GoogleCredential credential = GoogleCredential.getApplicationDefault();
             // Depending on the environment that provides the default credentials (e.g. Compute Engine,
@@ -88,7 +88,7 @@ public class Event_AsyncTask_insert extends AsyncTask<String, Void, Void> {
                 credential = credential.createScoped(StorageScopes.all());
             }
             HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-            storageService = new Storage.Builder(httpTransport,null, credential)
+            storageService = new Storage.Builder(httpTransport, null, credential)
                     .setApplicationName("test").build();
         }
         return storageService;

@@ -11,16 +11,18 @@ public class Task {
     @Id
     private String Event_ID;
     private String Task_ID_Number;
-    private String Task_Name;
+    private String subTask_ID_Number;
+    private String Task_Type;
     private String Description;
     private String User_ID;
 
     public Task() {}
 
-    public Task(String event_ID, String task_ID_Number, String task_Name, String description, String user_ID) {
+    public Task(String event_ID, String task_ID_Number, String subTask_ID_Number, String task_Type, String description, String user_ID) {
         Event_ID = event_ID;
         Task_ID_Number = task_ID_Number;
-        Task_Name = task_Name;
+        this.subTask_ID_Number = subTask_ID_Number;
+        Task_Type = task_Type;
         Description = description;
         User_ID = user_ID;
     }
@@ -41,12 +43,20 @@ public class Task {
         Task_ID_Number = task_ID_Number;
     }
 
-    public String getTask_Name() {
-        return Task_Name;
+    public String getSubTask_ID_Number() {
+        return subTask_ID_Number;
     }
 
-    public void setTask_Name(String task_Name) {
-        Task_Name = task_Name;
+    public void setSubTask_ID_Number(String subTask_ID_Number) {
+        this.subTask_ID_Number = subTask_ID_Number;
+    }
+
+    public String getTask_Type() {
+        return Task_Type;
+    }
+
+    public void setTask_Type(String task_Type) {
+        Task_Type = task_Type;
     }
 
     public String getDescription() {

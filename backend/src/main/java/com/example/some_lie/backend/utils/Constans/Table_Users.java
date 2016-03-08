@@ -7,12 +7,11 @@ public final class Table_Users {
     public final static String Table_Name = "Users";
 
     public final static String User_ID = "User_ID";
-    public final static String Phone = "Phone";
     public final static String Nickname = "Nickname";
     public final static String Password = "Password";
 
     public final static String[] getAllFields(){
-        return new String[]{User_ID, Phone, Nickname, Password};
+        return new String[]{User_ID, Nickname, Password};
     }
 
     public static int Size(){

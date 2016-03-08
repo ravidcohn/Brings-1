@@ -61,7 +61,6 @@ public class UserEndpoint {
             ResultSet rs = MySQL_Util.select(null, Table_Users.Table_Name, new String[]{Table_Users.User_ID}, new String[]{User_ID}, new int[]{1});
             if(rs.next()) {
                 user.setUser_ID(rs.getString(Table_Users.User_ID));
-                user.setPhone(rs.getString(Table_Users.Phone));
                 user.setNickname(rs.getString(Table_Users.Nickname));
 
             }

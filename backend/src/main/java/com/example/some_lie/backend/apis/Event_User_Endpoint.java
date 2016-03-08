@@ -47,11 +47,11 @@ public class Event_User_Endpoint {
      * @param User_ID The object to be added.
      * @return The object to be added.
      */
-    @ApiMethod(name = "EventUserDeleteByUser", path="EventUserDeleteByUser")
-    public void DeleteBy_User(@Named("User_ID")String User_ID) {
+    @ApiMethod(name = "EventUserDeleteByUser", path = "EventUserDeleteByUser")
+    public void DeleteBy_User(@Named("User_ID") String User_ID) {
         try {
             MySQL_Util.delete(Table_Events_Users.Table_Name, new String[]{Table_Events_Users.User_ID}, new String[]{User_ID}, null);
-        }catch(Exception e){
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -63,9 +63,9 @@ public class Event_User_Endpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -78,11 +78,11 @@ public class Event_User_Endpoint {
      * @param Event_ID The object to be added.
      * @return The object to be added.
      */
-    @ApiMethod(name = "EventUserDeleteByEvent", path="EventUserDeleteByEvent")
-    public void DeleteBy_Event(@Named("Event_ID")String Event_ID) {
+    @ApiMethod(name = "EventUserDeleteByEvent", path = "EventUserDeleteByEvent")
+    public void DeleteBy_Event(@Named("Event_ID") String Event_ID) {
         try {
-            MySQL_Util.delete(Table_Events_Users.Table_Name,new String[]{Table_Events_Users.Event_ID}, new String[]{Event_ID},null);
-        }catch(Exception e){
+            MySQL_Util.delete(Table_Events_Users.Table_Name, new String[]{Table_Events_Users.Event_ID}, new String[]{Event_ID}, null);
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -94,9 +94,9 @@ public class Event_User_Endpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -104,15 +104,15 @@ public class Event_User_Endpoint {
     }
 
     /**
-     *
      * @param Event_ID
      * @param User_ID
      */
-    @ApiMethod(name = "EventUserDelete", path="EventUserDelete")
-    public void Delete(@Named("Event_ID")String Event_ID, @Named("User_ID")String User_ID) {
+    @ApiMethod(name = "EventUserDelete", path = "EventUserDelete")
+    public void Delete(@Named("A_Event_ID") String Event_ID, @Named("B_User_ID") String User_ID) {
         try {
-            MySQL_Util.delete(Table_Events_Users.Table_Name,new String[]{Table_Events_Users.Event_ID, Table_Events_Users.User_ID}, new String[]{Event_ID, User_ID},null);
-        }catch(Exception e){
+            MySQL_Util.delete(Table_Events_Users.Table_Name, new String[]{Table_Events_Users.Event_ID, Table_Events_Users.User_ID},
+                    new String[]{Event_ID, User_ID}, new int[]{1});
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -124,9 +124,9 @@ public class Event_User_Endpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -140,11 +140,11 @@ public class Event_User_Endpoint {
      * @return The object to be added.
      */
     @ApiMethod(name = "EventUserInsert", path = "EventUserInsert")
-    public void Insert(@Named("AEvent_ID")String Event_ID,@Named("BUser_ID")String User_ID,@Named("CAttending")String attending, @Named("DPermission")String permission) {
+    public void Insert(@Named("AEvent_ID") String Event_ID, @Named("BUser_ID") String User_ID, @Named("CAttending") String attending, @Named("DPermission") String permission) {
         try {
             MySQL_Util.insert(Table_Events_Users.Table_Name, new String[]{Event_ID, User_ID, attending, permission});
 
-        }catch(Exception e){
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -156,9 +156,9 @@ public class Event_User_Endpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -171,14 +171,14 @@ public class Event_User_Endpoint {
      * @param User_ID The object to be added.
      * @return The object to be added.
      */
-    @ApiMethod(name = "EventUserGetEvents", path="EventUserGetEvents")
+    @ApiMethod(name = "EventUserGetEvents", path = "EventUserGetEvents")
     public ArrayList<Event_User> GetEvents(@Named("User_ID") String User_ID) {
         ArrayList<Event_User> eventUserArrayList = new ArrayList<>();
         try {
-            ResultSet rs = MySQL_Util.select(null, Table_Events_Users.Table_Name,new String[]{Table_Events_Users.User_ID},new String[]{User_ID},null);
-            while(rs.next()){
-                eventUserArrayList.add(new Event_User(rs.getString(Table_Events_Users.Event_ID),rs.getString(Table_Events_Users.User_ID),
-                        rs.getString(Table_Events_Users.Attending),rs.getString(Table_Events_Users.Permission)));
+            ResultSet rs = MySQL_Util.select(null, Table_Events_Users.Table_Name, new String[]{Table_Events_Users.User_ID}, new String[]{User_ID}, null);
+            while (rs.next()) {
+                eventUserArrayList.add(new Event_User(rs.getString(Table_Events_Users.Event_ID), rs.getString(Table_Events_Users.User_ID),
+                        rs.getString(Table_Events_Users.Attending), rs.getString(Table_Events_Users.Permission)));
             }
             rs.close();
         } catch (Exception e) {
@@ -193,9 +193,9 @@ public class Event_User_Endpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -209,14 +209,14 @@ public class Event_User_Endpoint {
      * @param Event_ID The id of the object to be returned.
      * @return The <code>Event_User</code> associated with <code>id</code>.
      */
-    @ApiMethod(name = "EventUserGetUsers", path="EventUserGetUsers")
+    @ApiMethod(name = "EventUserGetUsers", path = "EventUserGetUsers")
     public ArrayList<Event_User> GetUsers(@Named("Event_ID") String Event_ID) {
         ArrayList<Event_User> eventUserArrayList = new ArrayList<>();
         try {
-            ResultSet rs = MySQL_Util.select(null, Table_Events_Users.Table_Name,new String[]{Table_Events_Users.Event_ID}, new String[]{Event_ID},null);
-            while(rs.next()){
-                eventUserArrayList.add(new Event_User(rs.getString(Table_Events_Users.Event_ID),rs.getString(Table_Events_Users.User_ID),
-                        rs.getString(Table_Events_Users.Attending),rs.getString(Table_Events_Users.Permission)));
+            ResultSet rs = MySQL_Util.select(null, Table_Events_Users.Table_Name, new String[]{Table_Events_Users.Event_ID}, new String[]{Event_ID}, null);
+            while (rs.next()) {
+                eventUserArrayList.add(new Event_User(rs.getString(Table_Events_Users.Event_ID), rs.getString(Table_Events_Users.User_ID),
+                        rs.getString(Table_Events_Users.Attending), rs.getString(Table_Events_Users.Permission)));
             }
             rs.close();
         } catch (Exception e) {
@@ -231,9 +231,9 @@ public class Event_User_Endpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -247,12 +247,12 @@ public class Event_User_Endpoint {
      * @param User_ID The id of the object to be returned.
      * @return The <code>Event_User</code> associated with <code>id</code>.
      */
-    @ApiMethod(name = "EventUserGet", path="EventUserGet")
+    @ApiMethod(name = "EventUserGet", path = "EventUserGet")
     public Event_User Get(@Named("AEvent_ID") String Event_ID, @Named("BUser_ID") String User_ID) {
-            Event_User event_user = new Event_User();
+        Event_User event_user = new Event_User();
         try {
-            ResultSet rs = MySQL_Util.select(null, Table_Events_Users.Table_Name,new String[]{Table_Events_Users.Event_ID, Table_Events_Users.User_ID},
-                    new String[]{Event_ID,User_ID},null);
+            ResultSet rs = MySQL_Util.select(null, Table_Events_Users.Table_Name, new String[]{Table_Events_Users.Event_ID, Table_Events_Users.User_ID},
+                    new String[]{Event_ID, User_ID}, null);
             event_user.setEvent_ID(rs.getString(Table_Events_Users.Event_ID));
             event_user.setUser_ID(rs.getString(Table_Events_Users.User_ID));
             event_user.setAttending(rs.getString(Table_Events_Users.Attending));
@@ -270,9 +270,9 @@ public class Event_User_Endpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -280,14 +280,14 @@ public class Event_User_Endpoint {
         return event_user;
     }
 
-    @ApiMethod(name = "EventUserUpdateAttending", path="EventUserUpdateAttending")
-    public void UpdateAttending(@Named("AEvent_ID")String Event_ID,@Named("BUser_ID")String User_ID,@Named("CAttending")String Attending) {
+    @ApiMethod(name = "EventUserUpdateAttending", path = "EventUserUpdateAttending")
+    public void UpdateAttending(@Named("A_Event_ID") String Event_ID, @Named("B_User_ID") String User_ID, @Named("C_Attending") String Attending) {
         try {
             MySQL_Util.update(Table_Events_Users.Table_Name, new String[]{Table_Events_Users.Attending},
                     new String[]{Attending},
-                    new String[]{Table_Events_Users.Event_ID, Table_Events_Users.Event_ID}, new String[]{Event_ID, User_ID});
+                    new String[]{Table_Events_Users.Event_ID, Table_Events_Users.User_ID}, new String[]{Event_ID, User_ID});
 
-        }catch(Exception e){
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -299,23 +299,22 @@ public class Event_User_Endpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
         }
     }
 
-    @ApiMethod(name = "EventUserUpdatePermission", path="EventUserUpdatePermission")
-    public void UpdatePermission(@Named("AEvent_ID")String Event_ID,@Named("BUser_ID")String User_ID,@Named("CPermission")String Permission) {
+    @ApiMethod(name = "EventUserUpdatePermission", path = "EventUserUpdatePermission")
+    public void UpdatePermission(@Named("A_Event_ID") String Event_ID, @Named("B_User_ID") String User_ID, @Named("C_Permission") String Permission) {
         try {
-            MySQL_Util.update(Table_Events_Users.Table_Name, new String[]{Table_Events_Users.Permission},
-                    new String[]{Permission},
-                    new String[]{Table_Events_Users.Event_ID, Table_Events_Users.Event_ID}, new String[]{Event_ID,User_ID});
+            MySQL_Util.update(Table_Events_Users.Table_Name, new String[]{Table_Events_Users.Permission}, new String[]{Permission},
+                    new String[]{Table_Events_Users.Event_ID, Table_Events_Users.User_ID}, new String[]{Event_ID, User_ID});
 
-        }catch(Exception e){
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -327,9 +326,9 @@ public class Event_User_Endpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }

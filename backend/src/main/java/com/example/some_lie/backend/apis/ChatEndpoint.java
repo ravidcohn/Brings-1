@@ -57,10 +57,10 @@ public class ChatEndpoint {
          * @throws NotFoundException if there is no {@code Event} with the provided ID.
          */
         @ApiMethod( name = "ChatGet",path = "ChatGet")
-        public Chat Get(@Named("AChat_ID") String Chat_ID, @Named("BMessage_ID") String Message_ID) {
+        public Chat Get(@Named("A_Chat_ID") String Chat_ID, @Named("B_Message_ID") String Message_ID, @Named("C_User_ID") String User_ID) {
                 Chat chat = new Chat();
                 try {
-                        ResultSet rs = MySQL_Util.select(null, Chat_ID, new String[]{Table_Chat.Message_ID}, new String[]{Message_ID}, new int[]{1});
+                        ResultSet rs = MySQL_Util.select(null, Chat_ID, new String[]{Table_Chat.Message_ID, Table_Chat.User_ID}, new String[]{Message_ID, User_ID}, new int[]{1});
                         if(rs.next()) {
                                 chat.setMessage_ID(rs.getString(Table_Chat.Message_ID));
                                 chat.setUser_ID_Sender(rs.getString(Table_Chat.User_ID));
@@ -127,8 +127,8 @@ public class ChatEndpoint {
          * Inserts a new {@code Event}.
          */
         @ApiMethod(name = "ChatInsert",path = "ChatInsert")
-        public void Insert(@Named("AChat_ID")String Chat_ID, @Named("BMessage_ID")String Message_ID, @Named("CUser_ID")String User_ID,
-                           @Named("DMessage")String Message, @Named("EDate")String Date,  @Named("ETime")String Time) {
+        public void Insert(@Named("A_Chat_ID")String Chat_ID, @Named("B_Message_ID")String Message_ID, @Named("C_User_ID")String User_ID,
+                           @Named("D_Message")String Message, @Named("E_Date")String Date,  @Named("E_Time")String Time) {
                 try {
                         MySQL_Util.insert(Chat_ID, new String[]{Message_ID, User_ID, Message, Date, Time});
 
@@ -162,9 +162,9 @@ public class ChatEndpoint {
          *                           {@code Event}
          */
         @ApiMethod(name = "ChatDelete",path = "ChatDelete")
-        public void Delete(@Named("AChat_ID") String Chat_ID, @Named("BMessage_ID") String Message_ID){
+        public void Delete(@Named("A_Chat_ID") String Chat_ID, @Named("B_Message_ID") String Message_ID, @Named("C_User_ID") String User_ID){
                 try {
-                        MySQL_Util.delete(Chat_ID, new String[]{Table_Chat.Message_ID}, new String[]{Message_ID}, new int[]{1});
+                        MySQL_Util.delete(Chat_ID, new String[]{Table_Chat.Message_ID, Table_Chat.User_ID}, new String[]{Message_ID, User_ID}, new int[]{1});
                 }catch(Exception e){
                         StringWriter sw = new StringWriter();
                         e.printStackTrace(new PrintWriter(sw));

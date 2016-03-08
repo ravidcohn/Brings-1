@@ -10,15 +10,13 @@ import com.googlecode.objectify.annotation.Id;
 public class User {
     @Id
     private String User_ID;
-    private String Phone;
     private String Nickname;
 
     public User() {
     }
 
-    public User(String user_ID, String phone, String nickname) {
+    public User(String user_ID, String nickname) {
         User_ID = user_ID;
-        Phone = phone;
         Nickname = nickname;
     }
 
@@ -28,14 +26,6 @@ public class User {
 
     public void setUser_ID(String user_ID) {
         User_ID = user_ID;
-    }
-
-    public String getPhone() {
-        return Phone;
-    }
-
-    public void setPhone(String phone) {
-        Phone = phone;
     }
 
     public String getNickname() {

@@ -1,8 +1,8 @@
 package com.example.some_lie.backend.apis;
 
-import com.example.some_lie.backend.utils.Constans.Constants;
 import com.example.some_lie.backend.models.Event;
 import com.example.some_lie.backend.models.images_path;
+import com.example.some_lie.backend.utils.Constans.Constants;
 import com.example.some_lie.backend.utils.Constans.Table_Events;
 import com.example.some_lie.backend.utils.MySQL_Util;
 import com.google.api.server.spi.config.Api;
@@ -10,8 +10,6 @@ import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.NotFoundException;
-import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.repackaged.org.joda.time.LocalDateTime;
 
 import java.io.PrintWriter;
@@ -58,19 +56,22 @@ public class EventEndpoint {
      * @return the entity with the corresponding ID
      * @throws NotFoundException if there is no {@code Event} with the provided ID.
      */
-    @ApiMethod( name = "EventGet",path = "EventGet")
+    @ApiMethod(name = "EventGet", path = "EventGet")
     public Event Get(@Named("Event_ID") String Event_ID) {
         Event event = new Event();
         try {
-            ResultSet rs = MySQL_Util.select(null, Table_Events.Table_Name,new String[]{Table_Events.Event_ID}, new String[]{Event_ID},new int[]{1});
-            if(rs.next()) {
+            ResultSet rs = MySQL_Util.select(null, Table_Events.Table_Name, new String[]{Table_Events.Event_ID}, new String[]{Event_ID}, new int[]{1});
+            if (rs.next()) {
                 event.setId(rs.getString(Table_Events.Event_ID));
                 event.setName(rs.getString(Table_Events.Name));
                 event.setLocation(rs.getString(Table_Events.Location));
+                event.setVote_location(rs.getString(Table_Events.Vote_Location));
                 event.setStart_date(rs.getString(Table_Events.Start_Date));
-                event.setStart_time(rs.getString(Table_Events.Start_Time));
                 event.setEnd_date(rs.getString(Table_Events.End_Date));
+                event.setAll_day_time(rs.getString(Table_Events.All_Day_Time));
+                event.setStart_time(rs.getString(Table_Events.Start_Time));
                 event.setEnd_time(rs.getString(Table_Events.End_Time));
+                event.setVote_time(rs.getString(Table_Events.Vote_Time));
                 event.setDescription(rs.getString(Table_Events.Description));
                 event.setImage_url(rs.getString(Table_Events.Image_Path));
                 event.setUpdate_time(rs.getString(Table_Events.Update_Time));
@@ -88,9 +89,9 @@ public class EventEndpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -101,18 +102,20 @@ public class EventEndpoint {
     /**
      * Inserts a new {@code Event}.
      */
-    @ApiMethod(name = "EventInsert",path = "EventInsert")
-    public images_path Insert(@Named("AEvent_ID")String Event_ID, @Named("BName")String Name, @Named("CLocation")String Location, @Named("DStart_Date")String Start_Date,
-             @Named("DStart_Time")String Start_Time, @Named("FEnd_Date")String End_Date, @Named("HEnd_Time")String End_Time, @Named("GDescription")String Description,
-                              @Named("IImage_Path")String Image_Path,@Named("JUpdate_Time")String Update_Time) {
+    @ApiMethod(name = "EventInsert", path = "EventInsert")
+    public images_path Insert(@Named("A_Event_ID") String Event_ID, @Named("B_Name") String Name, @Named("C_Location") String Location, @Named("D_Vote_Location") String Vote_Location,
+                              @Named("E_Start_Date") String Start_Date, @Named("F_End_Date") String End_Date, @Named("G_All_Day_Time") String All_Day_Time,
+                              @Named("H_Start_Time") String Start_Time, @Named("I_End_Time") String End_Time, @Named("J_Vote_Time") String Vote_Time,
+                              @Named("K_Description") String Description, @Named("L_Image_Path") String Image_Path, @Named("M_Update_Time") String Update_Time) {
         try {
-            String uploadURL = Event_ID+"_pic0";
-            MySQL_Util.insert(Table_Events.Table_Name,new String[]{Event_ID, Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, uploadURL, Update_Time});
+            String uploadURL = Event_ID + "_pic0";
+            MySQL_Util.insert(Table_Events.Table_Name, new String[]{Event_ID, Name, Location, Vote_Location, Start_Date, End_Date,
+                    All_Day_Time, Start_Time, End_Time, Vote_Time, Description, uploadURL, Update_Time});
             images_path im_path = new images_path();
-            im_path.setPath(uploadURL);
+            //im_path.setPath(uploadURL);
             return im_path;
 
-        }catch(Exception e){
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String exceptionAsString = sw.toString();
@@ -125,9 +128,9 @@ public class EventEndpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -138,16 +141,17 @@ public class EventEndpoint {
     /**
 
      */
-    @ApiMethod(name = "EventUpdate",path = "EventUpdate")
-    public void Update(@Named("AEvent_ID")String Event_ID, @Named("BName")String Name, @Named("CLocation")String Location, @Named("DStart_Date")String Start_Date,
-                       @Named("DStart_Time")String Start_Time, @Named("FEnd_Date")String End_Date, @Named("HEnd_Time")String End_Time, @Named("GDescription")String Description,
-                       @Named("IImage_Path")String Image_Path,@Named("JUpdate_Time")String Update_Time){
+    @ApiMethod(name = "EventUpdate", path = "EventUpdate")
+    public void Update(@Named("A_Event_ID") String Event_ID, @Named("B_Name") String Name, @Named("C_Location") String Location, @Named("D_Vote_Location") String Vote_Location,
+                       @Named("E_Start_Date") String Start_Date, @Named("F_End_Date") String End_Date, @Named("G_All_Day_Time") String All_Day_Time,
+                       @Named("H_Start_Time") String Start_Time, @Named("I_End_Time") String End_Time, @Named("J_Vote_Time") String Vote_Time,
+                       @Named("K_Description") String Description, @Named("L_Image_Path") String Image_Path, @Named("M_Update_Time") String Update_Time) {
         try {
-            MySQL_Util.update(Table_Events.Table_Name,Table_Events.getAllFields_Except_Event_ID(),
-                    new String[]{Name, Location, Start_Date, Start_Time, End_Date, End_Time, Description, Image_Path, Update_Time},
-                    new String[]{Table_Events.Event_ID}, new String[]{Event_ID});
+            MySQL_Util.update(Table_Events.Table_Name, Table_Events.getAllFields_Except_Event_ID(),
+                    new String[]{Name, Location, Vote_Location, Start_Date, End_Date, All_Day_Time, Start_Time, End_Time, Vote_Time,
+                            Description, Image_Path, Update_Time}, new String[]{Table_Events.Event_ID}, new String[]{Event_ID});
 
-        }catch(Exception e){
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -159,9 +163,9 @@ public class EventEndpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -176,11 +180,11 @@ public class EventEndpoint {
      * @throws NotFoundException if the {@code id} does not correspond to an existing
      *                           {@code Event}
      */
-    @ApiMethod(name = "EventDelete",path = "EventDelete")
+    @ApiMethod(name = "EventDelete", path = "EventDelete")
     public void Delete(@Named("Event_ID") String Event_ID) {
         try {
-            MySQL_Util.delete(Table_Events.Table_Name,new String[]{Table_Events.Event_ID}, new String[]{Event_ID}, new int[]{1});
-        }catch(Exception e){
+            MySQL_Util.delete(Table_Events.Table_Name, new String[]{Table_Events.Event_ID}, new String[]{Event_ID}, new int[]{1});
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -192,9 +196,43 @@ public class EventEndpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
+     * Deletes the specified {@code Event}.
+     *
+     * @param Event_ID the ID of the entity to delete
+     * @throws NotFoundException if the {@code id} does not correspond to an existing
+     *                           {@code Event}
+     */
+    @ApiMethod(name = "EventUpdateField", path = "EventUpdateField")
+    public void Update_Filed(@Named("A_Event_ID") String Event_ID, @Named("B_Filed") String Filed, @Named("C_Update") String Update) {
+        try {
+            MySQL_Util.update(Table_Events.Table_Name, new String[]{Filed},
+                    new String[]{Update}, new String[]{Table_Events.Event_ID}, new String[]{Event_ID});
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            LocalDateTime now = LocalDateTime.now();
+            try {
+                int year = now.getYear();
+                int month = now.getMonthOfYear();
+                int day = now.getDayOfMonth();
+                int hour = now.getHourOfDay();
+                int minute = now.getMinuteOfHour();
+                int second = now.getSecondOfMinute();
+                int millis = now.getMillisOfSecond();
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }

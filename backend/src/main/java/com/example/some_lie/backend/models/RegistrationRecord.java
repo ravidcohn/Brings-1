@@ -15,7 +15,6 @@ public class RegistrationRecord {
 
     @Index
     private String Registration_ID;
-    private String Phone;
     //private String password;
     private String Nickname;
     private String registration_message;
@@ -24,9 +23,8 @@ public class RegistrationRecord {
     public RegistrationRecord() {
     }
 
-    public RegistrationRecord(String user_ID, String phone) {
-        User_ID = phone;
-        Phone = phone;
+    public RegistrationRecord(String user_ID) {
+        this.User_ID = user_ID;
     }
 
     public String getUser_ID() {
@@ -43,14 +41,6 @@ public class RegistrationRecord {
 
     public void setRegistration_ID(String registration_ID) {
         Registration_ID = registration_ID;
-    }
-
-    public String getPhone() {
-        return Phone;
-    }
-
-    public void setPhone(String phone) {
-        Phone = phone;
     }
 
     public String getNickname() {

@@ -1,77 +1,40 @@
 <resources>
-    <string name="app_name">Brings</string>
-    <string name="b_search">Search &#032; &#032;</string>
-    <string name="tv_name">Name</string>
-    <string name="tv_date">Date</string>
+    <string name="app_name">EZvent</string>
     <string name="action_settings">Settings</string>
-    <string name="action_home">Home</string>
-    <string name="action_edit">Edit</string>
-    <string name="action_search">Search</string>
+    <string name="action_profile">profile</string>
+    <string name="action_about">about</string>
+    <string name="action_maps">maps</string>
     <string name="action_add">Add</string>
-    <string name="action_choose_view">Choose View</string>
-
-    <string name="tv_name_title">Event Name</string>
-    <string name="tv_location_title">Location</string>
-    <string name="tv_start_date_title">Start</string>
-    <string name="tv_end_date_title">End</string>
-    <string name="tv_description_title">Description</string>
-    <string name="tv_pic_title">Picture</string>
-    <string name="bt_pic_ui">Load Picture</string>
-    <string name="bt_create_event_ui">Create Event</string>
-    <string name="bt_save_ui">Save</string>
-    <string name="bt_cancel_ui">Cancel</string>
-
-    <string name="bt_post_tit">Post</string>
-
-    <string name="tv_yes_title">Yes:</string>
-    <string name="tv_maybe_title">Maybe: </string>
-    <string name="tv_no_title">No: </string>
-
-    <string name="tv_attending_name">Name</string>
-
-    <string name="tv_checked_title">Checked:</string>
-    <string name="tv_unchecked_title">Unchecked:</string>
-    <string name="title_activity2">Brings</string>
-
-    <string name="title_section1">Main</string>
-    <string name="title_section2">Attending</string>
-    <string name="title_section3">Todo</string>
-    <string name="title_section4">Chat</string>
-
-    <string name="tv_task_title">Task</string>
-    <string name="bt_create_task_ui">Create Task</string>
-
-    <string name="bt_add_friend">Add Friend</string>
 
     <string name="gcmRegistrationError">An error occurred during
         registration. Trying again later</string>
     <string name="gcmRegistrationSuccess">Device registered, registrationID= %1s</string>
 
-    <string name="tv_mail_title">Mail</string>
     <string name="tv_your_name_title">Name</string>
     <string name="tv_phone_title">Phone</string>
     <string name="tv_password_title">Password</string>
-    <string name="tv_confirm_password_title">Confirm Password</string>
+    <string name="tv_confirm_password_title">Confirm \nPassword</string>
     <string name="bt_register_title">Register</string>
 
     <string name="b_login_login">Log In</string>
     <string name="b_login_register">Register</string>
-    <string name="checkbox_login">Remember me</string>
     <string name="tv_login_password">Password</string>
-    <string name="tv_login_name">Email / Phone</string>
+    <string name="tv_login_name">Phone</string>
 
-
-    <string name="hint_google_map">Please enter your event location</string>
-    <string name="b_google_map_save_location">Save Location</string>
-    <string name="b_google_map_city">City</string>
-    <string name="b_google_map_burnaby">Burnaby</string>
-    <string name="b_google_map_surrey">Surrey</string>
-
-    <string-array name="permission_arrays">
-        <item>Participant</item>
-        <item>Editor</item>
-        <item>Manager</item>
+    <string-array name="permission">
+        <item>Participate</item>
+        <item>Owner</item>
     </string-array>
 
+    <string-array name="main_views">
+        <item>normal</item>
+        <item>list</item>
+    </string-array>
+
+    <string name="press_for_vote">Press for vote</string>
+    <string name="date_not_set">Date not set yet</string>
+    <string name="location_not_set">Location not set yet</string>
+    <string name="event_name">Event Name</string>
+    <string name="title_activity_vote">Vote</string>
 
 </resources>

@@ -12,8 +12,6 @@ import java.util.List;
 
 import server.CloudEndpointBuilderHelper;
 import utils.Constans.Constants;
-import utils.Constans.Table_Users;
-import utils.sqlHelper;
 
 /**
  * Created by pinhas on 14/10/2015.
@@ -21,7 +19,7 @@ import utils.sqlHelper;
 public class CheckUsersRegistrationAsyncTask extends AsyncTask<ArrayList<String>, Void, List<RegistrationRecord>> {
     private static Brings myApiService = null;
     private Context context;
-    private ArrayList<String> phones;
+    //private ArrayList<String> phones;
     public CheckUsersRegistrationAsyncTask(Context context) {
         this.context = context;
     }
@@ -38,8 +36,8 @@ public class CheckUsersRegistrationAsyncTask extends AsyncTask<ArrayList<String>
                 new_regId = params[1].get(0);
                 old_regId = params[1].get(1);
             }
-            this.phones = params[0];
-            CollectionResponseRegistrationRecord result = myApiService.checkUserRegistration(Constants.MY_User_ID,Constants.Password, phones,new_regId, old_regId).execute();
+            //this.phones = params[0];
+            CollectionResponseRegistrationRecord result = myApiService.checkUserRegistration(Constants.MY_User_ID,Constants.Password, new_regId, old_regId).execute();
             return result.getItems();
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,11 +48,11 @@ public class CheckUsersRegistrationAsyncTask extends AsyncTask<ArrayList<String>
 
     @Override
     protected void onPostExecute(List<RegistrationRecord> result) {
-        if (result != null) {
+        /*if (result != null) {
             for (int i = 0; i < result.size(); i++) {
                 sqlHelper.update(Table_Users.Table_Name,new String[]{Table_Users.User_ID, Table_Users.Register},
                         new String[]{result.get(i).getUserID(),Constants.Yes},new String[]{Table_Users.Phone},new String[]{result.get(i).getPhone()});
             }
-        }
+        }*/
     }
 }

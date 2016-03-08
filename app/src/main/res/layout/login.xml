@@ -32,7 +32,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignLeft="@+id/et_login_password"
-        android:layout_alignStart="@+id/et_login_password" />
+        android:layout_alignStart="@+id/et_login_password"
+        android:inputType="phone" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -43,6 +44,25 @@
         android:layout_alignBottom="@+id/tv_login_password"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+
+    <FrameLayout
+        android:id="@+id/permissionSuccess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#139611"
+        android:elevation="5dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:text="Permission(s) has been granted!"
+            android:textColor="#ffffff"/>
+
+    </FrameLayout>
 
     <Button
         android:layout_width="wrap_content"

@@ -21,8 +21,6 @@ import com.google.appengine.repackaged.org.joda.time.LocalDateTime;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
@@ -61,23 +59,24 @@ public class RegistrationEndpoint {
      */
 
     @ApiMethod(name = "Register", httpMethod = "POST")
-    public RegistrationRecord registerDevice(@Named("AUser_ID") String User_ID, @Named("BPhone") String Phone, @Named("CNikeName") String Nikename
-            , @Named("DPassword") String Password, @Named("ERegistration_ID") String Registration_ID) {// throws UnauthorizedException {
+    public RegistrationRecord registerDevice(@Named("A_User_ID") String Phone, @Named("B_NikeName") String Nikename
+            , @Named("C_Password") String Password, @Named("D_Registration_ID") String Registration_ID) {// throws UnauthorizedException {
         // EndpointUtil.throwIfNotAuthenticated(user);
         RegistrationRecord record = new RegistrationRecord();
         //record.setRegistration_message(checkIfUserExist(Mail));
         //return record;
+        String User_ID = Phone;
+        if (User_ID.charAt(0) == '0') {
+            User_ID = "972" + User_ID.substring(1);
+        }
+        User_ID = User_ID.replaceAll("-", "");
+        User_ID = User_ID.replaceAll(" ", "");
         boolean isExist = checkIfUserExist(User_ID);
         if (!isExist) {
             try {
-                String _phone = Phone;
-                if (Phone.charAt(0) == '0') {
-                    _phone = "+972" + Phone.substring(1);
-                }
-                _phone = _phone.replaceAll("-", "");
-                _phone = _phone.replaceAll(" ", "");
-                MySQL_Util.insert(Table_Users.Table_Name, new String[]{User_ID, _phone, Nikename, Password});
-                ResultSet rs = MySQL_Util.select(new String[]{Table_Users_Devices.Registration_ID}, Table_Users_Devices.Table_Name, new String[]{Table_Users_Devices.User_ID}, new String[]{User_ID}, new int[]{1});
+                MySQL_Util.insert(Table_Users.Table_Name, new String[]{User_ID, Nikename, Password});
+                ResultSet rs = MySQL_Util.select(new String[]{Table_Users_Devices.Registration_ID}, Table_Users_Devices.Table_Name,
+                        new String[]{Table_Users_Devices.User_ID}, new String[]{User_ID}, new int[]{1});
                 boolean done = false;
                 while (rs.next() && !done) {
                     if (Registration_ID.equals(rs.getString(1))) {
@@ -89,7 +88,7 @@ public class RegistrationEndpoint {
                     MySQL_Util.insert(Table_Users_Devices.Table_Name, new String[]{User_ID, Registration_ID});
                 }
                 record.setRegistration_message("O.K");
-            } catch(Exception e){
+            } catch (Exception e) {
                 StringWriter sw = new StringWriter();
                 e.printStackTrace(new PrintWriter(sw));
                 LocalDateTime now = LocalDateTime.now();
@@ -101,9 +100,9 @@ public class RegistrationEndpoint {
                     int minute = now.getMinuteOfHour();
                     int second = now.getSecondOfMinute();
                     int millis = now.getMillisOfSecond();
-                    String date = day+"/"+month+"/"+year;
-                    String time = hour+":"+minute+":"+second+":"+millis;
-                    MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                    String date = day + "/" + month + "/" + year;
+                    String time = hour + ":" + minute + ":" + second + ":" + millis;
+                    MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
@@ -117,8 +116,8 @@ public class RegistrationEndpoint {
     }
 
     @ApiMethod(name = "CheckUserRegistration", path = "CheckUserRegistration", httpMethod = "POST")
-    public CollectionResponse<RegistrationRecord> CheckUserRegistration(@Named("AUser_ID") String User_ID, @Named("BPassword") String Password
-            , @Named("CPhones") ArrayList<String> Phones, @Named("Dnew_reg_id") String new_reg_id, @Named("Eold_reg_id") String old_reg_id) {
+    public CollectionResponse<RegistrationRecord> CheckUserRegistration(@Named("A_User_ID") String User_ID, @Named("B_Password") String Password
+            , @Named("C_new_reg_id") String new_reg_id, @Named("D_old_reg_id") String old_reg_id) {
         try {
             if (!checkIfUserExist(User_ID, Password)) {
                 return null;
@@ -131,6 +130,7 @@ public class RegistrationEndpoint {
                     e.printStackTrace();
                 }
             }
+            /*
             List<RegistrationRecord> result = new ArrayList<>();
             for (int i = 0; i < Phones.size(); i++) {
                 String exist = checkIfUserExistByPhone(Phones.get(i));
@@ -138,9 +138,10 @@ public class RegistrationEndpoint {
                     result.add(new RegistrationRecord(exist, Phones.get(i)));
                 }
             }
+            */
 
-            return CollectionResponse.<RegistrationRecord>builder().setItems(result).setNextPageToken(null).build();
-        }catch(Exception e){
+            //return CollectionResponse.<RegistrationRecord>builder().setItems(result).setNextPageToken(null).build();
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -152,9 +153,9 @@ public class RegistrationEndpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -162,42 +163,43 @@ public class RegistrationEndpoint {
         return null;
     }
 
-    private String checkIfUserExistByPhone(String user) {
-        String isUserExist = "";
-        try {
-            String phone = user;
-            if (phone.charAt(0) == '0') {
-                phone = "+972" + user.substring(1);
-            }
-            phone = phone.replaceAll("-", "");
-            phone = phone.replaceAll(" ", "");
-            ResultSet rs = MySQL_Util.select(null, Table_Users.Table_Name, new String[]{Table_Users.Phone}, new String[]{phone}, new int[]{1});
-            if (rs.next()) {
-                isUserExist = rs.getString(Table_Users.User_ID);
-            }
-            rs.close();
-        } catch(Exception e){
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            LocalDateTime now = LocalDateTime.now();
+    /*
+        private String checkIfUserExistByPhone(String user) {
+            String isUserExist = "";
             try {
-                int year = now.getYear();
-                int month = now.getMonthOfYear();
-                int day = now.getDayOfMonth();
-                int hour = now.getHourOfDay();
-                int minute = now.getMinuteOfHour();
-                int second = now.getSecondOfMinute();
-                int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
-            } catch (Exception e1) {
-                e1.printStackTrace();
+                String phone = user;
+                if (phone.charAt(0) == '0') {
+                    phone = "+972" + user.substring(1);
+                }
+                phone = phone.replaceAll("-", "");
+                phone = phone.replaceAll(" ", "");
+                ResultSet rs = MySQL_Util.select(null, Table_Users.Table_Name, new String[]{Table_Users.Phone}, new String[]{phone}, new int[]{1});
+                if (rs.next()) {
+                    isUserExist = rs.getString(Table_Users.User_ID);
+                }
+                rs.close();
+            } catch (Exception e) {
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                LocalDateTime now = LocalDateTime.now();
+                try {
+                    int year = now.getYear();
+                    int month = now.getMonthOfYear();
+                    int day = now.getDayOfMonth();
+                    int hour = now.getHourOfDay();
+                    int minute = now.getMinuteOfHour();
+                    int second = now.getSecondOfMinute();
+                    int millis = now.getMillisOfSecond();
+                    String date = day + "/" + month + "/" + year;
+                    String time = hour + ":" + minute + ":" + second + ":" + millis;
+                    MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
             }
+            return isUserExist;
         }
-        return isUserExist;
-    }
-
+    */
     private boolean checkIfUserExist(String user) {
         boolean isUserExist = false;
         try {
@@ -206,7 +208,7 @@ public class RegistrationEndpoint {
                 isUserExist = true;
             }
             rs.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -218,9 +220,9 @@ public class RegistrationEndpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -236,7 +238,7 @@ public class RegistrationEndpoint {
                 isUserExist = true;
             }
             rs.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -248,9 +250,9 @@ public class RegistrationEndpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -259,30 +261,22 @@ public class RegistrationEndpoint {
     }
 
     @ApiMethod(name = "authentication", httpMethod = "POST")
-    public RegistrationRecord authentication(@Named("Email_OR_Phone") String User, @Named("Password") String Password,
-                                             @Named("Registration_ID") String Registration_ID) {
+    public RegistrationRecord authentication(@Named("A_User_ID") String User_ID, @Named("B_Password") String Password,
+                                             @Named("C_Registration_ID") String Registration_ID) {
         RegistrationRecord record = null;
         try {
-            String User_ID = "";
             String userName = "";
-            ResultSet rs = MySQL_Util.select(null, Table_Users.Table_Name, new String[]{Table_Users.User_ID, Table_Users.Password}, new String[]{User, Password}, new int[]{1});
-            if (rs.next()) {
-                record = new RegistrationRecord();
-                User_ID = User;
-                userName = rs.getString(Table_Users.Nickname);
-                rs.close();
-            } else {
-                String Phone = User.replaceAll("-","").replaceAll(" ","");
-                if(Phone.charAt(0) == '0'){
-                    Phone = "+972"+Phone.substring(1);
-                }
-                rs = MySQL_Util.select(null, Table_Users.Table_Name, new String[]{Table_Users.Phone, Table_Users.Password}, new String[]{Phone, Password}, new int[]{1});
-                if (rs.next()) {
-                    User_ID = rs.getString(Table_Users.User_ID);
-                    userName = rs.getString(Table_Users.Nickname);
-                    record = new RegistrationRecord();
-                }
+            User_ID = User_ID.replaceAll("-", "").replaceAll(" ", "").replaceAll("\\(", "").replaceAll("\\)", "");
+            if (User_ID.charAt(0) == '0') {
+                User_ID = "972" + User_ID.substring(1);
             }
+            ResultSet rs = MySQL_Util.select(null, Table_Users.Table_Name, new String[]{Table_Users.User_ID, Table_Users.Password}, new String[]{User_ID, Password}, new int[]{1});
+            if (rs.next()) {
+                User_ID = rs.getString(Table_Users.User_ID);
+                userName = rs.getString(Table_Users.Nickname);
+                record = new RegistrationRecord();
+            }
+
             rs.close();
             if (record != null) {
                 record.setUser_ID(User_ID);
@@ -300,7 +294,7 @@ public class RegistrationEndpoint {
                     MySQL_Util.insert(Table_Users_Devices.Table_Name, new String[]{User_ID, Registration_ID});
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -312,9 +306,9 @@ public class RegistrationEndpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -341,7 +335,7 @@ public class RegistrationEndpoint {
             } else {
                 record.setRegistration_message("email or Password are wrong!");
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -353,9 +347,9 @@ public class RegistrationEndpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }

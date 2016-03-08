@@ -1,19 +1,28 @@
 package brings_app;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.database.DataSetObserver;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ThemedSpinnerAdapter;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,35 +30,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.some_lie.backend.brings.Brings;
-import com.example.some_lie.backend.brings.model.Event;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import server.CloudEndpointBuilderHelper;
 import server.Messageing.GcmIntentService;
 import server.ServerAsyncResponse;
 import utils.Constans.Constants;
 import utils.Constans.Table_Events;
+import utils.Constans.Table_Events_Users;
+import utils.Constans.Table_Tasks;
 import utils.Helper;
 import utils.bitmapHelper;
 import utils.sqlHelper;
 
-public class MainActivity extends AppCompatActivity implements ServerAsyncResponse{
+public class MainActivity extends AppCompatActivity implements ServerAsyncResponse {
 
     /**
      * Time limit for the application to wait on a response from Play Services.
@@ -62,11 +67,10 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
     private SearchView search;
     private static ArrayList<String> users_names;
     private static ArrayList<Integer> IDS;
+    private static ArrayList<String> Event_IDs;
     private static final String PROPERTY_REG_ID = "registrationId";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private Brings BringsApi;
-    private Event event;
-    private String mode_view;
     /**
      * Google Cloud Messaging API.
      */
@@ -81,27 +85,83 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         GcmIntentService.delegate = this;
         BringsApi = CloudEndpointBuilderHelper.getEndpoints();
         users_names = new ArrayList<>();
         IDS = new ArrayList<>();
+        Event_IDs = new ArrayList<>();
+        //Set text font for the app name;
+        Typeface type = Typeface.createFromAsset(getAssets(), "fonts/GreatVibes_Regular.ttf");
+        TextView application_name = (TextView) findViewById(R.id.application_name);
+        application_name.setTypeface(type, Typeface.BOLD);
+        // Setup spinner
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        spinner.setAdapter(new MyAdapter(
+                toolbar.getContext(),
+                new String[]{
+                        "Normal",
+                        "Light View",
+                }));
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // When the given dropdown item is selected, show its contents in the
+                // container view.
+                setList();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                        .commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+/*
         tvSearch = (TextView) findViewById(R.id.tvSearch);
         ListView listview;
-        //ibAdd = (ImageButton) findViewById(R.id.ibAdd);
-       // search = (SearchView) findViewById(R.id.searchView);
-       // setOnClick();
-       // tvSearch.setText("Search  ");
         listview = (ListView) findViewById(R.id.lvMain);
-        mode_view = Constants.Big_List_View;
-        setList();
-    }
+        mode_view = Constants.Light_View;
+        old_setList();
+        */
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), New_Event.class);
+                Bundle data = new Bundle();
+                data.putString("Event_ID", Constants.New_Event);
+                intent.putExtras(data);
+                startActivity(intent);
+            }
+        });
+
+        /*ImageButton new_event = (ImageButton) findViewById(R.id.new_event);
+        new_event.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), New_Event.class);
+                Bundle data = new Bundle();
+                data.putString("Event_ID", Constants.New_Event);
+                intent.putExtras(data);
+                startActivity(intent);
+            }
+        });*/
+    }
 
 
     /**
      * Gets the current registration ID for application on GCM service.
      * <p/>
      * If result is empty, the app needs to register.
+     *
      * @param applicationContext the Application context.
      * @return registration ID, or empty string if there is no existing
      * registration ID.
@@ -110,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
         final SharedPreferences prefs = getGCMPreferences(getApplicationContext());
         String registrationId = prefs.getString(PROPERTY_REG_ID, "");
         if (registrationId.isEmpty()) {
-     //       Log.i(TAG, "Registration not found.");
+            //       Log.i(TAG, "Registration not found.");
             return "";
         }
         // Check if app was updated; if so, it must clear the registration ID
@@ -120,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
                 .getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
         int currentVersion = getAppVersion(getApplicationContext());
         if (registeredVersion != currentVersion) {
-       //     Log.i(TAG, "App version changed.");
+            //     Log.i(TAG, "App version changed.");
             return "";
         }
         return registrationId;
@@ -141,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
     /**
      * Returns the application version.
+     *
      * @param context the Application context.
      * @return Application's version code from the {@code PackageManager}.
      */
@@ -158,12 +219,13 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
     private void sql() {
 
-
+        //sqlHelper.delete(Table_Events.Table_Name,new String[]{Table_Events.Event_ID},new String[]{"@ - []"}, null);
         ArrayList<String>[] sqlresult = sqlHelper.select(null, Table_Events.Table_Name, null, null, null);
-        for (String str : sqlresult[0]){
+        for (String str : sqlresult[0]) {
             String[] s = str.split(" - ");
             users_names.add(s[0]);
             IDS.add(Integer.parseInt(s[1]));
+            Event_IDs.add(str);
         }
 
     }
@@ -171,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
     /**
      * Checks if Google Play Services are installed and if not it initializes
      * opening the dialog to allow user to install Google Play Services.
+     *
      * @return a boolean indicating if the Google Play Services are available.
      */
     private boolean checkPlayServices() {
@@ -188,7 +251,8 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
         }
         return true;
     }
-/*
+
+    {/*
     private void setOnClick() {
 
         final Intent new_event = new Intent(this, newEvent.class);
@@ -212,111 +276,14 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
         });
     }
     */
+    }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_main, menu);
-        MenuItem item = (MenuItem)menu.findItem(R.id.spinner_view);
-        Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
-        SpinnerAdapter spinnerAdapter = new SpinnerAdapter() {
-            String[] name = new String[]{"s","ss"};
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                TextView textView = new TextView(getApplicationContext());
-                textView.setText(name[position]);
-                return textView;
-            }
-
-            @Override
-            public void registerDataSetObserver(DataSetObserver observer) {
-
-            }
-
-            @Override
-            public void unregisterDataSetObserver(DataSetObserver observer) {
-
-            }
-
-            @Override
-            public int getCount() {
-                return name.length;
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return null;
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return 0;
-            }
-
-            @Override
-            public boolean hasStableIds() {
-                return false;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                TextView textView = new TextView(getApplicationContext());
-                textView.setText(name[position]);
-                return textView;
-            }
-
-            @Override
-            public int getItemViewType(int position) {
-                return 0;
-            }
-
-            @Override
-            public int getViewTypeCount() {
-                return 1;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return false;
-            }
-        };
-        //spinner.setAdapter(spinnerAdapter); // set the adapter to provide layout of rows and content
-        List<String> list = new ArrayList<String>();
-        list.add("normal");
-        list.add("list");
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(dataAdapter);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            spinner.setDropDownVerticalOffset(10);
-        }
-        spinner.setOnItemSelectedListener(new SpinnerOnItemSelectedListener());
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-    }
-
-    public class SpinnerOnItemSelectedListener implements AdapterView.OnItemSelectedListener {
-
-        public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) {
-            switch (pos) {
-                case 0: {
-                    mode_view = Constants.Big_List_View;
-                    setList();
-                    break;
-                }
-                case 1:{
-                    mode_view = Constants.Small_List_View;
-                    setList();
-                    break;
-                }
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> arg0) {
-            // TODO Auto-generated method stub
-        }
-
     }
 
     @Override
@@ -332,102 +299,35 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
         }
 
         if (id == R.id.action_add) {
-            final Intent new_event = new Intent(this, newEvent.class);
-            startActivity(new_event);
+            //final Intent new_event = new Intent(this, newEvent.class);
+            //startActivity(new_event);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
         setList();
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        if (recyclerView != null) {
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 
     public void setList() {
         users_names.clear();
         IDS.clear();
+        Event_IDs.clear();
         sql();
-
-        final ListView listview = (ListView) findViewById(R.id.lvMain);
-        listview.setClickable(true);
-        final Intent tabs =  new Intent(this,tab.class);
-        final Context context = this;
-        switch (mode_view){
-            case Constants.Small_List_View:{
-                StableArrayAdapter_small_view adapter = new StableArrayAdapter_small_view(this);
-                listview.setAdapter(adapter);
-                break;
-            }
-            case Constants.Big_List_View:{
-                StableArrayAdapter_big_view adapter = new StableArrayAdapter_big_view(this);
-                listview.setAdapter(adapter);
-
-                break;
-            }
-        }
-
-        listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            public boolean onItemLongClick(AdapterView<?> arg0, final View arg1,
-                                           final int pos, final long id) {
-                // TODO Auto-generated method stub
-                final String Event_ID = users_names.get(pos) + " - " + IDS.get(pos);
-                String permission = Helper.getMyPermission(Event_ID);
-                if (permission.equals(Constants.Manager)) {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                    // set dialog message
-                    alertDialogBuilder
-                            .setMessage("Delete Event?")
-                            .setCancelable(false)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    Helper.Delete_Event_ServerSQL(context, Event_ID);
-                                    Helper.Delete_Event_MySQL(Event_ID);
-                                    setList();
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    // if this button is clicked, just close
-                                    // the dialog box and do nothing
-                                    dialog.cancel();
-                                }
-                            });
-
-                    // create alert dialog
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-
-                    // show it
-                    alertDialog.show();
-                } else {
-                    Toast.makeText(context, "Only manager can delete event", Toast.LENGTH_LONG).show();
-                }
-                return true;
-            }
-        });
-
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            /**
-             *  starts the Register class for specific course when clicked on in the list
-             */
-            @Override
-            public void onItemClick(final AdapterView<?> parent, final View view, final int position, long id) {
-                Bundle data = new Bundle();
-                //data.putInt("ID", IDS.get(position));
-                //data.putString("USERNAME", users_names.get(position));
-                data.putString("Event_ID", users_names.get(position) + " - " + IDS.get(position));
-                tabs.putExtras(data);
-                startActivity(tabs);
-            }
-        });
     }
 
     /**
      * Stores the registration ID and app versionCode in the application's
      * {@code SharedPreferences}.
+     *
      * @param applicationContext application's context.
      * @param registrationId     registration ID
      */
@@ -435,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
                                      final String registrationId) {
         final SharedPreferences prefs = getGCMPreferences(applicationContext);
         int appVersion = getAppVersion(applicationContext);
-     //   Log.i(TAG, "Saving regId on app version " + appVersion);
+        //   Log.i(TAG, "Saving regId on app version " + appVersion);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(PROPERTY_REG_ID, registrationId);
         editor.putInt(PROPERTY_APP_VERSION, appVersion);
@@ -444,121 +344,377 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
     @Override
     public void processFinish(String... output) {
-        if(output[0].equals(Constants.Update_Activity)) {
+        if (output[0].equals(Constants.Update_Activity)) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    //Update Event list when new event received.
                     setList();
+                    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+                    if (recyclerView != null) {
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                    }
                 }
             });
 
         }
     }
 
+    private static class MyAdapter extends ArrayAdapter<String> implements ThemedSpinnerAdapter {
+        private final ThemedSpinnerAdapter.Helper mDropDownHelper;
 
-
-    private static class StableArrayAdapter_small_view extends BaseAdapter implements View.OnClickListener {
-
-        private Context context;
-
-        public StableArrayAdapter_small_view(Context context) {
-            this.context = context;
+        public MyAdapter(Context context, String[] objects) {
+            super(context, android.R.layout.simple_list_item_1, objects);
+            mDropDownHelper = new ThemedSpinnerAdapter.Helper(context);
         }
 
-        public View getView(int position, View convertView, ViewGroup viewGroup) {
-                LayoutInflater inflater = (LayoutInflater) context
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.activity_main_small_list_item, null);
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            View view;
 
-            ImageView iv = (ImageView) convertView.findViewById(R.id.ivPic);
-            TextView tvName = (TextView) convertView.findViewById(R.id.tv_ambli_name);
-            TextView tvDate = (TextView) convertView.findViewById(R.id.tv_ambli_date);
-            ArrayList<String>[] dbEvent = sqlHelper.select(null, Table_Events.Table_Name, new String[]{Table_Events.Event_ID}, new String[]{users_names.get(position) + " - " + IDS.get(position)}, new int[]{1});
-            tvName.setText(dbEvent[Table_Events.parseInt(Table_Events.Name)].get(0));
-            tvDate.setText(dbEvent[Table_Events.parseInt(Table_Events.Start_Date)].get(0));
-            String Image_Path = dbEvent[Table_Events.parseInt(Table_Events.Image_Path)].get(0);
-            Bitmap bitmap = bitmapHelper.decodeSampledBitmapFromFile(Image_Path, 100, 100);
-            if (bitmap!=null) {
-               // RoundedBitmapDrawable img = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-                //img.setCircular(true);
-                //iv.setImageDrawable(img);
+            if (convertView == null) {
+                // Inflate the drop down using the helper's LayoutInflater
+                LayoutInflater inflater = mDropDownHelper.getDropDownViewInflater();
+                view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+            } else {
+                view = convertView;
             }
-            iv.setImageBitmap(bitmap);
 
-            return convertView;
-        }
+            TextView textView = (TextView) view.findViewById(android.R.id.text1);
+            textView.setText(getItem(position));
 
-        public int getCount() {
-            return IDS.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            String s = users_names.get(position)+" - "+IDS.get(position);
-            return s;
+            return view;
         }
 
         @Override
-        public long getItemId(int position) {
-            return position;
+        public void setDropDownViewTheme(Resources.Theme theme) {
+            mDropDownHelper.setDropDownViewTheme(theme);
         }
 
         @Override
-        public void onClick(View v) {
-
+        public Resources.Theme getDropDownViewTheme() {
+            return mDropDownHelper.getDropDownViewTheme();
         }
     }
 
-    private static class StableArrayAdapter_big_view extends BaseAdapter implements View.OnClickListener {
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class PlaceholderFragment extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        private Context context;
-
-        public StableArrayAdapter_big_view(Context context) {
-            this.context = context;
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
         }
 
-        public View getView(int position, View convertView, ViewGroup viewGroup) {
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.activity_main_big_list_item, null);
+        public PlaceholderFragment() {
+        }
 
-            ImageView iv = (ImageView) convertView.findViewById(R.id.iv_ambli_image);
-            TextView tvName = (TextView) convertView.findViewById(R.id.tv_ambli_name);
-            TextView tvDate = (TextView) convertView.findViewById(R.id.tv_ambli_date);
-            ArrayList<String>[] dbEvent = sqlHelper.select(null, Table_Events.Table_Name, new String[]{Table_Events.Event_ID}, new String[]{users_names.get(position) + " - " + IDS.get(position)}, new int[]{1});
-            tvName.setText(dbEvent[Table_Events.parseInt(Table_Events.Name)].get(0));
-            tvDate.setText(dbEvent[Table_Events.parseInt(Table_Events.Start_Date)].get(0));
-            String Image_Path = dbEvent[Table_Events.parseInt(Table_Events.Image_Path)].get(0);
-            Bitmap bitmap = bitmapHelper.decodeSampledBitmapFromFile(Image_Path, 100, 100);
-            if (bitmap!=null) {
-                // RoundedBitmapDrawable img = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-                //img.setCircular(true);
-                //iv.setImageDrawable(img);
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+            //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+            mRecyclerView.setLayoutManager(mLayoutManager);
+
+            CustomAdapter mAdapter;
+            switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
+                case 1: {
+                    mAdapter = new CustomAdapter(users_names, IDS, Event_IDs, Constants.Normal_View);
+                    break;
+                }
+                case 2: {
+                    mAdapter = new CustomAdapter(users_names, IDS, Event_IDs, Constants.Light_View);
+                    break;
+                }
+                default: {
+                    mAdapter = new CustomAdapter(users_names, IDS, Event_IDs, Constants.Light_View);
+                    break;
+                }
             }
-            iv.setImageBitmap(bitmap);
+            mRecyclerView.setAdapter(mAdapter);
 
-            return convertView;
+            return rootView;
+        }
+    }
+
+
+}
+
+class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
+    private static final String TAG = "CustomAdapter";
+
+    private static ArrayList<String> users_names;
+    private static ArrayList<Integer> IDS;
+    private static ArrayList<String> Event_IDs;
+    private String Mode;
+
+    // BEGIN_INCLUDE(recyclerViewSampleViewHolder)
+
+    /**
+     * Provide a reference to the type of views that you are using (custom ViewHolder)
+     */
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView textView;
+
+        public ViewHolder(View v) {
+            super(v);
+            // Define click listener for the ViewHolder's View.
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                }
+            });
+            textView = (TextView) v.findViewById(R.id.textView);
         }
 
-        public int getCount() {
-            return IDS.size();
+        public TextView getTextView() {
+            return textView;
+        }
+    }
+    // END_INCLUDE(recyclerViewSampleViewHolder)
+
+    /**
+     * Initialize the dataset of the Adapter.
+     *
+     * @param mode String[] containing the data to populate views to be used by RecyclerView.
+     */
+    public CustomAdapter(ArrayList<String> users_names, ArrayList<Integer> IDS, ArrayList<String> Event_IDs, String mode) {
+        this.Mode = mode;
+        this.IDS = IDS;
+        this.users_names = users_names;
+        this.Event_IDs = Event_IDs;
+    }
+
+    // BEGIN_INCLUDE(recyclerViewOnCreateViewHolder)
+    // Create new views (invoked by the layout manager)
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        // Create a new view.
+        View view;
+        switch (Mode) {
+            case Constants.Normal_View: {
+                view = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.main_big_event, viewGroup, false);
+                break;
+            }
+            case Constants.Light_View: {
+                view = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.main_small_event, viewGroup, false);
+                break;
+            }
+            default: {
+                view = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.main_big_event, viewGroup, false);
+                break;
+            }
         }
 
-        @Override
-        public Object getItem(int position) {
-            String s = users_names.get(position)+" - "+IDS.get(position);
-            return s;
-        }
+        ViewHolder viewHolder = new ViewHolder(view);
+        return viewHolder;
+    }
+    // END_INCLUDE(recyclerViewOnCreateViewHolder)
 
-        @Override
-        public long getItemId(int position) {
-            return position;
+    // BEGIN_INCLUDE(recyclerViewOnBindViewHolder)
+    // Replace the contents of a view (invoked by the layout manager)
+    @Override
+    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+        View view = viewHolder.itemView;
+        final String Event_ID = Event_IDs.get(position);
+        ArrayList<String>[] dbEvent = sqlHelper.select(null, Table_Events.Table_Name, new String[]{Table_Events.Event_ID},
+                new String[]{Event_ID}, new int[]{1});
+        switch (Mode) {
+            case Constants.Normal_View: {
+                ImageView iv = (ImageView) view.findViewById(R.id.imageView);
+                TextView name = (TextView) view.findViewById(R.id.event_name);
+                TextView location = (TextView) view.findViewById(R.id.location);
+                TextView date = (TextView) view.findViewById(R.id.date);
+                TextView attending = (TextView) view.findViewById(R.id.attending);
+                TextView tasks = (TextView) view.findViewById(R.id.tasks);
+                name.setText(dbEvent[Table_Events.Name_num].get(0));
+                if (dbEvent[Table_Events.Location_num].get(0).equals(""))
+                    location.setText("Location having been set yet.");
+                else
+                    location.setText(dbEvent[Table_Events.Location_num].get(0));
+                String date_text = Helper.date_text_view(dbEvent[Table_Events.Start_Date_num].get(0), dbEvent[Table_Events.End_Date_num].get(0),
+                        dbEvent[Table_Events.All_Day_Time_num].get(0), dbEvent[Table_Events.Start_Time_num].get(0), dbEvent[Table_Events.End_Time_num].get(0));
+                date.setText(date_text);
+                //Set up attending for the event.
+                ArrayList<String>[] dbEvent_Users = sqlHelper.select(null, Table_Events_Users.Table_Name, new String[]{Table_Events_Users.Event_ID},
+                        new String[]{Event_ID}, null);
+                int yes = 0, maybe = 0, no = 0, did_not_replay = 0;
+                String attending_string;
+                for (int i = 0; i < dbEvent_Users[Table_Events_Users.Attending_num].size(); i++) {
+                    attending_string = dbEvent_Users[Table_Events_Users.Attending_num].get(i);
+                    switch (attending_string) {
+                        case Constants.Yes:
+                            yes++;
+                            break;
+                        case Constants.Maybe:
+                            maybe++;
+                            break;
+                        case Constants.No:
+                            no++;
+                            break;
+                        case Constants.Did_Not_Replay:
+                            did_not_replay++;
+                            break;
+                    }
+                }
+                attending_string = "";
+                if (yes > 0) {
+                    attending_string = yes + " coming";
+                }
+                if (maybe > 0) {
+                    if (attending_string.length() > 0)
+                        attending_string += ", ";
+                    attending_string += maybe + " maybe";
+                }
+                if (did_not_replay > 0) {
+                    if (attending_string.length() > 0)
+                        attending_string += ", ";
+                    attending_string += did_not_replay + " didn't replay";
+                }
+                attending.setText(attending_string);
+                //Set up tasks.
+                ArrayList<String>[] dbEvent_Tasks = sqlHelper.select(null, Table_Tasks.Table_Name, new String[]{Table_Tasks.Event_ID, Table_Tasks.subTask_ID_Number, Table_Tasks.Task_Type,
+                        Table_Tasks.User_ID}, new String[]{Event_ID, 0 + "", Constants.Group_Task, Constants.UnCheck}, null);
+                String tasks_string = "";
+                int open_tasks;
+                if (dbEvent_Tasks != null) {
+                    open_tasks = dbEvent_Tasks[Table_Tasks.User_ID_num].size();
+                } else {
+                    open_tasks = 0;
+                }
+                if (open_tasks > 0) {
+                    if (open_tasks == 1)
+                        tasks_string = "one task open";
+                    else
+                        tasks_string = open_tasks + " tasks are open";
+                } else {
+                    tasks_string = "all tasks are complete";
+                }
+                tasks.setText(tasks_string);
+                //Set up Image.
+                String Image_Path = dbEvent[Table_Events.Image_Path_num].get(0);
+                Bitmap bitmap = bitmapHelper.decodeSampledBitmapFromFile(Image_Path, 100, 100);
+                if (bitmap != null) {
+                    // RoundedBitmapDrawable img = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+                    //img.setCircular(true);
+                    //iv.setImageDrawable(img);
+                }
+                //iv.setImageBitmap(bitmap);
+                break;
+            }
+            case Constants.Light_View: {
+                ImageView iv = (ImageView) view.findViewById(R.id.imageView);
+                TextView tvName = (TextView) view.findViewById(R.id.event_name);
+                TextView tvDate = (TextView) view.findViewById(R.id.date);
+                tvName.setText(dbEvent[Table_Events.Name_num].get(0));
+                String date_text = dbEvent[Table_Events.Start_Date_num].get(0) + ", " + dbEvent[Table_Events.Start_Time_num].get(0) + " - " +
+                        dbEvent[Table_Events.End_Time_num].get(0);
+                tvDate.setText(date_text);
+                //String Image_Path = dbEvent[Table_Events.Image_Path_num].get(0);
+                Bitmap bitmap = BitmapFactory.decodeResource(view.getResources(), R.drawable.view1);
+                //if (bitmap != null) {
+                RoundedBitmapDrawable img = RoundedBitmapDrawableFactory.create(view.getResources(), bitmap);
+                img.setCircular(true);
+                iv.setImageDrawable(img);
+                //}
+                //iv.setImageBitmap(bitmap);
+                break;
+            }
         }
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(final View v) {
+                String my_permission = Helper.getMyPermission(Event_ID);
+                //final String Event_ID = users_names.get(position) + " - " + IDS.get(position);
+                if (my_permission.equals(Constants.Owner)) {
+                    new AlertDialog.Builder(v.getContext())
+                            .setTitle("Delete/Leave Event")
+                            .setMessage("Are you sure you want to Delete/Leave this Event?")
+                            .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Helper.delete_event(v.getContext(), Event_ID);
+                                    users_names.remove(position);
+                                    IDS.remove(position);
+                                    notifyItemRangeRemoved(position, 1);
+                                }
+                            })
+                            .setNeutralButton("Leave", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Helper.leave_event(v.getContext(), Event_ID, Constants.MY_User_ID);
+                                    users_names.remove(position);
+                                    IDS.remove(position);
+                                    notifyItemRangeRemoved(position, 1);
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                } else {
+                    new AlertDialog.Builder(v.getContext())
+                            .setTitle("Leave Event")
+                            .setMessage("Are you sure you want to Leave this Event?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Helper.leave_event(v.getContext(), Event_ID, Constants.MY_User_ID);
+                                    users_names.remove(position);
+                                    IDS.remove(position);
+                                    Event_IDs.remove(Event_ID);
+                                    int pos = users_names.indexOf(Event_ID);
+                                    notifyItemRangeRemoved(pos, 1);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+                return false;
+            }
+        });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), Event.class);
+                Bundle data = new Bundle();
+                int pos = users_names.indexOf(Event_ID);
+                data.putString("Event_ID", Event_ID);
+                intent.putExtras(data);
+                v.getContext().startActivity(intent);
+            }
+        });
+    }
+    // END_INCLUDE(recyclerViewOnBindViewHolder)
 
-        @Override
-        public void onClick(View v) {
-
-        }
+    // Return the size of your dataset (invoked by the layout manager)
+    @Override
+    public int getItemCount() {
+        return IDS.size();
     }
 
 

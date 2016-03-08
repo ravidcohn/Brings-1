@@ -59,27 +59,27 @@ public class MessagingEndpoint {
     private static final String API_KEY = System.getProperty("gcm.api.key");
 
     //TODO improve this !!!!
-    @ApiMethod( name = "SendMessage",path = "SendMessage")
-    public void sendMessage( @Named("from") String from,@Named("message") String message,@Named("to") String to) throws IOException {
+    @ApiMethod(name = "SendMessage", path = "SendMessage")
+    public void sendMessage(@Named("A_From") String From, @Named("B_Message") String Message, @Named("C_To") String To) throws IOException {
         try {
-            if (message == null || message.trim().length() == 0) {
+            if (Message == null || Message.trim().length() == 0) {
                 log.warning("Not sending message because it is empty");
                 return;
             }
             // crop longer messages
-            if (message.length() > 1000) {
-                message = message.substring(0, 1000) + "[...]";
+            if (Message.length() > 1000) {
+                Message = Message.substring(0, 1000) + "[...]";
             }
             Sender sender = new Sender(API_KEY);
-            Message msg = new Message.Builder().addData("message", from + ": " + message).build();
-            ArrayList<String> regId = checkIfUserExist(to);
+            Message msg = new Message.Builder().addData("Message", From + ": " + Message).build();//The format of the message is affecting the way GcmIntentService class handle the message.
+            ArrayList<String> regId = checkIfUserExist(To);
             for (String id : regId) {
                 if (!id.equals("NOT FOUND")) {
                     Result result = sender.send(msg, id, 5);
                     if (result.getMessageId() != null) {
                         String canonicalRegId = result.getCanonicalRegistrationId();
                         if (canonicalRegId != null) {
-                            update(to, id, canonicalRegId);
+                            update(To, id, canonicalRegId);
                         }
                     } else {
                         //TODO
@@ -88,7 +88,7 @@ public class MessagingEndpoint {
                     log.warning("NOT FOUND");
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -100,20 +100,20 @@ public class MessagingEndpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
         }
     }
 
-    private void update(String email, String prevId, String RegId) {
+    private void update(String User_ID, String prevId, String RegId) {
         try {
             MySQL_Util.update(Table_Users_Devices.Table_Name, new String[]{Table_Users_Devices.Registration_ID}, new String[]{RegId},
-                    new String[]{Table_Users_Devices.User_ID, Table_Users_Devices.Registration_ID}, new String[]{email, prevId});
-        } catch(Exception e){
+                    new String[]{Table_Users_Devices.User_ID, Table_Users_Devices.Registration_ID}, new String[]{User_ID, prevId});
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -125,9 +125,9 @@ public class MessagingEndpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -137,12 +137,12 @@ public class MessagingEndpoint {
     private ArrayList<String> checkIfUserExist(String user) {
         ArrayList<String> regID = new ArrayList<>();
         try {
-            ResultSet rs = MySQL_Util.select(null,Table_Users_Devices.Table_Name,new String[]{Table_Users_Devices.User_ID},new String[]{user},null);
+            ResultSet rs = MySQL_Util.select(null, Table_Users_Devices.Table_Name, new String[]{Table_Users_Devices.User_ID}, new String[]{user}, null);
             while (rs.next()) {
                 regID.add(rs.getString(2));
             }
             rs.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             LocalDateTime now = LocalDateTime.now();
@@ -154,9 +154,9 @@ public class MessagingEndpoint {
                 int minute = now.getMinuteOfHour();
                 int second = now.getSecondOfMinute();
                 int millis = now.getMillisOfSecond();
-                String date = day+"/"+month+"/"+year;
-                String time = hour+":"+minute+":"+second+":"+millis;
-                MySQL_Util.insert("Logs", new String[]{sw.toString(),date,time});
+                String date = day + "/" + month + "/" + year;
+                String time = hour + ":" + minute + ":" + second + ":" + millis;
+                MySQL_Util.insert("Logs", new String[]{sw.toString(), date, time});
             } catch (Exception e1) {
                 e1.printStackTrace();
             }

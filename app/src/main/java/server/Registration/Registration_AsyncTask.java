@@ -41,7 +41,7 @@ public class Registration_AsyncTask extends AsyncTask<String, Void, Registration
             SharedPreferences.Editor editor = context.getSharedPreferences(MainActivity.MY_PREFS_NAME, context.MODE_PRIVATE).edit();
             editor.putString("GCM", regId);
             editor.commit();
-            return myApiService.register(params[0], params[1], params[2], params[3], regId).execute();
+            return myApiService.register(params[0], params[1], params[2], regId).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
