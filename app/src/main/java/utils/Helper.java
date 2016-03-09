@@ -56,9 +56,12 @@ public class Helper {
 
     private static ArrayList<String[]> Update_Users;//Use for send different message to each friend according to his status (New Event/Update Event/Delete Event). [0] - User_ID, [1] - message.
     private static String[] update_section;//Use for determined what section have been updated (details/users/tasks).
-    private static int details = 0;
-    private static int users = 1;
-    private static int tasks = 2;
+    private static int details_num = 0;
+    private static int users_num = 1;
+    private static int tasks_num = 2;
+    private static int vote_date_num = 3;
+    private static int vote_location_num = 4;
+
 
     //----------------------------------------------Server SQL && My SQL Functions----------------------------------------------
 
@@ -81,7 +84,7 @@ public class Helper {
         //Create event in app sql + server sql.
         Create_Event_MySQL();
         Create_Event_ServerSQL(context);
-        //Send message to all users to create the event.
+        //Send message to all users_ to create the event.
         String message = Constants.New_Event + "|" + Event_ID;
         Send_Message_To_All_My_Friend_By_Event_ServerSQL(context, Event_ID, message);
 
@@ -96,7 +99,8 @@ public class Helper {
         String message;
         for (String[] update_user : Update_Users) {
             if (update_user[1].equals(Constants.Update_Event)) {
-                message = update_user[1] + "|" + Event_ID + "|" + update_section[details] + "|" + update_section[users] + "|" + update_section[tasks];
+                message = update_user[1] + "|" + Event_ID + "|" + update_section[details_num] + "|" + update_section[users_num] + "|" + update_section[tasks_num]
+                        + "|" + update_section[vote_date_num] + "|" + update_section[vote_location_num];
             } else {
                 message = update_user[1] + "|" + Event_ID;
             }
@@ -209,7 +213,7 @@ public class Helper {
             Friend_Helper friend_helper = Event_Helper.friends.get(User_ID);
             add_newFriend_MySQL(friend_helper, User_ID);
         }
-        //Add tasks
+        //Add tasks.
         for (int task_id : Event_Helper.task.keySet()) {
             Task_Helper task_helper = Event_Helper.task.get(task_id);
             add_newTask_MySQL(task_helper, task_id, 0);
@@ -235,7 +239,7 @@ public class Helper {
 
     private static void Update_Event_MySQL(String Event_ID) {
         Update_Users = new ArrayList<>();
-        update_section = new String[]{Constants.Yes, Constants.No, Constants.No};
+        update_section = new String[]{Constants.Yes, Constants.No, Constants.No, Constants.No, Constants.No};
         //Update event (delete and then insert).
         sqlHelper.delete(Table_Events.Table_Name, new String[]{Table_Events.Event_ID}, new String[]{Event_ID}, new int[]{1});
         sqlHelper.insert(Table_Events.Table_Name, Event_Helper.details);
@@ -244,13 +248,14 @@ public class Helper {
         for (String User_ID : Event_Helper.friends_tmp.keySet()) {
             friend_helper = Event_Helper.friends_tmp.get(User_ID);
             if (Event_Helper.friends.get(User_ID) == null) {//Add new friends.
-                update_section[users] = Constants.Yes;
+                update_section[users_num] = Constants.Yes;
                 add_newFriend_MySQL(friend_helper, User_ID);
                 Update_Users.add(new String[]{User_ID, Constants.New_Event});
             } else {//Change permission.
-                Update_Users.add(new String[]{User_ID, Constants.Update_Event});
+                if (!User_ID.equals(Constants.MY_User_ID))//No need to send update message to myself.
+                    Update_Users.add(new String[]{User_ID, Constants.Update_Event});
                 if (!friend_helper.getPermission().equals(Event_Helper.friends.get(User_ID).getPermission())) {
-                    update_section[users] = Constants.Yes;
+                    update_section[users_num] = Constants.Yes;
                     sqlHelper.update(Table_Events_Users.Table_Name, new String[]{Table_Events_Users.Permission}, new String[]{friend_helper.getPermission()},
                             new String[]{Table_Events_Users.Event_ID, Table_Events_Users.User_ID}, new String[]{Event_ID, User_ID});
                 }
@@ -258,7 +263,7 @@ public class Helper {
         }
         //Delete friends.
         for (String User_ID : Event_Helper.friends.keySet()) {
-            update_section[users] = Constants.Yes;
+            update_section[users_num] = Constants.Yes;
             if (Event_Helper.friends_tmp.get(User_ID) == null) {
                 Update_Users.add(new String[]{User_ID, Constants.Delete_Event});
                 sqlHelper.delete(Table_Events_Users.Table_Name, new String[]{Table_Events_Users.Event_ID, Table_Events_Users.User_ID},
@@ -272,11 +277,11 @@ public class Helper {
             task_helper = Event_Helper.task_tmp.get(task_id);
             new_task = Event_Helper.task.get(task_id) == null;
             if (new_task) {//Add new tasks.
-                update_section[tasks] = Constants.Yes;
+                update_section[tasks_num] = Constants.Yes;
                 add_newTask_MySQL(task_helper, task_id, 0);
             } else {//Update task description.
                 if (!task_helper.getDescription().equals(Event_Helper.task.get(task_id).getDescription())) {
-                    update_section[tasks] = Constants.Yes;
+                    update_section[tasks_num] = Constants.Yes;
                     sqlHelper.update(Table_Tasks.Table_Name, new String[]{Table_Tasks.Description}, new String[]{task_helper.getDescription()},
                             new String[]{Table_Tasks.Event_ID, Table_Tasks.Task_ID_Number, Table_Tasks.subTask_ID_Number}, new String[]{Event_ID, task_id + "", 0 + ""});
                 }
@@ -284,11 +289,11 @@ public class Helper {
             for (int subTask_id : task_helper.getSubTasks().keySet()) {
                 new_subTask = (new_task || Event_Helper.task.get(task_id).getSubTasks().get(subTask_id) == null);
                 if (new_subTask) {//Add new subTasks.
-                    update_section[tasks] = Constants.Yes;
+                    update_section[tasks_num] = Constants.Yes;
                     add_newTask_MySQL(task_helper, task_id, subTask_id);
                 } else {//Update subTask description.
                     if (!task_helper.getSubTasks().get(subTask_id)[0].equals(Event_Helper.task.get(task_id).getSubTasks().get(subTask_id)[0])) {
-                        update_section[tasks] = Constants.Yes;
+                        update_section[tasks_num] = Constants.Yes;
                         sqlHelper.update(Table_Tasks.Table_Name, new String[]{Table_Tasks.Description}, new String[]{task_helper.getSubTasks().get(subTask_id)[0]},
                                 new String[]{Table_Tasks.Event_ID, Table_Tasks.Task_ID_Number, Table_Tasks.subTask_ID_Number}, new String[]{Event_ID, task_id + "", subTask_id + ""});
                     }
@@ -299,20 +304,80 @@ public class Helper {
         for (int task_id : Event_Helper.task.keySet()) {
             task_helper = Event_Helper.task.get(task_id);
             if (Event_Helper.task_tmp.get(task_id) == null) {
-                update_section[tasks] = Constants.Yes;
+                update_section[tasks_num] = Constants.Yes;
                 sqlHelper.delete(Table_Tasks.Table_Name, new String[]{Table_Tasks.Event_ID, Table_Tasks.Task_ID_Number},
                         new String[]{Event_Helper.details[Table_Events.Event_ID_num], task_id + ""}, null);
             } else {
                 for (int subTask_id : task_helper.getSubTasks().keySet()) {
                     if (Event_Helper.task_tmp.get(task_id).getSubTasks().get(subTask_id) == null) {
-                        update_section[tasks] = Constants.Yes;
+                        update_section[tasks_num] = Constants.Yes;
                         sqlHelper.delete(Table_Tasks.Table_Name, new String[]{Table_Tasks.Event_ID, Table_Tasks.Task_ID_Number, Table_Tasks.subTask_ID_Number},
                                 new String[]{Event_Helper.details[Table_Events.Event_ID_num], task_id + "", subTask_id + ""}, null);
                     }
                 }
             }
         }
+        //Update Vote_date.
+        //Update vote will reset the votes users.
+        boolean new_vote_date;
+        Vote_Date_Helper vote_date_helper_tmp;
+        Vote_Date_Helper vote_date_helper;
+        for (int vote_id : Event_Helper.vote_date_tmp.keySet()) {
+            vote_date_helper_tmp = Event_Helper.vote_date_tmp.get(vote_id);
+            vote_date_helper = Event_Helper.vote_date.get(vote_id);
+            new_vote_date = vote_date_helper == null;
+            if (new_vote_date) {//Add new vote.
+                update_section[vote_date_num] = Constants.Yes;
+                add_newVote_Date_Option_MySQL(vote_date_helper_tmp, vote_id);
+            } else {//Update vote date.
+                if (!vote_date_helper_tmp.getStart_Date().equals(vote_date_helper.getStart_Date()) || !vote_date_helper_tmp.getEnd_Date().equals(vote_date_helper.getEnd_Date())
+                        || !vote_date_helper_tmp.getAll_Day().equals(vote_date_helper.getAll_Day()) || !vote_date_helper_tmp.getStart_Time().equals(vote_date_helper.getStart_Time())
+                        || !vote_date_helper_tmp.getEnd_Time().equals(vote_date_helper.getStart_Time())) {
+                    update_section[vote_date_num] = Constants.Yes;
+                    //reset the votes users.
+                    sqlHelper.delete(Table_Vote_Date.Table_Name, new String[]{Table_Vote_Date.Event_ID, Table_Vote_Date.Vote_ID}, new String[]{Event_ID, vote_id + ""}, null);
+                    add_newVote_Date_Option_MySQL(vote_date_helper_tmp, vote_id);
+                }
+            }
+        }
+        //Delete Vote_date.
+        for (int vote_id : Event_Helper.vote_date.keySet()) {
+            vote_date_helper = Event_Helper.vote_date.get(vote_id);
+            if (Event_Helper.vote_date_tmp.get(vote_id) == null) {
+                update_section[vote_date_num] = Constants.Yes;
+                sqlHelper.delete(Table_Vote_Date.Table_Name, new String[]{Table_Vote_Date.Event_ID, Table_Vote_Date.Vote_ID}, new String[]{Event_ID, vote_id + ""}, null);
+            }
+        }
 
+        //Update Vote_location.
+        //Update vote will reset the votes users.
+        boolean new_vote_location;
+        Vote_Location_Helper vote_location_helper_tmp;
+        Vote_Location_Helper vote_location_helper;
+        for (int vote_id : Event_Helper.vote_location_tmp.keySet()) {
+            vote_location_helper_tmp = Event_Helper.vote_location_tmp.get(vote_id);
+            vote_location_helper = Event_Helper.vote_location.get(vote_id);
+            new_vote_date = vote_location_helper == null;
+            if (new_vote_date) {//Add new vote.
+                update_section[vote_location_num] = Constants.Yes;
+                add_newVote_Location_Option_MySQL(vote_location_helper_tmp, vote_id);
+            } else {//Update vote date.
+                if (!vote_location_helper_tmp.getDescription().equals(vote_location_helper.getDescription())) {
+                    update_section[vote_location_num] = Constants.Yes;
+                    //reset the votes users.
+                    sqlHelper.delete(Table_Vote_Location.Table_Name, new String[]{Table_Vote_Location.Event_ID, Table_Vote_Location.Vote_ID}, new String[]{Event_ID, vote_id + ""}, null);
+                    add_newVote_Location_Option_MySQL(vote_location_helper_tmp, vote_id);
+                }
+            }
+        }
+        //Delete Vote_location.
+        for (int vote_id : Event_Helper.vote_location.keySet()) {
+            vote_location_helper = Event_Helper.vote_location.get(vote_id);
+            if (Event_Helper.vote_location_tmp.get(vote_id) == null) {
+                update_section[vote_location_num] = Constants.Yes;
+                sqlHelper.delete(Table_Vote_Location.Table_Name, new String[]{Table_Vote_Location.Event_ID, Table_Vote_Location.Vote_ID}, new String[]{Event_ID, vote_id + ""}, null);
+            }
+        }
     }
 
     public static void Delete_Event_MySQL(String Event_ID) {
@@ -383,8 +448,9 @@ public class Helper {
 
     private static void add_newVote_Location_Option_MySQL(Vote_Location_Helper vote_location_helper, int vote_id) {
         String[] vote_location = new String[Table_Vote_Location.Size()];
+        vote_location[Table_Vote_Location.Event_ID_num] = Event_Helper.details[Table_Events.Event_ID_num];
         vote_location[Table_Vote_Location.Vote_ID_num] = vote_id + "";
-        vote_location[Table_Vote_Location.Vote_ID_num] = vote_location_helper.getDescription();
+        vote_location[Table_Vote_Location.Description_num] = vote_location_helper.getDescription();
         vote_location[Table_Vote_Location.User_ID_num] = Constants.UnCheck;
         sqlHelper.insert(Table_Vote_Location.Table_Name, vote_location);
     }

@@ -136,7 +136,7 @@ public final class Event_Helper {
         int vote_location_id;
         for (int i = 0; i < dbSql[0].size(); i++) {
             vote_location_id = Integer.parseInt(dbSql[Table_Vote_Location.Vote_ID_num].get(i));
-            if (dbSql[Table_Vote_Date.User_ID_num].get(i).equals(Constants.UnCheck)) {//Check if it's a location or user_id.
+            if (dbSql[Table_Vote_Location.User_ID_num].get(i).equals(Constants.UnCheck)) {//Check if it's a location or user_id.
                 vote_location_helper = new Vote_Location_Helper(dbSql[Table_Vote_Location.Description_num].get(i));
                 vote_location.put(vote_location_id, vote_location_helper);
                 vote_location_ID_generator = Math.max(vote_location_ID_generator, vote_location_id + 1);
