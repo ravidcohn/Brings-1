@@ -259,29 +259,37 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                         description.setText(Event_Helper.details[Table_Events.Description_num]);
                     }
                     //Set date.
-                    if (Event_Helper.details[Table_Events.Vote_Time_num].equals(Constants.Yes))
-                        switcher_time.setChecked(true);
-                    setSwitcher_time_view(switcher_time, recyclerView_date, relativeLayout_date_titles, relativeLayout_date, date);
-                    if (my_permission.equals(Constants.Owner)) {
+                    setSwitcher_time_view(recyclerView_date, relativeLayout_date_titles, relativeLayout_date, date);
+                    if (Event_Helper.vote_date.size() == 0) {
+                        relativeLayout_date_vote.setVisibility(View.GONE);
+                    } else if (my_permission.equals(Constants.Owner)) {
+                        relativeLayout_date_vote.setVisibility(View.VISIBLE);
+                        if (Event_Helper.details[Table_Events.Vote_Time_num].equals(Constants.Yes))
+                            switcher_time.setChecked(true);
+                        else
+                            switcher_time.setChecked(false);
                         switcher_time.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                setSwitcher_time_view(switcher_time, recyclerView_date, relativeLayout_date_titles, relativeLayout_date, date);
+                                setSwitcher_time_view(recyclerView_date, relativeLayout_date_titles, relativeLayout_date, date);
                             }
                         });
                     } else {
                         relativeLayout_date_vote.setVisibility(View.GONE);
                     }
                     //Set location.
-                    if (Event_Helper.details[Table_Events.Vote_Location_num].equals(Constants.Yes))
+                    boolean switcher = true;
+                    if (Event_Helper.vote_location.size() == 0) {
+                        relativeLayout_location_vote.setVisibility(View.GONE);
+                        switcher = false;
+                    } else if (Event_Helper.details[Table_Events.Vote_Location_num].equals(Constants.Yes))
                         switcher_location.setChecked(true);
-                    setSwitcher_location_view(switcher_location, recyclerView_location, relativeLayout_location_titles, relativeLayout_location, location);
-                    setSwitcher_time_view(switcher_time, recyclerView_date, relativeLayout_date_titles, relativeLayout_date, date);
+                    setSwitcher_location_view(switcher, switcher_location, recyclerView_location, relativeLayout_location_titles, relativeLayout_location, location);
                     if (my_permission.equals(Constants.Owner)) {
                         switcher_location.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                setSwitcher_location_view(switcher_location, recyclerView_location, relativeLayout_location_titles, relativeLayout_location, location);
+                                setSwitcher_location_view(true, switcher_location, recyclerView_location, relativeLayout_location_titles, relativeLayout_location, location);
                             }
                         });
                     } else {
@@ -435,8 +443,8 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
             return null;
         }
 
-        private void setSwitcher_time_view(Switch switcher_time, RecyclerView recyclerView_date, RelativeLayout relativeLayout_titles, RelativeLayout relativeLayout_date, TextView date) {
-            if (switcher_time.isChecked()) {
+        private void setSwitcher_time_view(RecyclerView recyclerView_date, RelativeLayout relativeLayout_titles, RelativeLayout relativeLayout_date, TextView date) {
+            if (Event_Helper.details[Table_Events.Vote_Time_num].equals(Constants.Yes)) {
                 Helper.update_Event_details_field(getContext(), Event_Helper.details[Table_Events.Event_ID_num], Table_Events.Vote_Time, Constants.Yes);
                 relativeLayout_date.setVisibility(View.GONE);
                 recyclerView_date.setVisibility(View.VISIBLE);
@@ -470,8 +478,8 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
             }
         }
 
-        private void setSwitcher_location_view(Switch switcher_location, RecyclerView recyclerView_location, RelativeLayout relativeLayout_titles, RelativeLayout relativeLayout_location, TextView location) {
-            if (switcher_location.isChecked()) {
+        private void setSwitcher_location_view(boolean switcher, Switch switcher_location, RecyclerView recyclerView_location, RelativeLayout relativeLayout_titles, RelativeLayout relativeLayout_location, TextView location) {
+            if (switcher && switcher_location.isChecked()) {
                 Helper.update_Event_details_field(getContext(), Event_Helper.details[Table_Events.Event_ID_num], Table_Events.Vote_Location, Constants.Yes);
                 relativeLayout_location.setVisibility(View.GONE);
                 recyclerView_location.setVisibility(View.VISIBLE);

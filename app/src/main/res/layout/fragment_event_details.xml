@@ -258,6 +258,7 @@
                 <include layout="@layout/line" />
 
                 <RelativeLayout
+                    android:id="@+id/relativeLayout_location"
                     style="@style/padding_event_detail2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -289,7 +290,7 @@
                     android:id="@+id/relativeLayout_location_titles"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <TextView
                         android:id="@+id/title_options_location"
@@ -306,7 +307,7 @@
                         style="@style/event_secondary_text_color"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="50dp"
+                        android:layout_marginStart="40dp"
                         android:layout_toEndOf="@+id/title_options_location"
                         android:padding="4dp"
                         android:text="Location" />

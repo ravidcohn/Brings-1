@@ -121,8 +121,8 @@ public class GcmIntentService extends IntentService {
                         //Update event details.
                         String[] event = getEvent(Event_ID);
                         if (update_section[0].equals(Constants.Yes)) {
-                            Helper.Update_Evene_details_MySQL(event);
-                            //Helper.Update_Evene_details_MySQL(event[0], event[1], event[2], event[3], event[4], event[5], event[6], event[7], Constants.imageSaveLocation + "/" + event[8], event[9]);
+                            Helper.Update_Event_details_MySQL(event);
+                            //Helper.Update_Event_details_MySQL(event[0], event[1], event[2], event[3], event[4], event[5], event[6], event[7], Constants.imageSaveLocation + "/" + event[8], event[9]);
                         }
                         //Update event users.
                         if (update_section[1].equals(Constants.Yes)) {

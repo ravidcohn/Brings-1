@@ -105,6 +105,8 @@ public class Helper {
         //Update Event_Helper.
         Event_Helper.friends = Event_Helper.friends_tmp;
         Event_Helper.task = Event_Helper.task_tmp;
+        Event_Helper.vote_date = Event_Helper.vote_date_tmp;
+        Event_Helper.vote_location = Event_Helper.vote_location_tmp;
     }
 
     public static void delete_event(Context context, String Event_ID) {
@@ -424,7 +426,7 @@ public class Helper {
         }
     }
 
-    public static void Update_Evene_details_MySQL(String[] details) {
+    public static void Update_Event_details_MySQL(String[] details) {
         sqlHelper.update(Table_Events.Table_Name, Table_Events.getAllFields_Except_Event_ID(), details,
                 new String[]{Table_Events.Event_ID}, new String[]{details[Table_Events.Event_ID_num]});
     }
@@ -694,7 +696,7 @@ public class Helper {
 
     public static String date_text_view(String start_date, String end_date, String all_day, String start_time, String end_time) {
         if (start_date.equals("dd/mm/yyyy"))
-            return "Date having been set yet.";
+            return "Date having been set yet";
         if (all_day.equals(Constants.Yes))
             if (start_date.equals(end_date))
                 return format_date(start_date) + "\nthis is a all day event.";
