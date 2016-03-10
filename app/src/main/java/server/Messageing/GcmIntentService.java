@@ -396,9 +396,16 @@ public class GcmIntentService extends IntentService {
         try {
             taskCollection = myApiService.taskGetAll(event_id).execute();
             if (taskCollection.getItems() != null) {
+                String[] task = new String[Table_Tasks.Size()];
                 for (int i = 0; i < taskCollection.getItems().size(); i++) {
-                    result.add(new String[]{taskCollection.getItems().get(i).getEventID(), taskCollection.getItems().get(i).getTaskIDNumber(), taskCollection.getItems().get(i).getSubTaskIDNumber(),
-                            taskCollection.getItems().get(i).getTaskType(), taskCollection.getItems().get(i).getDescription(), taskCollection.getItems().get(i).getUserID()});
+                    task[Table_Tasks.Event_ID_num] = taskCollection.getItems().get(i).getEventID();
+                    task[Table_Tasks.Task_ID_Number_num] = taskCollection.getItems().get(i).getTaskIDNumber();
+                    task[Table_Tasks.subTask_ID_Number_num] = taskCollection.getItems().get(i).getSubTaskIDNumber();
+                    task[Table_Tasks.Task_Type_num] = taskCollection.getItems().get(i).getTaskType();
+                    task[Table_Tasks.Description_num] = taskCollection.getItems().get(i).getDescription();
+                    task[Table_Tasks.User_ID_num] = taskCollection.getItems().get(i).getUserID();
+                    task[Table_Tasks.Mark_num] = taskCollection.getItems().get(i).getUserID();
+                    result.add(task);
                 }
             }
         } catch (IOException e) {
