@@ -30,9 +30,11 @@ import server.Task.Task_AsyncTask_update;
 import server.Task.Task_AsyncTask_update_User_ID;
 import server.User.User_AsyncTask_get;
 import server.Vote_Date.Vote_Date_AsyncTask_deleteByEvent;
+import server.Vote_Date.Vote_Date_AsyncTask_deleteByVote_ID;
 import server.Vote_Date.Vote_Date_AsyncTask_delete_vote_user_id;
 import server.Vote_Date.Vote_Date_AsyncTask_insert;
 import server.Vote_Location.Vote_Location_AsyncTask_deleteByEvent;
+import server.Vote_Location.Vote_Location_AsyncTask_deleteByVote_ID;
 import server.Vote_Location.Vote_Location_AsyncTask_delete_vote_user_id;
 import server.Vote_Location.Vote_Location_AsyncTask_insert;
 import utils.Constans.Constants;
@@ -357,8 +359,8 @@ public class Helper {
         for (int vote_id : Event_Helper.vote_location_tmp.keySet()) {
             vote_location_helper_tmp = Event_Helper.vote_location_tmp.get(vote_id);
             vote_location_helper = Event_Helper.vote_location.get(vote_id);
-            new_vote_date = vote_location_helper == null;
-            if (new_vote_date) {//Add new vote.
+            new_vote_location = vote_location_helper == null;
+            if (new_vote_location) {//Add new vote.
                 update_section[vote_location_num] = Constants.Yes;
                 add_newVote_Location_Option_MySQL(vote_location_helper_tmp, vote_id);
             } else {//Update vote date.
@@ -614,6 +616,77 @@ public class Helper {
                         new Task_AsyncTask_delete_subTask(context).execute(Event_ID, task_id + "", subTask_id + "");
                     }
                 }
+            }
+        }
+
+        //Update Vote_date.
+        //Update vote will reset the votes users.
+        boolean new_vote_date;
+        Vote_Date_Helper vote_date_helper_tmp;
+        Vote_Date_Helper vote_date_helper;
+        for (int vote_id : Event_Helper.vote_date_tmp.keySet()) {
+            vote_date_helper_tmp = Event_Helper.vote_date_tmp.get(vote_id);
+            vote_date_helper = Event_Helper.vote_date.get(vote_id);
+            new_vote_date = vote_date_helper == null;
+            String[] vote = new String[Table_Vote_Date.Size()];
+            vote[Table_Vote_Date.Event_ID_num] = Event_ID;
+            vote[Table_Vote_Date.Vote_ID_num] = vote_id + "";
+            vote[Table_Vote_Date.Start_Date_num] = vote_date_helper_tmp.getStart_Date();
+            vote[Table_Vote_Date.End_Date_num] = vote_date_helper_tmp.getEnd_Date();
+            vote[Table_Vote_Date.All_Day_Time_num] = vote_date_helper_tmp.getAll_Day();
+            vote[Table_Vote_Date.Start_Time_num] = vote_date_helper_tmp.getStart_Time();
+            vote[Table_Vote_Date.End_Time_num] = vote_date_helper_tmp.getEnd_Time();
+            vote[Table_Vote_Date.User_ID_num] = Constants.UnCheck;
+            if (new_vote_date) {//Add new vote.
+                new Vote_Date_AsyncTask_insert(context).execute(vote);
+            } else {//Update vote date.
+                if (!vote_date_helper_tmp.getStart_Date().equals(vote_date_helper.getStart_Date()) || !vote_date_helper_tmp.getEnd_Date().equals(vote_date_helper.getEnd_Date())
+                        || !vote_date_helper_tmp.getAll_Day().equals(vote_date_helper.getAll_Day()) || !vote_date_helper_tmp.getStart_Time().equals(vote_date_helper.getStart_Time())
+                        || !vote_date_helper_tmp.getEnd_Time().equals(vote_date_helper.getStart_Time())) {
+                    //reset the votes users.
+                    new Vote_Date_AsyncTask_deleteByVote_ID(context).execute(Event_ID, vote_id + "");
+                    new Vote_Date_AsyncTask_insert(context).execute(vote);
+                }
+            }
+        }
+        //Delete Vote_date.
+        for (int vote_id : Event_Helper.vote_date.keySet()) {
+            vote_date_helper = Event_Helper.vote_date.get(vote_id);
+            if (Event_Helper.vote_date_tmp.get(vote_id) == null) {
+                new Vote_Date_AsyncTask_deleteByVote_ID(context).execute(Event_ID, vote_id + "");
+            }
+        }
+
+        //Update Vote_location.
+        //Update vote will reset the votes users.
+        boolean new_vote_location;
+        Vote_Location_Helper vote_location_helper_tmp;
+        Vote_Location_Helper vote_location_helper;
+        for (int vote_id : Event_Helper.vote_location_tmp.keySet()) {
+            vote_location_helper_tmp = Event_Helper.vote_location_tmp.get(vote_id);
+            vote_location_helper = Event_Helper.vote_location.get(vote_id);
+            new_vote_location = vote_location_helper == null;
+            String[] vote = new String[Table_Vote_Location.Size()];
+            vote[Table_Vote_Location.Event_ID_num] = Event_ID;
+            vote[Table_Vote_Location.Vote_ID_num] = vote_id + "";
+            vote[Table_Vote_Location.Description_num] = vote_location_helper_tmp.getDescription();
+            vote[Table_Vote_Location.User_ID_num] = Constants.UnCheck;
+            if (new_vote_location) {//Add new vote.
+                new Vote_Location_AsyncTask_insert(context).execute(vote);
+            } else {//Update vote date.
+                if (!vote_location_helper_tmp.getDescription().equals(vote_location_helper.getDescription())) {
+                    //reset the votes users.
+                    new Vote_Location_AsyncTask_deleteByVote_ID(context).execute(Event_ID, vote_id + "");
+                    new Vote_Location_AsyncTask_insert(context).execute(vote);
+                }
+            }
+        }
+        //Delete Vote_location.
+        for (int vote_id : Event_Helper.vote_location.keySet()) {
+            vote_location_helper = Event_Helper.vote_location.get(vote_id);
+            if (Event_Helper.vote_location_tmp.get(vote_id) == null) {
+                update_section[vote_location_num] = Constants.Yes;
+                sqlHelper.delete(Table_Vote_Location.Table_Name, new String[]{Table_Vote_Location.Event_ID, Table_Vote_Location.Vote_ID}, new String[]{Event_ID, vote_id + ""}, null);
             }
         }
 
