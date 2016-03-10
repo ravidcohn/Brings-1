@@ -756,7 +756,7 @@ class ExpandableListAdapter_Event_Vote_Date extends RecyclerView.Adapter<Recycle
                 User_ID = itemController.refferalItem.User_ID;
                 //Set values.
                 if (User_ID.equals(Constants.MY_User_ID))
-                    itemController.textView.setText(Constants.User_Nickname);
+                    itemController.textView.setText(Constants.MY_User_Nickname);
                 else
                     itemController.textView.setText(Contacts_List.contacts.get(User_ID));
                 itemController.textView_phone.setText(User_ID);
@@ -997,7 +997,7 @@ class ExpandableListAdapter_Event_Vote_Location extends RecyclerView.Adapter<Rec
                 User_ID = itemController.refferalItem.User_ID;
                 //Set values.
                 if (User_ID.equals(Constants.MY_User_ID))
-                    itemController.textView.setText(Constants.User_Nickname);
+                    itemController.textView.setText(Constants.MY_User_Nickname);
                 else
                     itemController.textView.setText(Contacts_List.contacts.get(User_ID));
                 itemController.textView_phone.setText(User_ID);
@@ -1177,7 +1177,7 @@ class ExpandableListAdapter_Event_Friends extends RecyclerView.Adapter<RecyclerV
 
     public void set_nickname(ViewHolder_User_Child viewHolder_user_child) {
         if (text_view.equals(Constants.MY_User_ID)) {
-            viewHolder_user_child.textView.setText(Constants.User_Nickname);
+            viewHolder_user_child.textView.setText(Constants.MY_User_Nickname);
         } else {
             viewHolder_user_child.textView.setText(Contacts_List.contacts.get(text_view));
         }
@@ -1280,7 +1280,7 @@ class ExpandableListAdapter_Event_Tasks extends RecyclerView.Adapter<RecyclerVie
                     if (task.getUser_ID().equals(Constants.MY_User_ID)) {
                         viewHolder_task.imageView.setImageResource(R.mipmap.ic_group_green);
                         viewHolder_task.checkBox.setVisibility(View.VISIBLE);
-                        viewHolder_task.user_nickname.setText(Constants.User_Nickname);
+                        viewHolder_task.user_nickname.setText(Constants.MY_User_Nickname);
 
                     } else if (task.getUser_ID().equals(Constants.UnCheck)) {
                         viewHolder_task.imageView.setImageResource(R.mipmap.ic_group_gray1);
@@ -1373,7 +1373,7 @@ class ExpandableListAdapter_Event_Tasks extends RecyclerView.Adapter<RecyclerVie
                 }
                 //Set nickname;
                 if (task.getUser_ID().equals(Constants.MY_User_ID)) {
-                    itemController.user_nickname.setText(Constants.User_Nickname);
+                    itemController.user_nickname.setText(Constants.MY_User_Nickname);
                 } else if (!task.getUser_ID().equals(Constants.UnCheck)) {
                     itemController.user_nickname.setText(Contacts_List.contacts.get(task.getUser_ID()));
                 }
@@ -1427,7 +1427,7 @@ class ExpandableListAdapter_Event_Tasks extends RecyclerView.Adapter<RecyclerVie
                             if (Event_Helper.task.get(itemController.refferalItem.task_id).getUser_ID().equals(Constants.UnCheck)) {
                                 Event_Helper.task.get(itemController.refferalItem.task_id).setUser_ID(Constants.MY_User_ID);
                                 Helper.set_task_user_ID(v.getContext(), Event_Helper.details[Table_Events.Event_ID_num], task_id, Constants.MY_User_ID);
-                                itemController.user_nickname.setText(Constants.User_Nickname);
+                                itemController.user_nickname.setText(Constants.MY_User_Nickname);
                                 itemController.imageView.setImageResource(R.mipmap.ic_group_green);
                                 itemController.checkBox.setVisibility(View.VISIBLE);
                                 refresh_children(pos);

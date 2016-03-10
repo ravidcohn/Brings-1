@@ -145,11 +145,11 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
     private void login() {
 
         sharedPreferences = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE);
-        String restoredText = sharedPreferences.getString("USER", null);
+        String restoredText = sharedPreferences.getString(Constants.r_user_key, null);
         if (restoredText != null) {
-            Constants.User_Nickname = sharedPreferences.getString("Nickname", "No name defined");
-            Constants.MY_User_ID = sharedPreferences.getString("User_ID", "No name defined");//"No name defined" is the default value.
-            Constants.Password = sharedPreferences.getString("Pass", "No name defined");
+            Constants.MY_User_Nickname = sharedPreferences.getString(Constants.MY_User_Nickname, Constants.no_name_defined);
+            Constants.MY_User_ID = sharedPreferences.getString(Constants.MY_User_ID, Constants.no_name_defined);//"No name defined" is the default value.
+            Constants.MY_User_Password = sharedPreferences.getString(Constants.MY_User_Password, Constants.no_name_defined);
 
             if (gcm == null) {
                 gcm = GoogleCloudMessaging.getInstance(this);
@@ -198,7 +198,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
             String User_ID = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
                     .replaceAll("-", "").replaceAll(" ", "").replaceAll("\\(", "").replaceAll("\\)", "");
             if (User_ID.charAt(0) == '0') {
-                User_ID = "972" + User_ID.substring(1);
+                User_ID = Constants.country_code + User_ID.substring(1);
             }
             if (data.get(Nickname) == null) {
                 data.put(Nickname, User_ID);
@@ -255,10 +255,10 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
             String User_ID = output[0];
             String password = etPass.getText().toString();
             SharedPreferences.Editor editor = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE).edit();
-            editor.putString("USER", "R-USER");
-            editor.putString("User_ID", User_ID);
-            editor.putString("Pass", password);
-            editor.putString("Nickname", output[1]);
+            editor.putString(Constants.r_user_key, Constants.r_user);
+            editor.putString(Constants.MY_User_ID, User_ID);
+            editor.putString(Constants.MY_User_Password, password);
+            editor.putString(Constants.MY_User_Nickname, output[1]);
             editor.commit();
             login();
         }
