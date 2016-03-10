@@ -147,9 +147,9 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         sharedPreferences = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE);
         String restoredText = sharedPreferences.getString(Constants.r_user_key, null);
         if (restoredText != null) {
-            Constants.MY_User_Nickname = sharedPreferences.getString(Constants.MY_User_Nickname, Constants.no_name_defined);
-            Constants.MY_User_ID = sharedPreferences.getString(Constants.MY_User_ID, Constants.no_name_defined);//"No name defined" is the default value.
-            Constants.MY_User_Password = sharedPreferences.getString(Constants.MY_User_Password, Constants.no_name_defined);
+            Constants.MY_User_Nickname = sharedPreferences.getString(Constants.MY_User_Nickname_Key, Constants.no_name_defined);
+            Constants.MY_User_ID = sharedPreferences.getString(Constants.MY_User_ID_Key, Constants.no_name_defined);//"No name defined" is the default value.
+            Constants.MY_User_Password = sharedPreferences.getString(Constants.MY_User_Password_Key, Constants.no_name_defined);
 
             if (gcm == null) {
                 gcm = GoogleCloudMessaging.getInstance(this);
@@ -256,9 +256,9 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
             String password = etPass.getText().toString();
             SharedPreferences.Editor editor = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE).edit();
             editor.putString(Constants.r_user_key, Constants.r_user);
-            editor.putString(Constants.MY_User_ID, User_ID);
-            editor.putString(Constants.MY_User_Password, password);
-            editor.putString(Constants.MY_User_Nickname, output[1]);
+            editor.putString(Constants.MY_User_ID_Key, User_ID);
+            editor.putString(Constants.MY_User_Password_Key, password);
+            editor.putString(Constants.MY_User_Nickname_Key, output[1]);
             editor.commit();
             login();
         }

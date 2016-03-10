@@ -56,9 +56,9 @@ public class Registration extends AppCompatActivity implements ServerAsyncRespon
             if (User_ID.charAt(0) == '0') {
                 User_ID = Constants.country_code + User_ID.substring(1);
             }
-            editor.putString(Constants.MY_User_ID, User_ID);
-            editor.putString(Constants.MY_User_Nickname, et_rg_your_name_ui.getText().toString());
-            editor.putString(Constants.MY_User_Password, et_rg_password_ui.getText().toString());
+            editor.putString(Constants.MY_User_ID_Key, User_ID);
+            editor.putString(Constants.MY_User_Nickname_Key, et_rg_your_name_ui.getText().toString());
+            editor.putString(Constants.MY_User_Password_Key, et_rg_password_ui.getText().toString());
             editor.commit();
             Intent login = new Intent(this, brings_app.login.login.class);
             startActivity(login);
