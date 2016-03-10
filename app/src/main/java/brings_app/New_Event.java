@@ -681,7 +681,7 @@ public class New_Event extends AppCompatActivity {
                     switcher_vote_location.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (switcher_vote_time.isChecked())
+                            if (switcher_vote_location.isChecked())
                                 Event_Helper.details[Table_Events.Vote_Location_num] = Constants.Yes;
                             else
                                 Event_Helper.details[Table_Events.Vote_Location_num] = Constants.No;

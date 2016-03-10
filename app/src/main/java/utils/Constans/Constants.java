@@ -65,6 +65,9 @@ public final class Constants {
     public static String MY_User_ID;
     public static String MY_User_Nickname;
     public static String MY_User_Password;
+    public static final String MY_User_ID_Key = "MY_User_ID_Key";
+    public static final String MY_User_Password_Key = "MY_User_Password_Key";
+    public static final String MY_User_Nickname_Key = "MY_User_Nickname_Key";
     public final static String country_code = "972";
     public final static String r_user = "R-USER";
     public final static String r_user_key = "USER";
