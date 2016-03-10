@@ -22,7 +22,8 @@
         android:layout_toEndOf="@+id/option"
         android:background="@android:color/transparent"
         android:hint="Click to insert location"
-        android:padding="4dp" />
+        android:padding="4dp"
+        android:singleLine="true" />
 
 
     <ImageButton

@@ -670,6 +670,12 @@ public class New_Event extends AppCompatActivity {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                             if (isChecked) {
+                                final HashMap<Integer, Vote_Date_Helper> vote_pointer;
+                                if (Event_Helper.newEvent_edit_mode.equals(Constants.New_Event)) {
+                                    vote_pointer = Event_Helper.vote_date;
+                                } else {
+                                    vote_pointer = Event_Helper.vote_date_tmp;
+                                }
                                 Event_Helper.details[Table_Events.Vote_Time_num] = Constants.Yes;
                                 relativeLayout_date.setVisibility(View.GONE);
                                 relativeLayout_all_day.setVisibility(View.GONE);
@@ -679,7 +685,7 @@ public class New_Event extends AppCompatActivity {
                                 List<ExpandableListAdapter_New_Event_Vote_Date.Item> data = new ArrayList<>();
                                 if (Event_Helper.vote_date.size() == 0) {
                                     data.add(new ExpandableListAdapter_New_Event_Vote_Date.Item(ExpandableListAdapter_New_Event_Vote_Date.Vote_Date, 1));
-                                    Event_Helper.vote_date.put(1, new Vote_Date_Helper("dd/mm/yyyy", "dd/mm/yyyy", Constants.No, "hh:mm", "hh:mm"));
+                                    vote_pointer.put(1, new Vote_Date_Helper("dd/mm/yyyy", "dd/mm/yyyy", Constants.No, "hh:mm", "hh:mm"));
                                     Event_Helper.vote_date_ID_generator++;
                                 } else {
                                     for (int vote_id : Event_Helper.vote_date.keySet()) {
@@ -705,6 +711,12 @@ public class New_Event extends AppCompatActivity {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                             if (isChecked) {
+                                final HashMap<Integer, Vote_Location_Helper> vote_pointer;
+                                if (Event_Helper.newEvent_edit_mode.equals(Constants.New_Event)) {
+                                    vote_pointer = Event_Helper.vote_location;
+                                } else {
+                                    vote_pointer = Event_Helper.vote_location_tmp;
+                                }
                                 Event_Helper.details[Table_Events.Vote_Location_num] = Constants.Yes;
                                 relativeLayout_location.setVisibility(View.GONE);
                                 recyclerView_location.setVisibility(View.VISIBLE);
@@ -713,8 +725,8 @@ public class New_Event extends AppCompatActivity {
                                 List<ExpandableListAdapter_New_Event_Vote_Location.Item> data = new ArrayList<>();
                                 if (Event_Helper.vote_location.size() == 0) {
                                     data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, 1));
-                                    Event_Helper.vote_location.put(1, new Vote_Location_Helper(""));
-                                    Event_Helper.vote_date_ID_generator++;
+                                    vote_pointer.put(1, new Vote_Location_Helper(""));
+                                    Event_Helper.vote_location_ID_generator++;
                                 } else {
                                     for (int vote_id : Event_Helper.vote_location.keySet()) {
                                         data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, vote_id));
