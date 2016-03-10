@@ -258,7 +258,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                         description.setText(Event_Helper.details[Table_Events.Description_num]);
                     }
                     //Set date.
-                    setSwitcher_time_view(false, recyclerView_date, relativeLayout_date_titles, relativeLayout_date, date);
+                    setSwitcher_time_view(recyclerView_date, relativeLayout_date_titles, relativeLayout_date, date);
                     if (Event_Helper.vote_date.size() == 0) {
                         relativeLayout_date_vote.setVisibility(View.GONE);
                     } else if (my_permission.equals(Constants.Owner)) {
@@ -270,18 +270,21 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                         switcher_time.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (switcher_time.isChecked())
+                                if (switcher_time.isChecked()) {
                                     Event_Helper.details[Table_Events.Vote_Time_num] = Constants.Yes;
-                                else
+                                    Helper.update_Event_details_field(getContext(), Event_Helper.details[Table_Events.Event_ID_num], Table_Events.Vote_Time, Constants.Yes);
+                                } else {
                                     Event_Helper.details[Table_Events.Vote_Time_num] = Constants.No;
-                                setSwitcher_time_view(true, recyclerView_date, relativeLayout_date_titles, relativeLayout_date, date);
+                                    Helper.update_Event_details_field(getContext(), Event_Helper.details[Table_Events.Event_ID_num], Table_Events.Vote_Time, Constants.No);
+                                }
+                                setSwitcher_time_view(recyclerView_date, relativeLayout_date_titles, relativeLayout_date, date);
                             }
                         });
                     } else {
                         relativeLayout_date_vote.setVisibility(View.GONE);
                     }
                     //Set location.
-                    setSwitcher_location_view(false, recyclerView_location, relativeLayout_location_titles, relativeLayout_location, location);
+                    setSwitcher_location_view(recyclerView_location, relativeLayout_location_titles, relativeLayout_location, location);
                     if (Event_Helper.vote_location.size() == 0) {
                         relativeLayout_location_vote.setVisibility(View.GONE);
                     } else if (my_permission.equals(Constants.Owner)) {
@@ -293,11 +296,14 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                         switcher_location.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (switcher_location.isChecked())
+                                if (switcher_location.isChecked()) {
                                     Event_Helper.details[Table_Events.Vote_Location_num] = Constants.Yes;
-                                else
+                                    Helper.update_Event_details_field(getContext(), Event_Helper.details[Table_Events.Event_ID_num], Table_Events.Vote_Location, Constants.Yes);
+                                } else {
                                     Event_Helper.details[Table_Events.Vote_Location_num] = Constants.No;
-                                setSwitcher_location_view(true, recyclerView_location, relativeLayout_location_titles, relativeLayout_location, location);
+                                    Helper.update_Event_details_field(getContext(), Event_Helper.details[Table_Events.Event_ID_num], Table_Events.Vote_Location, Constants.No);
+                                }
+                                setSwitcher_location_view(recyclerView_location, relativeLayout_location_titles, relativeLayout_location, location);
                             }
                         });
                     } else {
@@ -453,10 +459,8 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
             return null;
         }
 
-        private void setSwitcher_time_view(boolean switcher_click, RecyclerView recyclerView_date, RelativeLayout relativeLayout_titles, RelativeLayout relativeLayout_date, TextView date) {
+        private void setSwitcher_time_view(RecyclerView recyclerView_date, RelativeLayout relativeLayout_titles, RelativeLayout relativeLayout_date, TextView date) {
             if (Event_Helper.details[Table_Events.Vote_Time_num].equals(Constants.Yes)) {
-                if (switcher_click)
-                    Helper.update_Event_details_field(getContext(), Event_Helper.details[Table_Events.Event_ID_num], Table_Events.Vote_Time, Constants.Yes);
                 relativeLayout_date.setVisibility(View.GONE);
                 recyclerView_date.setVisibility(View.VISIBLE);
                 relativeLayout_titles.setVisibility(View.VISIBLE);
@@ -482,19 +486,15 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                 recyclerView_date.setVisibility(View.GONE);
                 relativeLayout_titles.setVisibility(View.GONE);
                 relativeLayout_date.setVisibility(View.VISIBLE);
-                if (switcher_click)
-                    Helper.update_Event_details_field(getContext(), Event_Helper.details[Table_Events.Event_ID_num], Table_Events.Vote_Time, Constants.No);
                 String date_text = Helper.date_text_view(Event_Helper.details[Table_Events.Start_Date_num], Event_Helper.details[Table_Events.End_Date_num],
                         Event_Helper.details[Table_Events.All_Day_Time_num], Event_Helper.details[Table_Events.Start_Time_num], Event_Helper.details[Table_Events.End_Time_num]);
                 date.setText(date_text);
             }
         }
 
-        private void setSwitcher_location_view(boolean switcher_click, RecyclerView recyclerView_location, RelativeLayout relativeLayout_titles, RelativeLayout relativeLayout_location, TextView location) {
+        private void setSwitcher_location_view(RecyclerView recyclerView_location, RelativeLayout relativeLayout_titles, RelativeLayout relativeLayout_location, TextView location) {
             if (Event_Helper.details[Table_Events.Vote_Location_num].equals(Constants.Yes)) {
-                if (switcher_click)
-                    Helper.update_Event_details_field(getContext(), Event_Helper.details[Table_Events.Event_ID_num], Table_Events.Vote_Location, Constants.Yes);
-                relativeLayout_location.setVisibility(View.GONE);
+                    relativeLayout_location.setVisibility(View.GONE);
                 recyclerView_location.setVisibility(View.VISIBLE);
                 relativeLayout_titles.setVisibility(View.VISIBLE);
                 recyclerView_location.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -519,8 +519,6 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                 recyclerView_location.setVisibility(View.GONE);
                 relativeLayout_titles.setVisibility(View.GONE);
                 relativeLayout_location.setVisibility(View.VISIBLE);
-                if (switcher_click)
-                    Helper.update_Event_details_field(getContext(), Event_Helper.details[Table_Events.Event_ID_num], Table_Events.Vote_Location, Constants.No);
                 if (Event_Helper.details[Table_Events.Location_num].equals("")) {
                     location.setText(R.string.location_not_set);
                 } else {
