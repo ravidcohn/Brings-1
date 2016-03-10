@@ -247,9 +247,9 @@ public class GcmIntentService extends IntentService {
                     case Constants.Update_Task_User_ID: {
                         String Event_ID = details.split("\\^")[0];
                         String Task_ID_Number = details.split("\\^")[1];
-                        String Friend_ID = details.split("\\^")[2];
-                        sqlHelper.update(Table_Tasks.Table_Name, new String[]{Table_Tasks.User_ID}, new String[]{Friend_ID},
-                                new String[]{Table_Tasks.Event_ID, Table_Tasks.Task_ID_Number}, new String[]{Event_ID, Task_ID_Number});
+                        String User_ID = details.split("\\^")[2];
+                        sqlHelper.update(Table_Tasks.Table_Name, new String[]{Table_Tasks.User_ID}, new String[]{User_ID},
+                                new String[]{Table_Tasks.Event_ID, Table_Tasks.Task_ID_Number, Table_Tasks.subTask_ID_Number}, new String[]{Event_ID, Task_ID_Number, 0 + ""});
                         break;
                     }
                     case Constants.New_Chat_Message: {
@@ -396,8 +396,9 @@ public class GcmIntentService extends IntentService {
         try {
             taskCollection = myApiService.taskGetAll(event_id).execute();
             if (taskCollection.getItems() != null) {
-                String[] task = new String[Table_Tasks.Size()];
+                String[] task;
                 for (int i = 0; i < taskCollection.getItems().size(); i++) {
+                    task = new String[Table_Tasks.Size()];
                     task[Table_Tasks.Event_ID_num] = taskCollection.getItems().get(i).getEventID();
                     task[Table_Tasks.Task_ID_Number_num] = taskCollection.getItems().get(i).getTaskIDNumber();
                     task[Table_Tasks.subTask_ID_Number_num] = taskCollection.getItems().get(i).getSubTaskIDNumber();
