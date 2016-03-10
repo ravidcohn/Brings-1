@@ -599,7 +599,7 @@ public class New_Event extends AppCompatActivity {
                     final RelativeLayout relativeLayout_all_day = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_all_day);
                     final RelativeLayout relativeLayout_date = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date);
                     final RelativeLayout relativeLayout_date_titles = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date_titles);
-                    EditText editText_location = (EditText) rootView.findViewById(R.id.editText_location);
+                    final EditText editText_location = (EditText) rootView.findViewById(R.id.editText_location);
                     final Switch switcher_vote_location = (Switch) rootView.findViewById(R.id.switcher_location);
                     final RecyclerView recyclerView_location = (RecyclerView) rootView.findViewById(R.id.recyclerView_location);
                     final RelativeLayout relativeLayout_location = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_location);
@@ -607,10 +607,17 @@ public class New_Event extends AppCompatActivity {
                     //Set all values.
                     editText_name.setText(Event_Helper.details[Table_Events.Name_num]);
                     editText_description.setText(Event_Helper.details[Table_Events.Description_num]);
+                    if (Event_Helper.details[Table_Events.Vote_Time_num].equals(Constants.Yes))
+                        switcher_vote_time.setChecked(true);
+                    else
+                        switcher_vote_time.setChecked(false);
                     setSwitcher_time_view(recyclerView_date, relativeLayout_date_titles, relativeLayout_date, relativeLayout_all_day, date1, date2, all_day, time1, time1);
-
-                    editText_location.setText(Event_Helper.details[Table_Events.Location_num]);
-
+                    if (Event_Helper.details[Table_Events.Vote_Location_num].equals(Constants.Yes))
+                        switcher_vote_location.setChecked(true);
+                    else
+                        switcher_vote_location.setChecked(false);
+                    setSwitcher_location_view(recyclerView_location, relativeLayout_location_titles, relativeLayout_location, editText_location);
+                    //editText_location.setText(Event_Helper.details[Table_Events.Location_num]);
                     linearLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -671,6 +678,17 @@ public class New_Event extends AppCompatActivity {
                         }
                     });
                     //location.
+                    switcher_vote_location.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (switcher_vote_time.isChecked())
+                                Event_Helper.details[Table_Events.Vote_Location_num] = Constants.Yes;
+                            else
+                                Event_Helper.details[Table_Events.Vote_Location_num] = Constants.No;
+                            setSwitcher_location_view(recyclerView_location, relativeLayout_location_titles, relativeLayout_location, editText_location);
+                        }
+                    });
+                    /*
                     switcher_vote_location.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -710,6 +728,7 @@ public class New_Event extends AppCompatActivity {
                             }
                         }
                     });
+                    */
 
                     return rootView;
                 }
@@ -862,6 +881,43 @@ public class New_Event extends AppCompatActivity {
                     time1.setVisibility(View.GONE);
                     time2.setVisibility(View.GONE);
                 }
+            }
+        }
+
+        private void setSwitcher_location_view(RecyclerView recyclerView_location, RelativeLayout relativeLayout_location_titles, RelativeLayout relativeLayout_location, EditText editText_location) {
+            if (Event_Helper.details[Table_Events.Vote_Location_num].equals(Constants.Yes)) {
+                final HashMap<Integer, Vote_Location_Helper> vote_pointer;
+                if (Event_Helper.newEvent_edit_mode.equals(Constants.New_Event)) {
+                    vote_pointer = Event_Helper.vote_location;
+                } else {
+                    vote_pointer = Event_Helper.vote_location_tmp;
+                }
+                Event_Helper.details[Table_Events.Vote_Location_num] = Constants.Yes;
+                relativeLayout_location.setVisibility(View.GONE);
+                recyclerView_location.setVisibility(View.VISIBLE);
+                relativeLayout_location_titles.setVisibility(View.VISIBLE);
+                recyclerView_location.setLayoutManager(new LinearLayoutManager(getContext()));
+                List<ExpandableListAdapter_New_Event_Vote_Location.Item> data = new ArrayList<>();
+                if (Event_Helper.vote_location.size() == 0) {
+                    data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, 1));
+                    vote_pointer.put(1, new Vote_Location_Helper(""));
+                    Event_Helper.vote_location_ID_generator++;
+                } else {
+                    for (int vote_id : Event_Helper.vote_location.keySet()) {
+                        data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, vote_id));
+                    }
+                }
+                int recyclerView_height_dp = (data.size() * 57) + 34;//57 + 34.
+                data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Add, 0));
+                recyclerView_location.setAdapter(new ExpandableListAdapter_New_Event_Vote_Location(data, recyclerView_location));
+                int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, getResources().getDisplayMetrics());
+                recyclerView_location.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
+            } else {
+                Event_Helper.details[Table_Events.Vote_Location_num] = Constants.No;
+                recyclerView_location.setVisibility(View.GONE);
+                relativeLayout_location_titles.setVisibility(View.GONE);
+                relativeLayout_location.setVisibility(View.VISIBLE);
+                editText_location.setText(Event_Helper.details[Table_Events.Location_num]);
             }
         }
     }

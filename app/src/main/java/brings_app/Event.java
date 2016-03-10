@@ -494,7 +494,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
 
         private void setSwitcher_location_view(RecyclerView recyclerView_location, RelativeLayout relativeLayout_titles, RelativeLayout relativeLayout_location, TextView location) {
             if (Event_Helper.details[Table_Events.Vote_Location_num].equals(Constants.Yes)) {
-                    relativeLayout_location.setVisibility(View.GONE);
+                relativeLayout_location.setVisibility(View.GONE);
                 recyclerView_location.setVisibility(View.VISIBLE);
                 relativeLayout_titles.setVisibility(View.VISIBLE);
                 recyclerView_location.setLayoutManager(new LinearLayoutManager(getContext()));

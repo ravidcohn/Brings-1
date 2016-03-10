@@ -427,7 +427,7 @@ public class Helper {
         vote_date[Table_Vote_Date.Event_ID_num] = Event_Helper.details[Table_Events.Event_ID_num];
         vote_date[Table_Vote_Date.Vote_ID_num] = vote_id + "";
         vote_date[Table_Vote_Date.Start_Date_num] = vote_date_helper.getStart_Date();
-        vote_date[Table_Vote_Date.End_Date_num] = vote_date_helper.getEnd_Time();
+        vote_date[Table_Vote_Date.End_Date_num] = vote_date_helper.getEnd_Date();
         vote_date[Table_Vote_Date.All_Day_Time_num] = vote_date_helper.getAll_Day();
         vote_date[Table_Vote_Date.Start_Time_num] = vote_date_helper.getStart_Time();
         vote_date[Table_Vote_Date.End_Time_num] = vote_date_helper.getEnd_Time();
