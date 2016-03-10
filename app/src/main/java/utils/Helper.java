@@ -145,8 +145,8 @@ public class Helper {
     public static void set_task_user_ID(Context context, String Event_ID, int task_id, String user_id) {
         set_task_user_ID_MySQL(Event_ID, task_id, user_id);
         set_task_user_ID_ServerSQL(context, Event_ID, task_id, user_id);
-
-
+        String message = Constants.Update_Task_User_ID + "|" + Event_ID + "^" + task_id + "^" + user_id;
+        Send_Message_To_All_My_Friend_By_Event_ServerSQL(context, Event_ID, message);
     }
 
     public static void delete_chat_message(Context context, String Chat_ID, String Message_ID, String User_ID) {
