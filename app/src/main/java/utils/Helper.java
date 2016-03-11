@@ -833,44 +833,31 @@ public class Helper {
         return false;
     }
 
-    public static String date_text_view(boolean vote_date, String start_date, String end_date, String all_day, String start_time, String end_time) {
-        if(vote_date){
-            if (start_date.equals("dd/mm/yyyy"))
-                return "Empty option";
-            if (all_day.equals(Constants.Yes))
-                if (start_date.equals(end_date))
-                    return format_date(start_date) + "\nall day event";
-                else
-                    return format_date(start_date) + "\n" + format_date(end_date);
-            else if (start_time.equals("hh:mm"))
-                return "Empty option";
-            else if (start_date.equals(end_date))
-                return format_date(start_date) + "\n" + format_time(start_time) + "-" + format_time(end_time);
-            return format_date(start_date) + ", " + format_time(start_time) + "\n" + format_date(end_date) + ", " + format_time(end_time);
-        }else {
-            if (start_date.equals("dd/mm/yyyy"))
-                return "Date having been set yet";
-            if (all_day.equals(Constants.Yes))
-                if (start_date.equals(end_date))
-                    return format_date(start_date) + "\nthis is a all day event";
-                else
-                    return format_date(start_date) + "-" + format_date(end_date);
-            else if (start_time.equals("hh:mm"))
-                return "Date having been set yet";
-            else if (start_date.equals(end_date))
-                return format_date(start_date) + ", " + format_time(start_time) + "-" + format_time(end_time);
-            return format_date(start_date) + ", " + format_time(start_time) + "\n" + format_date(end_date) + ", " + format_time(end_time);
-        }
+    public static String date_text_view(String start_date, String end_date, String all_day, String start_time, String end_time) {
+        if (start_date.equals("dd/mm/yyyy"))
+            return "Date having been set yet";
+        if (all_day.equals(Constants.Yes))
+            if (start_date.equals(end_date))
+                return format_date(start_date) + "\nthis is a all day event";
+            else
+                return format_date(start_date) + "-" + format_date(end_date);
+        else if (start_time.equals("hh:mm"))
+            return "Date having been set yet";
+        else if (start_date.equals(end_date))
+            return format_date(start_date) + ", " + format_time(start_time) + "-" + format_time(end_time);
+        return format_date(start_date) + ", " + format_time(start_time) + "\n" + format_date(end_date) + ", " + format_time(end_time);
     }
 
-    public static String format_time(String time) {
-        String hour = time.split(":")[0];
-        String minute = time.split(":")[1];
-        if (hour.length() == 1)
-            hour = 0 + hour;
-        if (minute.length() == 1)
-            minute = 0 + minute;
-        return hour + ":" + minute;
+    public static String date_text_view_vote(String start_date, String end_date) {
+        if (start_date.equals(end_date))
+            return format_date_short(start_date);
+        return format_date_short(start_date) + "\n" + format_date_short(end_date);
+    }
+
+    public static String time_text_view_vote(String all_day, String start_time, String end_time) {
+        if (all_day.equals(Constants.Yes))
+            return "all day\nevent";
+        return format_time(start_time) + "\n" + format_time(end_time);
     }
 
     public static String format_date(String date) {
@@ -883,4 +870,28 @@ public class Helper {
             month = 0 + month;
         return day + "/" + month + "/" + year;
     }
+
+    private static String format_date_short(String date) {
+        String day = date.split("\\/")[0];
+        String month = date.split("\\/")[1];
+        String year = date.split("\\/")[2];
+        if (day.length() == 1)
+            day = 0 + day;
+        if (month.length() == 1)
+            month = 0 + month;
+        year = year.substring(2);
+        return day + "/" + month + "/" + year;
+    }
+
+    public static String format_time(String time) {
+        String hour = time.split(":")[0];
+        String minute = time.split(":")[1];
+        if (hour.length() == 1)
+            hour = 0 + hour;
+        if (minute.length() == 1)
+            minute = 0 + minute;
+        return hour + ":" + minute;
+    }
+
+
 }

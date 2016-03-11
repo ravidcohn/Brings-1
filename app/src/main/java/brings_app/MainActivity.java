@@ -551,7 +551,7 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
                     location.setText("Location having been set yet.");
                 else
                     location.setText(dbEvent[Table_Events.Location_num].get(0));
-                String date_text = Helper.date_text_view(false, dbEvent[Table_Events.Start_Date_num].get(0), dbEvent[Table_Events.End_Date_num].get(0),
+                String date_text = Helper.date_text_view(dbEvent[Table_Events.Start_Date_num].get(0), dbEvent[Table_Events.End_Date_num].get(0),
                         dbEvent[Table_Events.All_Day_Time_num].get(0), dbEvent[Table_Events.Start_Time_num].get(0), dbEvent[Table_Events.End_Time_num].get(0));
                 date.setText(date_text);
                 //Set up attending for the event.
@@ -626,7 +626,7 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
                 TextView tvName = (TextView) view.findViewById(R.id.event_name);
                 TextView tvDate = (TextView) view.findViewById(R.id.date);
                 tvName.setText(dbEvent[Table_Events.Name_num].get(0));
-                String date_text = Helper.date_text_view(false, dbEvent[Table_Events.Start_Date_num].get(0), dbEvent[Table_Events.End_Date_num].get(0),
+                String date_text = Helper.date_text_view(dbEvent[Table_Events.Start_Date_num].get(0), dbEvent[Table_Events.End_Date_num].get(0),
                         dbEvent[Table_Events.All_Day_Time_num].get(0), dbEvent[Table_Events.Start_Time_num].get(0), dbEvent[Table_Events.End_Time_num].get(0));
                 tvDate.setText(date_text);
                 //String Image_Path = dbEvent[Table_Events.Image_Path_num].get(0);

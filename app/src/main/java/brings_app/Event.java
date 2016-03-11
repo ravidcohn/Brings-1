@@ -488,7 +488,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                 recyclerView_date.setVisibility(View.GONE);
                 relativeLayout_titles.setVisibility(View.GONE);
                 relativeLayout_date.setVisibility(View.VISIBLE);
-                String date_text = Helper.date_text_view(false, Event_Helper.details[Table_Events.Start_Date_num], Event_Helper.details[Table_Events.End_Date_num],
+                String date_text = Helper.date_text_view(Event_Helper.details[Table_Events.Start_Date_num], Event_Helper.details[Table_Events.End_Date_num],
                         Event_Helper.details[Table_Events.All_Day_Time_num], Event_Helper.details[Table_Events.Start_Time_num], Event_Helper.details[Table_Events.End_Time_num]);
                 date.setText(date_text);
             }
@@ -661,9 +661,10 @@ class ExpandableListAdapter_Event_Vote_Date extends RecyclerView.Adapter<Recycle
                 Vote_ID = itemController.refferalItem.Vote_ID;
                 //Set values.
                 Vote_Date_Helper vote_date_helper = Event_Helper.vote_date.get(Vote_ID);
-                String date_text = Helper.date_text_view(true, vote_date_helper.getStart_Date(), vote_date_helper.getEnd_Date(), vote_date_helper.getAll_Day(),
-                        vote_date_helper.getStart_Time(), vote_date_helper.getEnd_Time());
+                String date_text = Helper.date_text_view_vote(vote_date_helper.getStart_Date(), vote_date_helper.getEnd_Date());
+                String time_text = Helper.time_text_view_vote(vote_date_helper.getAll_Day(), vote_date_helper.getStart_Time(), vote_date_helper.getEnd_Time());
                 itemController.date.setText(date_text);
+                itemController.time.setText(time_text);
                 itemController.count.setText(vote_date_helper.getVotes().size() + "");
                 if (vote_date_helper.getVotes().get(Constants.MY_User_ID) != null) {
                     itemController.checkBox.setChecked(true);
@@ -783,15 +784,16 @@ class ExpandableListAdapter_Event_Vote_Date extends RecyclerView.Adapter<Recycle
         public Item refferalItem;
         public TextView option;
         public TextView date;
+        public TextView time;
         public TextView count;
         public CheckBox checkBox;
         public ImageView expand_arrow;
-
 
         public ViewHolder_Vote_Date_Parent(View itemView) {
             super(itemView);
             option = (TextView) itemView.findViewById(R.id.option);
             date = (TextView) itemView.findViewById(R.id.date);
+            time = (TextView) itemView.findViewById(R.id.time);
             count = (TextView) itemView.findViewById(R.id.count);
             checkBox = (CheckBox) itemView.findViewById(R.id.checkBox);
             expand_arrow = (ImageView) itemView.findViewById(R.id.expand_arrow);
