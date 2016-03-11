@@ -221,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
         //sqlHelper.delete(Table_Events.Table_Name,new String[]{Table_Events.Event_ID},new String[]{"@ - []"}, null);
         ArrayList<String>[] sqlresult = sqlHelper.select(null, Table_Events.Table_Name, null, null, null);
+        if(sqlresult != null)
         for (String str : sqlresult[0]) {
             String[] s = str.split(" - ");
             users_names.add(s[0]);
