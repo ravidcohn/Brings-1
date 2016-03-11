@@ -488,7 +488,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                 recyclerView_date.setVisibility(View.GONE);
                 relativeLayout_titles.setVisibility(View.GONE);
                 relativeLayout_date.setVisibility(View.VISIBLE);
-                String date_text = Helper.date_text_view(Event_Helper.details[Table_Events.Start_Date_num], Event_Helper.details[Table_Events.End_Date_num],
+                String date_text = Helper.date_text_view(false, Event_Helper.details[Table_Events.Start_Date_num], Event_Helper.details[Table_Events.End_Date_num],
                         Event_Helper.details[Table_Events.All_Day_Time_num], Event_Helper.details[Table_Events.Start_Time_num], Event_Helper.details[Table_Events.End_Time_num]);
                 date.setText(date_text);
             }
@@ -661,7 +661,7 @@ class ExpandableListAdapter_Event_Vote_Date extends RecyclerView.Adapter<Recycle
                 Vote_ID = itemController.refferalItem.Vote_ID;
                 //Set values.
                 Vote_Date_Helper vote_date_helper = Event_Helper.vote_date.get(Vote_ID);
-                String date_text = Helper.date_text_view(vote_date_helper.getStart_Date(), vote_date_helper.getEnd_Date(), vote_date_helper.getAll_Day(),
+                String date_text = Helper.date_text_view(true, vote_date_helper.getStart_Date(), vote_date_helper.getEnd_Date(), vote_date_helper.getAll_Day(),
                         vote_date_helper.getStart_Time(), vote_date_helper.getEnd_Time());
                 itemController.date.setText(date_text);
                 itemController.count.setText(vote_date_helper.getVotes().size() + "");

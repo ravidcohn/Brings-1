@@ -833,19 +833,34 @@ public class Helper {
         return false;
     }
 
-    public static String date_text_view(String start_date, String end_date, String all_day, String start_time, String end_time) {
-        if (start_date.equals("dd/mm/yyyy"))
-            return "Date having been set yet";
-        if (all_day.equals(Constants.Yes))
-            if (start_date.equals(end_date))
-                return format_date(start_date) + "\nthis is a all day event.";
-            else
-                return format_date(start_date) + "-" + format_date(end_date);
-        else if (start_time.equals("hh:mm"))
-            return "Date having been set yet.";
-        else if (start_date.equals(end_date))
-            return format_date(start_date) + ", " + format_time(start_time) + "-" + format_time(end_time);
-        return format_date(start_date) + ", " + format_time(start_time) + "\n" + format_date(end_date) + ", " + format_time(end_time);
+    public static String date_text_view(boolean vote_date, String start_date, String end_date, String all_day, String start_time, String end_time) {
+        if(vote_date){
+            if (start_date.equals("dd/mm/yyyy"))
+                return "Empty option";
+            if (all_day.equals(Constants.Yes))
+                if (start_date.equals(end_date))
+                    return format_date(start_date) + "\nall day event";
+                else
+                    return format_date(start_date) + "\n" + format_date(end_date);
+            else if (start_time.equals("hh:mm"))
+                return "Empty option";
+            else if (start_date.equals(end_date))
+                return format_date(start_date) + "\n" + format_time(start_time) + "-" + format_time(end_time);
+            return format_date(start_date) + ", " + format_time(start_time) + "\n" + format_date(end_date) + ", " + format_time(end_time);
+        }else {
+            if (start_date.equals("dd/mm/yyyy"))
+                return "Date having been set yet";
+            if (all_day.equals(Constants.Yes))
+                if (start_date.equals(end_date))
+                    return format_date(start_date) + "\nthis is a all day event";
+                else
+                    return format_date(start_date) + "-" + format_date(end_date);
+            else if (start_time.equals("hh:mm"))
+                return "Date having been set yet";
+            else if (start_date.equals(end_date))
+                return format_date(start_date) + ", " + format_time(start_time) + "-" + format_time(end_time);
+            return format_date(start_date) + ", " + format_time(start_time) + "\n" + format_date(end_date) + ", " + format_time(end_time);
+        }
     }
 
     public static String format_time(String time) {
