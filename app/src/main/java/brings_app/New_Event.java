@@ -953,6 +953,8 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
     private HashMap<Integer, Vote_Date_Helper> vote_date_pointer;
 
     private int Vote_ID;
+    private int parent_height;
+    private int child_height;
 
     public List<Item> getData() {
         return data;
@@ -966,6 +968,7 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
         } else {
             this.vote_date_pointer = Event_Helper.vote_date_tmp;
         }
+        parent_height =0;
         recyclerView_height_dp = (data.size() - 1) * 57 + 34;
     }
 
