@@ -418,36 +418,38 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                         @Override
                         public void onClick(View v) {
                             EditText editText = (EditText) getActivity().findViewById(R.id.editText);
-                            //Get all my Chat message.
-                            ArrayList<String>[] MyDbChat = sqlHelper.select(null, Chat_ID, new String[]{Table_Chat.User_ID}, new String[]{Constants.MY_User_ID}, null);
-                            //Generate message id.
-                            int max_message_id = 0;
-                            for (String tmp_message_id : MyDbChat[Table_Chat.Message_ID_num]) {
-                                max_message_id = Math.max(max_message_id, Integer.parseInt(tmp_message_id));
-                            }
-                            max_message_id++;
-                            String message_id = max_message_id + "";
                             //Set all chat values.
                             String date = Helper.getCurrentDate();
                             String time = Helper.getCurrentTime();
                             String message = editText.getText().toString();
-                            editText.setText("");
-                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                            String chat[] = new String[]{message_id, Constants.MY_User_ID, message, date, time};
-                            sqlHelper.insert(Chat_ID, chat);
-                            //Update the dcChat and the adapter.
-                            dbChat[Table_Chat.Message_ID_num].add(message_id);
-                            dbChat[Table_Chat.User_ID_num].add(Constants.MY_User_ID);
-                            dbChat[Table_Chat.Message_num].add(message);
-                            dbChat[Table_Chat.Date_num].add(date);
-                            dbChat[Table_Chat.Time_num].add(time);
-                            expandableListAdapter_event_chat.setDbChat(dbChat);
-                            data.add(new ExpandableListAdapter_Event_Chat.Item(ExpandableListAdapter_Event_Chat.Chat_My));
-                            expandableListAdapter_event_chat.notifyItemInserted(data.size() - 1);
-                            recyclerview.scrollToPosition(data.size() - 1);
-                            //Send to all users.
-                            Helper.Send_Chat_Message_ServerSQL(getContext(), Chat_ID, chat);
+                            if (message.length() > 0) {
+                                //Get all my Chat message.
+                                ArrayList<String>[] MyDbChat = sqlHelper.select(null, Chat_ID, new String[]{Table_Chat.User_ID}, new String[]{Constants.MY_User_ID}, null);
+                                //Generate message id.
+                                int max_message_id = 0;
+                                for (String tmp_message_id : MyDbChat[Table_Chat.Message_ID_num]) {
+                                    max_message_id = Math.max(max_message_id, Integer.parseInt(tmp_message_id));
+                                }
+                                max_message_id++;
+                                String message_id = max_message_id + "";
+                                editText.setText("");
+                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                                String chat[] = new String[]{message_id, Constants.MY_User_ID, message, date, time};
+                                sqlHelper.insert(Chat_ID, chat);
+                                //Update the dcChat and the adapter.
+                                dbChat[Table_Chat.Message_ID_num].add(message_id);
+                                dbChat[Table_Chat.User_ID_num].add(Constants.MY_User_ID);
+                                dbChat[Table_Chat.Message_num].add(message);
+                                dbChat[Table_Chat.Date_num].add(date);
+                                dbChat[Table_Chat.Time_num].add(time);
+                                expandableListAdapter_event_chat.setDbChat(dbChat);
+                                data.add(new ExpandableListAdapter_Event_Chat.Item(ExpandableListAdapter_Event_Chat.Chat_My));
+                                expandableListAdapter_event_chat.notifyItemInserted(data.size() - 1);
+                                recyclerview.scrollToPosition(data.size() - 1);
+                                //Send to all users.
+                                Helper.Send_Chat_Message_ServerSQL(getContext(), Chat_ID, chat);
+                            }
                         }
                     });
                     return rootView;
