@@ -40,7 +40,8 @@ public class User_AsyncTask_get extends AsyncTask<String, Void, User> {
         if (result != null) {
             sqlHelper.insert(Table_Users.Table_Name, new String[]{result.getUserID(), result.getNickname(), Constants.Yes});
             //Add User to Contacts_List.
-            Contacts_List.contacts.put(result.getUserID(), result.getNickname());
+            if (!Constants.MY_User_ID.equals(result.getUserID()))
+                Contacts_List.contacts.put(result.getUserID(), result.getNickname());
         }
     }
 }

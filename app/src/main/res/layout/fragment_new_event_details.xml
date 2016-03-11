@@ -49,7 +49,6 @@
                 android:src="@mipmap/ic_comments_gray"
                 android:visibility="gone" />
 
-
         </RelativeLayout>
 
         <include layout="@layout/line" />

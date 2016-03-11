@@ -155,31 +155,6 @@ public class New_Event extends AppCompatActivity {
             }
         });
         mViewPager.setPagingEnabled(false);
-        /*details = (ImageView) findViewById(R.id.details);
-        details.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mViewPager.setCurrentItem(0);
-            }
-        });
-
-        friends = (ImageView) findViewById(R.id.friends);
-        friends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                store_editText(0);
-                mViewPager.setCurrentItem(1);
-            }
-        });
-
-        task = (ImageView) findViewById(R.id.task);
-        task.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                store_editText(0);
-                mViewPager.setCurrentItem(2);
-            }
-        });*/
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,90 +193,59 @@ public class New_Event extends AppCompatActivity {
         next_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                store_editText(mViewPager.getCurrentItem());
-                switch (mViewPager.getCurrentItem()) {
-                    case 0: {
-                        mViewPager.setCurrentItem(1);
-                        break;
-                    }
-                    case 1: {
-                        mViewPager.setCurrentItem(2);
-                        next_done.setText("Done");
-                        break;
-                    }
-                    case 2: {
-                        new AlertDialog.Builder(v.getContext())
-                                .setTitle("Save Event")
-                                .setMessage("Are you sure you want to Save this Event?")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        String Event_ID;
-                                        if (b.getString("Event_ID").equals(Constants.New_Event)) {
-                                            Event_ID = Helper.create_event(getApplicationContext());
-                                        } else {
-                                            Event_ID = Event_Helper.details[Table_Events.Event_ID_num];
-                                            Helper.update_event(getApplicationContext(), Event_ID);
+                if (store_editText(mViewPager.getCurrentItem())) {
+                    switch (mViewPager.getCurrentItem()) {
+                        case 0: {
+                            //Hide keyboard.
+                            View view = getCurrentFocus();
+                            if (view != null) {
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                            }
+                            mViewPager.setCurrentItem(1);
+                            break;
+                        }
+                        case 1: {
+                            mViewPager.setCurrentItem(2);
+                            next_done.setText("Done");
+                            break;
+                        }
+                        case 2: {
+                            new AlertDialog.Builder(v.getContext())
+                                    .setTitle("Save Event")
+                                    .setMessage("Are you sure you want to Save this Event?")
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            String Event_ID;
+                                            if (b.getString("Event_ID").equals(Constants.New_Event)) {
+                                                Event_ID = Helper.create_event(getApplicationContext());
+                                            } else {
+                                                Event_ID = Event_Helper.details[Table_Events.Event_ID_num];
+                                                Helper.update_event(getApplicationContext(), Event_ID);
+                                            }
+                                            Intent intent = new Intent(getApplicationContext(), Event.class);
+                                            Bundle data = new Bundle();
+                                            data.putString("Event_ID", Event_ID);
+                                            intent.putExtras(data);
+                                            if (b.getString("Event_ID").equals(Constants.New_Event)) {
+                                                startActivity(intent);
+                                            }
+                                            finish();
                                         }
-                                        Intent intent = new Intent(getApplicationContext(), Event.class);
-                                        Bundle data = new Bundle();
-                                        data.putString("Event_ID", Event_ID);
-                                        intent.putExtras(data);
-                                        if (b.getString("Event_ID").equals(Constants.New_Event)) {
-                                            startActivity(intent);
+                                    })
+                                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // do nothing
                                         }
-                                        finish();
-                                    }
-                                })
-                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // do nothing
-                                    }
-                                })
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show();
-                        break;
+                                    })
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                            break;
+                        }
                     }
                 }
             }
         });
-
-        ImageView done = (ImageView) findViewById(R.id.done);
-        done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                store_editText(mViewPager.getCurrentItem());
-                new AlertDialog.Builder(v.getContext())
-                        .setTitle("Save Event")
-                        .setMessage("Are you sure you want to Save this Event?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                String Event_ID;
-                                if (b.getString("Event_ID").equals(Constants.New_Event)) {
-                                    Event_ID = Helper.create_event(getApplicationContext());
-                                } else {
-                                    Event_ID = Event_Helper.details[Table_Events.Event_ID_num];
-                                    Helper.update_event(getApplicationContext(), Event_ID);
-                                }
-                                Intent intent = new Intent(getApplicationContext(), Event.class);
-                                Bundle data = new Bundle();
-                                data.putString("Event_ID", Event_ID);
-                                intent.putExtras(data);
-                                if (b.getString("Event_ID").equals(Constants.New_Event)) {
-                                    startActivity(intent);
-                                }
-                                finish();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-            }
-        });
-
     }
 
     public <V> SortedMap<String, V> filterPrefix(SortedMap<String, V> baseMap, String prefix) {
@@ -359,9 +303,10 @@ public class New_Event extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void store_editText(int page) {
+    private boolean store_editText(int page) {
         switch (page) {
             case 0: {
+                //Fill name description and location.
                 EditText editText_name = (EditText) findViewById(R.id.editText_name);
                 EditText editText_description = (EditText) findViewById(R.id.editText_description);
                 EditText editText_location = (EditText) findViewById(R.id.editText_location);
@@ -369,6 +314,56 @@ public class New_Event extends AppCompatActivity {
                     Event_Helper.details[Table_Events.Name_num] = editText_name.getText().toString();
                     Event_Helper.details[Table_Events.Description_num] = editText_description.getText().toString();
                     Event_Helper.details[Table_Events.Location_num] = editText_location.getText().toString();
+                }
+                //Set vote pointer.
+                HashMap<Integer, Vote_Date_Helper> vote_date_pointer;
+                HashMap<Integer, Vote_Location_Helper> vote_location_pointer;
+                if (Event_Helper.newEvent_edit_mode.equals(Constants.New_Event)) {
+                    vote_date_pointer = Event_Helper.vote_date;
+                    vote_location_pointer = Event_Helper.vote_location;
+                } else {
+                    vote_date_pointer = Event_Helper.vote_date_tmp;
+                    vote_location_pointer = Event_Helper.vote_location_tmp;
+
+                }
+                //Fill vote_location.
+                RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView_location);
+                ExpandableListAdapter_New_Event_Vote_Location expandableListAdapter_new_event_vote_location = (ExpandableListAdapter_New_Event_Vote_Location) recyclerView.getAdapter();
+                if (expandableListAdapter_new_event_vote_location != null) {
+                    int vote_id = expandableListAdapter_new_event_vote_location.getVote_ID_num_has_focus();
+                    View view = getCurrentFocus();
+                    if (view instanceof EditText) {
+                        EditText editText = (EditText) view;
+                        vote_location_pointer.get(vote_id).setDescription(editText.getText().toString());
+                    }
+                }
+                //Check that all vote_date are filled.
+                boolean all_fill_date;
+                boolean all_fill_time;
+                for (Vote_Date_Helper vote_date_helper : vote_date_pointer.values()) {
+                    all_fill_date = !vote_date_helper.getStart_Date().equals("dd/mm/yyy");//Fill "start date" automatically fill "end date".
+                    all_fill_time = vote_date_helper.getAll_Day().equals(Constants.Yes) || !vote_date_helper.getStart_Time().equals("hh:mm");//Fill "start time" automatically fill "end time".
+                    if (!(all_fill_date && all_fill_time)) {
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "Please fill all vote date details", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        return false;
+                    }
+                }
+                //Check that all vote_date are filled.
+                for (Vote_Location_Helper vote_location_helper : vote_location_pointer.values()) {
+                    if (vote_location_helper.getDescription().length() == 0) {
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "Please fill all vote location details", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        return false;
+                    }
                 }
                 break;
             }
@@ -396,10 +391,35 @@ public class New_Event extends AppCompatActivity {
                         }
                     }
                 }
+                //Check that all task ans subTask are filled.
+                for (final Task_Helper task_helper : task_pointer.values()) {
+                    if (task_helper.getDescription().length() == 0) {
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "Please fill all Tasks names", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        return false;
+                    }
+                    for (String[] subTask : task_helper.getSubTasks().values()) {
+                        if (subTask[0].length() == 0) {
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "Please fill all subTasks names of ths task: " + task_helper.getDescription(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                            return false;
+                        }
+                    }
+
+                }
 
                 break;
             }
         }
+        return true;
     }
 
     /**
@@ -734,7 +754,7 @@ public class New_Event extends AppCompatActivity {
                 }
                 case 2: {
                     View rootView = inflater.inflate(R.layout.fragment_new_event_friends, container, false);
-
+                    //Set values.
                     RecyclerView recyclerview2 = (RecyclerView) rootView.findViewById(R.id.recyclerView2);
                     recyclerview2.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
                     List<ExpandableListAdapter_New_Event_Friends.Item> data = new ArrayList<>();
@@ -958,7 +978,6 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
                 inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.new_event_detail_vote_date, parent, false);
                 ViewHolder_Vote_Date viewHolder_vote_date = new ViewHolder_Vote_Date(view);
-                viewHolder_vote_date.option.setText("Option " + Vote_ID);
                 return viewHolder_vote_date;
             }
             case Vote_Add: {
@@ -979,6 +998,7 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
             case Vote_Date: {
                 final ViewHolder_Vote_Date itemController = (ViewHolder_Vote_Date) holder;
                 itemController.refferalItem = item;
+                itemController.option.setText("Option " + (position + 1));
                 Vote_ID = itemController.refferalItem.Vote_ID;
                 itemController.date1.setText(Helper.format_date(vote_date_pointer.get(Vote_ID).getStart_Date()));
                 itemController.date2.setText(Helper.format_date(vote_date_pointer.get(Vote_ID).getEnd_Date()));
@@ -1032,6 +1052,20 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
                         }
                     }
                 });
+                itemController.cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Vote_ID = itemController.refferalItem.Vote_ID;
+                        int pos = data.indexOf(itemController.refferalItem);
+                        data.remove(pos);
+                        vote_date_pointer.remove(Vote_ID);
+                        //notifyItemRemoved(pos);
+                        notifyDataSetChanged();
+                        recyclerView_height_dp -= 56;
+                        int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getContext().getResources().getDisplayMetrics());
+                        recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
+                    }
+                });
                 break;
             }
             case Vote_Add: {
@@ -1040,11 +1074,12 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
                 itemController.imageButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        data.add(data.size() - 1, new ExpandableListAdapter_New_Event_Vote_Date.Item(ExpandableListAdapter_New_Event_Vote_Date.Vote_Date, data.size()));
                         Event_Helper.vote_date_ID_generator++;
+                        data.add(data.size() - 1, new ExpandableListAdapter_New_Event_Vote_Date.Item(ExpandableListAdapter_New_Event_Vote_Date.Vote_Date, Event_Helper.vote_date_ID_generator));
                         vote_date_pointer.put(Event_Helper.vote_date_ID_generator,
                                 new Vote_Date_Helper("dd/mm/yyyy", "dd/mm/yyyy", Constants.No, "hh:mm", "hh:mm"));
-                        notifyItemInserted(data.size() - 1);
+                        notifyDataSetChanged();
+                        //notifyItemInserted(data.size() - 1);
                         recyclerView_height_dp += 56;
                         int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getContext().getResources().getDisplayMetrics());
                         recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
@@ -1066,7 +1101,6 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
         this.Vote_ID = data.get(position).Vote_ID;
         return data.get(position).type;
     }
-
 
     private void date(View v, final TextView date_view1, final TextView date_view2, final Boolean isStartDate, final int vote_id) {
         final Dialog dialog = new Dialog(v.getContext());
@@ -1206,9 +1240,14 @@ class ExpandableListAdapter_New_Event_Vote_Location extends RecyclerView.Adapter
     private HashMap<Integer, Vote_Location_Helper> vote_location_pointer;
 
     private int Vote_ID;
+    private int Vote_ID_num_has_focus;
 
     public List<Item> getData() {
         return data;
+    }
+
+    public int getVote_ID_num_has_focus() {
+        return Vote_ID_num_has_focus;
     }
 
     public ExpandableListAdapter_New_Event_Vote_Location(List<Item> data, RecyclerView recyclerView) {
@@ -1231,7 +1270,6 @@ class ExpandableListAdapter_New_Event_Vote_Location extends RecyclerView.Adapter
                 inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.new_event_detail_vote_location, parent, false);
                 ViewHolder_Vote_Location viewHolder_vote_location = new ViewHolder_Vote_Location(view);
-                viewHolder_vote_location.option.setText("Option " + Vote_ID);
                 return viewHolder_vote_location;
             }
             case Vote_Add: {
@@ -1252,8 +1290,34 @@ class ExpandableListAdapter_New_Event_Vote_Location extends RecyclerView.Adapter
             case Vote_Location: {
                 final ViewHolder_Vote_Location itemController = (ViewHolder_Vote_Location) holder;
                 itemController.refferalItem = item;
+                itemController.option.setText("Option " + (Vote_ID + position));
                 Vote_ID = itemController.refferalItem.Vote_ID;
                 itemController.editText.setText(vote_location_pointer.get(Vote_ID).getDescription());
+                itemController.editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        Vote_ID = itemController.refferalItem.Vote_ID;
+                        if (!hasFocus) {
+                            vote_location_pointer.put(Vote_ID, new Vote_Location_Helper(itemController.editText.getText().toString()));
+                        } else {
+                            Vote_ID_num_has_focus = Vote_ID;
+                        }
+                    }
+                });
+                itemController.cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Vote_ID = itemController.refferalItem.Vote_ID;
+                        int pos = data.indexOf(itemController.refferalItem);
+                        data.remove(pos);
+                        notifyItemRangeRemoved(pos, 1);
+                        notifyDataSetChanged();
+                        recyclerView_height_dp -= 56;
+                        int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getContext().getResources().getDisplayMetrics());
+                        recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
+                        vote_location_pointer.remove(Vote_ID);
+                    }
+                });
                 break;
             }
             case Vote_Add: {
@@ -1262,10 +1326,11 @@ class ExpandableListAdapter_New_Event_Vote_Location extends RecyclerView.Adapter
                 itemController.imageButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        data.add(data.size() - 1, new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, data.size()));
                         Event_Helper.vote_location_ID_generator++;
+                        data.add(data.size() - 1, new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, Event_Helper.vote_location_ID_generator));
                         vote_location_pointer.put(Event_Helper.vote_location_ID_generator, new Vote_Location_Helper(""));
                         notifyItemInserted(data.size() - 1);
+                        notifyDataSetChanged();
                         recyclerView_height_dp += 56;
                         int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getContext().getResources().getDisplayMetrics());
                         recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
