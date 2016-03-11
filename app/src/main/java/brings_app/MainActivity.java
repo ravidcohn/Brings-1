@@ -652,17 +652,20 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
                             .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     Helper.delete_event(v.getContext(), Event_ID);
-                                    users_names.remove(position);
-                                    IDS.remove(position);
-                                    notifyItemRangeRemoved(position, 1);
+                                    //users_names.remove(position);
+                                    //IDS.remove(position);
+                                    //notifyItemRangeRemoved(position, 1);
+                                    notifyDataSetChanged();
                                 }
                             })
                             .setNeutralButton("Leave", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     Helper.leave_event(v.getContext(), Event_ID, Constants.MY_User_ID);
-                                    users_names.remove(position);
-                                    IDS.remove(position);
-                                    notifyItemRangeRemoved(position, 1);
+                                    //users_names.remove(position);
+                                    //IDS.remove(position);
+                                    //notifyItemRangeRemoved(position, 1);
+                                    notifyDataSetChanged();
+
                                 }
                             })
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -679,11 +682,12 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     Helper.leave_event(v.getContext(), Event_ID, Constants.MY_User_ID);
-                                    users_names.remove(position);
-                                    IDS.remove(position);
+                                    //users_names.remove(position);
+                                    //IDS.remove(position);
                                     Event_IDs.remove(Event_ID);
-                                    int pos = users_names.indexOf(Event_ID);
-                                    notifyItemRangeRemoved(pos, 1);
+                                    //int pos = users_names.indexOf(Event_ID);
+                                    //notifyItemRangeRemoved(pos, 1);
+                                    notifyDataSetChanged();
                                 }
                             })
                             .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -702,7 +706,7 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), Event.class);
                 Bundle data = new Bundle();
-                int pos = users_names.indexOf(Event_ID);
+                //int pos = users_names.indexOf(Event_ID);
                 data.putString("Event_ID", Event_ID);
                 intent.putExtras(data);
                 v.getContext().startActivity(intent);
@@ -714,7 +718,7 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return IDS.size();
+        return Event_IDs.size();
     }
 
 

@@ -670,7 +670,7 @@ class ExpandableListAdapter_Event_Vote_Date extends RecyclerView.Adapter<Recycle
                 } else {
                     itemController.checkBox.setChecked(false);
                 }
-                itemController.option.setText("Option " + Vote_ID);
+                itemController.option.setText("Option " + (position + 1));
                 //Set CheckBox
                 itemController.checkBox.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -911,7 +911,7 @@ class ExpandableListAdapter_Event_Vote_Location extends RecyclerView.Adapter<Rec
                 } else {
                     itemController.checkBox.setChecked(false);
                 }
-                itemController.option.setText("Option " + Vote_ID);
+                itemController.option.setText("Option " + (position + 1));
                 //Set CheckBox
                 itemController.checkBox.setOnClickListener(new View.OnClickListener() {
                     @Override
