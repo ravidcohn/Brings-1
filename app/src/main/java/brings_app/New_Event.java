@@ -708,47 +708,6 @@ public class New_Event extends AppCompatActivity {
                             setSwitcher_location_view(recyclerView_location, relativeLayout_location_titles, relativeLayout_location, editText_location);
                         }
                     });
-                    /*
-                    switcher_vote_location.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            if (isChecked) {
-                                final HashMap<Integer, Vote_Location_Helper> vote_pointer;
-                                if (Event_Helper.newEvent_edit_mode.equals(Constants.New_Event)) {
-                                    vote_pointer = Event_Helper.vote_location;
-                                } else {
-                                    vote_pointer = Event_Helper.vote_location_tmp;
-                                }
-                                Event_Helper.details[Table_Events.Vote_Location_num] = Constants.Yes;
-                                relativeLayout_location.setVisibility(View.GONE);
-                                recyclerView_location.setVisibility(View.VISIBLE);
-                                relativeLayout_location_titles.setVisibility(View.VISIBLE);
-                                recyclerView_location.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
-                                List<ExpandableListAdapter_New_Event_Vote_Location.Item> data = new ArrayList<>();
-                                if (Event_Helper.vote_location.size() == 0) {
-                                    data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, 1));
-                                    vote_pointer.put(1, new Vote_Location_Helper(""));
-                                    Event_Helper.vote_location_ID_generator++;
-                                } else {
-                                    for (int vote_id : Event_Helper.vote_location.keySet()) {
-                                        data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, vote_id));
-                                    }
-                                }
-                                int recyclerView_height_dp = (data.size() * 57) + 34;//57 + 34.
-                                data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Add, 0));
-                                recyclerView_location.setAdapter(new ExpandableListAdapter_New_Event_Vote_Location(data, recyclerView_location));
-                                int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, getResources().getDisplayMetrics());
-                                recyclerView_location.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
-                            } else {
-                                Event_Helper.details[Table_Events.Vote_Location_num] = Constants.No;
-                                recyclerView_location.setVisibility(View.GONE);
-                                relativeLayout_location_titles.setVisibility(View.GONE);
-                                relativeLayout_location.setVisibility(View.VISIBLE);
-
-                            }
-                        }
-                    });
-                    */
 
                     return rootView;
                 }
@@ -881,11 +840,8 @@ public class New_Event extends AppCompatActivity {
                         data.add(new ExpandableListAdapter_New_Event_Vote_Date.Item(ExpandableListAdapter_New_Event_Vote_Date.Vote_Date, vote_id));
                     }
                 }
-                int recyclerView_height_dp = (data.size() * 57) + 34;//57 + 34.
                 data.add(new ExpandableListAdapter_New_Event_Vote_Date.Item(ExpandableListAdapter_New_Event_Vote_Date.Vote_Add, 0));
-                recyclerView_date.setAdapter(new ExpandableListAdapter_New_Event_Vote_Date(data, recyclerView_date));
-                int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, getResources().getDisplayMetrics());
-                recyclerView_date.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
+                recyclerView_date.setAdapter(new ExpandableListAdapter_New_Event_Vote_Date(data, recyclerView_date, getContext()));
             } else {
                 Event_Helper.details[Table_Events.Vote_Time_num] = Constants.No;
                 recyclerView_date.setVisibility(View.GONE);
@@ -927,11 +883,8 @@ public class New_Event extends AppCompatActivity {
                         data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, vote_id));
                     }
                 }
-                int recyclerView_height_dp = (data.size() * 57) + 34;//57 + 34.
                 data.add(new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Add, 0));
-                recyclerView_location.setAdapter(new ExpandableListAdapter_New_Event_Vote_Location(data, recyclerView_location));
-                int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, getResources().getDisplayMetrics());
-                recyclerView_location.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
+                recyclerView_location.setAdapter(new ExpandableListAdapter_New_Event_Vote_Location(data, recyclerView_location, getContext()));
             } else {
                 Event_Helper.details[Table_Events.Vote_Location_num] = Constants.No;
                 recyclerView_location.setVisibility(View.GONE);
@@ -953,14 +906,14 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
     private HashMap<Integer, Vote_Date_Helper> vote_date_pointer;
 
     private int Vote_ID;
-    private int parent_height;
-    private int child_height;
+    private int vote_height;
+    private int add_height;
 
     public List<Item> getData() {
         return data;
     }
 
-    public ExpandableListAdapter_New_Event_Vote_Date(List<Item> data, RecyclerView recyclerView) {
+    public ExpandableListAdapter_New_Event_Vote_Date(List<Item> data, RecyclerView recyclerView, Context context) {
         this.data = data;
         this.recyclerView = recyclerView;
         if (Event_Helper.newEvent_edit_mode.equals(Constants.New_Event)) {
@@ -968,8 +921,11 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
         } else {
             this.vote_date_pointer = Event_Helper.vote_date_tmp;
         }
-        parent_height =0;
-        recyclerView_height_dp = (data.size() - 1) * 57 + 34;
+        vote_height = 58;
+        add_height = 34;
+        recyclerView_height_dp = (data.size() - 1) * vote_height + add_height;
+        int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, context.getResources().getDisplayMetrics());
+        recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
     }
 
     @Override
@@ -1064,7 +1020,7 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
                         vote_date_pointer.remove(Vote_ID);
                         //notifyItemRemoved(pos);
                         notifyDataSetChanged();
-                        recyclerView_height_dp -= 56;
+                        recyclerView_height_dp -= vote_height;
                         int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getContext().getResources().getDisplayMetrics());
                         recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
                     }
@@ -1083,7 +1039,7 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
                                 new Vote_Date_Helper("dd/mm/yyyy", "dd/mm/yyyy", Constants.No, "hh:mm", "hh:mm"));
                         notifyDataSetChanged();
                         //notifyItemInserted(data.size() - 1);
-                        recyclerView_height_dp += 56;
+                        recyclerView_height_dp += vote_height;
                         int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getContext().getResources().getDisplayMetrics());
                         recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
                     }
@@ -1240,6 +1196,8 @@ class ExpandableListAdapter_New_Event_Vote_Location extends RecyclerView.Adapter
     private List<Item> data;
     private RecyclerView recyclerView;
     private int recyclerView_height_dp;
+    private int vote_height;
+    private int add_height;
     private HashMap<Integer, Vote_Location_Helper> vote_location_pointer;
 
     private int Vote_ID;
@@ -1253,7 +1211,7 @@ class ExpandableListAdapter_New_Event_Vote_Location extends RecyclerView.Adapter
         return Vote_ID_num_has_focus;
     }
 
-    public ExpandableListAdapter_New_Event_Vote_Location(List<Item> data, RecyclerView recyclerView) {
+    public ExpandableListAdapter_New_Event_Vote_Location(List<Item> data, RecyclerView recyclerView, Context context) {
         this.data = data;
         this.recyclerView = recyclerView;
         if (Event_Helper.newEvent_edit_mode.equals(Constants.New_Event)) {
@@ -1261,7 +1219,11 @@ class ExpandableListAdapter_New_Event_Vote_Location extends RecyclerView.Adapter
         } else {
             this.vote_location_pointer = Event_Helper.vote_location_tmp;
         }
-        recyclerView_height_dp = (data.size() - 1) * 57 + 34;
+        vote_height = 35;
+        add_height = 34;
+        recyclerView_height_dp = (data.size() - 1) * vote_height + add_height;
+        int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, context.getResources().getDisplayMetrics());
+        recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
     }
 
     @Override
@@ -1293,7 +1255,7 @@ class ExpandableListAdapter_New_Event_Vote_Location extends RecyclerView.Adapter
             case Vote_Location: {
                 final ViewHolder_Vote_Location itemController = (ViewHolder_Vote_Location) holder;
                 itemController.refferalItem = item;
-                itemController.option.setText("Option " + (Vote_ID + position));
+                itemController.option.setText("Option " + (position + 1));
                 Vote_ID = itemController.refferalItem.Vote_ID;
                 itemController.editText.setText(vote_location_pointer.get(Vote_ID).getDescription());
                 itemController.editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -1313,9 +1275,9 @@ class ExpandableListAdapter_New_Event_Vote_Location extends RecyclerView.Adapter
                         Vote_ID = itemController.refferalItem.Vote_ID;
                         int pos = data.indexOf(itemController.refferalItem);
                         data.remove(pos);
-                        notifyItemRangeRemoved(pos, 1);
+                        //notifyItemRangeRemoved(pos, 1);
                         notifyDataSetChanged();
-                        recyclerView_height_dp -= 56;
+                        recyclerView_height_dp -= vote_height;
                         int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getContext().getResources().getDisplayMetrics());
                         recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
                         vote_location_pointer.remove(Vote_ID);
@@ -1332,9 +1294,9 @@ class ExpandableListAdapter_New_Event_Vote_Location extends RecyclerView.Adapter
                         Event_Helper.vote_location_ID_generator++;
                         data.add(data.size() - 1, new ExpandableListAdapter_New_Event_Vote_Location.Item(ExpandableListAdapter_New_Event_Vote_Location.Vote_Location, Event_Helper.vote_location_ID_generator));
                         vote_location_pointer.put(Event_Helper.vote_location_ID_generator, new Vote_Location_Helper(""));
-                        notifyItemInserted(data.size() - 1);
+                        //notifyItemInserted(data.size() - 1);
                         notifyDataSetChanged();
-                        recyclerView_height_dp += 56;
+                        recyclerView_height_dp += vote_height;
                         int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getContext().getResources().getDisplayMetrics());
                         recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
                     }

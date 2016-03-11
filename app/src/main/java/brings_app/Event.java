@@ -480,10 +480,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                     }
                     data.add(vote);
                 }
-                int recyclerView_height_dp = (data.size() * 55);//40.
-                recyclerView_date.setAdapter(new ExpandableListAdapter_Event_Vote_Date(data, recyclerView_date));
-                int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, getResources().getDisplayMetrics());
-                recyclerView_date.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
+                recyclerView_date.setAdapter(new ExpandableListAdapter_Event_Vote_Date(data, recyclerView_date, getContext()));
             } else {
                 recyclerView_date.setVisibility(View.GONE);
                 relativeLayout_titles.setVisibility(View.GONE);
@@ -513,10 +510,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                     }
                     data.add(vote);
                 }
-                int recyclerView_height_dp = (data.size() * 55);//40.
-                recyclerView_location.setAdapter(new ExpandableListAdapter_Event_Vote_Location(data, recyclerView_location));
-                int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, getResources().getDisplayMetrics());
-                recyclerView_location.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
+                recyclerView_location.setAdapter(new ExpandableListAdapter_Event_Vote_Location(data, recyclerView_location, getContext()));
             } else {
                 recyclerView_location.setVisibility(View.GONE);
                 relativeLayout_titles.setVisibility(View.GONE);
@@ -590,7 +584,6 @@ class ExpandableListAdapter_Event_Vote_Date extends RecyclerView.Adapter<Recycle
     public static final int Vote_Date_Child = 1;
 
     private List<Item> data;
-    private int recyclerView_height_px;
     private RecyclerView recyclerView;
 
     private int Vote_ID;
@@ -602,14 +595,15 @@ class ExpandableListAdapter_Event_Vote_Date extends RecyclerView.Adapter<Recycle
 
     private int parent_height;
     private int child_height;
+    private int recyclerView_height_dp;
 
-
-    public ExpandableListAdapter_Event_Vote_Date(List<Item> data, RecyclerView recyclerView) {
+    public ExpandableListAdapter_Event_Vote_Date(List<Item> data, RecyclerView recyclerView, Context context) {
         this.data = data;
         this.recyclerView = recyclerView;
-        parent_height = 164;//px
-        child_height = 140;//px
-        recyclerView_height_px = data.size() * parent_height;
+        parent_height = 50;
+        child_height = 45;
+        recyclerView_height_dp = data.size() * parent_height;
+        int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, context.getResources().getDisplayMetrics());
         recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
     }
 
@@ -622,21 +616,6 @@ class ExpandableListAdapter_Event_Vote_Date extends RecyclerView.Adapter<Recycle
                 inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.event_detail_vote_date_parent, parent, false);
                 ViewHolder_Vote_Date_Parent viewHolder_vote_date_parent = new ViewHolder_Vote_Date_Parent(view);
-                /*
-                final ViewTreeObserver observer = view.getViewTreeObserver();
-                final View finalView = view;
-                observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        if (parent_height == 0) {
-                            parent_height = finalView.getHeight();
-                            recyclerView_height_dp = (data.size() - 1) * parent_height;
-                            int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, finalView.getContext().getResources().getDisplayMetrics());
-                            recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, parent_height));
-                        }
-                        finalView.getViewTreeObserver().addOnGlobalLayoutListener(this);
-                    }
-                });*/
                 return viewHolder_vote_date_parent;
             }
             case Vote_Date_Child: {
@@ -687,7 +666,8 @@ class ExpandableListAdapter_Event_Vote_Date extends RecyclerView.Adapter<Recycle
                             } else {
                                 data.add(pos + 1, new ExpandableListAdapter_Event_Vote_Date.Item(Vote_Date_Child, Vote_ID, Constants.MY_User_ID));
                                 notifyItemInserted(pos + 1);
-                                recyclerView_height_px += child_height;
+                                recyclerView_height_dp += child_height;
+                                int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getResources().getDisplayMetrics());
                                 recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
                             }
                         } else {
@@ -699,7 +679,8 @@ class ExpandableListAdapter_Event_Vote_Date extends RecyclerView.Adapter<Recycle
                                     i++;
                                 data.remove(data.get(pos + i));
                                 notifyItemRemoved(pos + i);
-                                recyclerView_height_px -= child_height;
+                                recyclerView_height_dp -= child_height;
+                                int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getResources().getDisplayMetrics());
                                 recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
                             } else {
                                 int i = 0;
@@ -729,7 +710,8 @@ class ExpandableListAdapter_Event_Vote_Date extends RecyclerView.Adapter<Recycle
                             if (count > 0) {
                                 notifyItemRangeRemoved(pos + 1, count);
                                 itemController.expand_arrow.setImageResource(R.mipmap.ic_expand_arrow);
-                                recyclerView_height_px -= child_height * count;
+                                recyclerView_height_dp -= child_height * count;
+                                int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getResources().getDisplayMetrics());
                                 recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
                             }
                         } else {
@@ -742,7 +724,8 @@ class ExpandableListAdapter_Event_Vote_Date extends RecyclerView.Adapter<Recycle
                             notifyItemRangeInserted(pos + 1, index - pos - 1);
                             itemController.expand_arrow.setImageResource(R.mipmap.ic_collapse_arrow);
                             item.invisibleChildren = null;
-                            recyclerView_height_px += child_height * (index - pos - 1);
+                            recyclerView_height_dp += child_height * (index - pos - 1);
+                            int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getResources().getDisplayMetrics());
                             recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
                         }
 
@@ -836,7 +819,6 @@ class ExpandableListAdapter_Event_Vote_Location extends RecyclerView.Adapter<Rec
     public static final int Vote_Location_Child = 1;
 
     private List<Item> data;
-    private int recyclerView_height_px;
     private RecyclerView recyclerView;
 
     private int Vote_ID;
@@ -848,14 +830,16 @@ class ExpandableListAdapter_Event_Vote_Location extends RecyclerView.Adapter<Rec
 
     private int parent_height;
     private int child_height;
+    private int recyclerView_height_dp;
 
 
-    public ExpandableListAdapter_Event_Vote_Location(List<Item> data, RecyclerView recyclerView) {
+    public ExpandableListAdapter_Event_Vote_Location(List<Item> data, RecyclerView recyclerView, Context context) {
         this.data = data;
         this.recyclerView = recyclerView;
-        parent_height = 164;//px
-        child_height = 140;//px
-        recyclerView_height_px = data.size() * parent_height;
+        parent_height = 40;
+        child_height = 45;
+        recyclerView_height_dp = data.size() * parent_height;
+        int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, context.getResources().getDisplayMetrics());
         recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
     }
 
@@ -868,21 +852,6 @@ class ExpandableListAdapter_Event_Vote_Location extends RecyclerView.Adapter<Rec
                 inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.event_detail_vote_location_parent, parent, false);
                 ViewHolder_Vote_Location_Parent viewHolder_vote_location_parent = new ViewHolder_Vote_Location_Parent(view);
-                /*
-                final ViewTreeObserver observer = view.getViewTreeObserver();
-                final View finalView = view;
-                observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        if (parent_height == 0) {
-                            parent_height = finalView.getHeight();
-                            recyclerView_height_dp = (data.size() - 1) * parent_height;
-                            int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, finalView.getContext().getResources().getDisplayMetrics());
-                            recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, parent_height));
-                        }
-                        finalView.getViewTreeObserver().addOnGlobalLayoutListener(this);
-                    }
-                });*/
                 return viewHolder_vote_location_parent;
             }
             case Vote_Location_Child: {
@@ -929,7 +898,8 @@ class ExpandableListAdapter_Event_Vote_Location extends RecyclerView.Adapter<Rec
                             } else {
                                 data.add(pos + 1, new ExpandableListAdapter_Event_Vote_Location.Item(Vote_Location_Child, Vote_ID, Constants.MY_User_ID));
                                 notifyItemInserted(pos + 1);
-                                recyclerView_height_px += child_height;
+                                recyclerView_height_dp += child_height;
+                                int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getResources().getDisplayMetrics());
                                 recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
                             }
                         } else {
@@ -941,7 +911,8 @@ class ExpandableListAdapter_Event_Vote_Location extends RecyclerView.Adapter<Rec
                                     i++;
                                 data.remove(data.get(pos + i));
                                 notifyItemRemoved(pos + i);
-                                recyclerView_height_px -= child_height;
+                                recyclerView_height_dp -= child_height;
+                                int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getResources().getDisplayMetrics());
                                 recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
                             } else {
                                 int i = 0;
@@ -971,7 +942,8 @@ class ExpandableListAdapter_Event_Vote_Location extends RecyclerView.Adapter<Rec
                             if (count > 0) {
                                 notifyItemRangeRemoved(pos + 1, count);
                                 itemController.expand_arrow.setImageResource(R.mipmap.ic_expand_arrow);
-                                recyclerView_height_px -= child_height * count;
+                                recyclerView_height_dp -= child_height * count;
+                                int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getResources().getDisplayMetrics());
                                 recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
                             }
                         } else {
@@ -984,7 +956,8 @@ class ExpandableListAdapter_Event_Vote_Location extends RecyclerView.Adapter<Rec
                             notifyItemRangeInserted(pos + 1, index - pos - 1);
                             itemController.expand_arrow.setImageResource(R.mipmap.ic_collapse_arrow);
                             item.invisibleChildren = null;
-                            recyclerView_height_px += child_height * (index - pos - 1);
+                            recyclerView_height_dp += child_height * (index - pos - 1);
+                            int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, v.getResources().getDisplayMetrics());
                             recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
                         }
 

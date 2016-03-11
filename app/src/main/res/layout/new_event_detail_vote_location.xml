@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="4dp">
+    android:layout_height="35dp">
 
     <TextView
         android:id="@+id/option"
@@ -10,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:padding="4dp"
+        android:paddingStart="4dp"
         android:text="Option 1" />
 
     <EditText
@@ -20,9 +19,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_toEndOf="@+id/option"
+        android:layout_centerVertical="true"
         android:background="@android:color/transparent"
         android:hint="Click to insert location"
-        android:padding="4dp"
         android:singleLine="true" />
 
 
@@ -37,13 +36,14 @@
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_cancel_gray" />
 
-    <include
-        layout="@layout/line"
-        android:layout_width="wrap_content"
+    <View
+        android:layout_marginTop="3dp"
+        android:layout_width="fill_parent"
         android:layout_height="0.5dp"
-        android:layout_below="@+id/time2"
+        android:layout_below="@+id/editText"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="5dp" />
+        android:layout_marginStart="5dp"
+        android:background="@color/divider" />
 
 </RelativeLayout>
 
