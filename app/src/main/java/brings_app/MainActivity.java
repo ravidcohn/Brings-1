@@ -655,6 +655,7 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
                                     //users_names.remove(position);
                                     //IDS.remove(position);
                                     //notifyItemRangeRemoved(position, 1);
+                                    Event_IDs.remove(Event_ID);
                                     notifyDataSetChanged();
                                 }
                             })
@@ -664,6 +665,7 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
                                     //users_names.remove(position);
                                     //IDS.remove(position);
                                     //notifyItemRangeRemoved(position, 1);
+                                    Event_IDs.remove(Event_ID);
                                     notifyDataSetChanged();
 
                                 }
