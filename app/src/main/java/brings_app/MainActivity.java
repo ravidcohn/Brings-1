@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
     private ImageButton ibAdd;
     private TextView tvSearch;
     private SearchView search;
-    private static ArrayList<String> users_names;
-    private static ArrayList<Integer> IDS;
+    //private static ArrayList<String> users_names;
+    //private static ArrayList<Integer> IDS;
     private static ArrayList<String> Event_IDs;
     private static final String PROPERTY_REG_ID = "registrationId";
     private static final String PROPERTY_APP_VERSION = "appVersion";
@@ -92,8 +92,8 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
         GcmIntentService.delegate = this;
         BringsApi = CloudEndpointBuilderHelper.getEndpoints();
-        users_names = new ArrayList<>();
-        IDS = new ArrayList<>();
+        //users_names = new ArrayList<>();
+        //IDS = new ArrayList<>();
         Event_IDs = new ArrayList<>();
         //Set text font for the app name;
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/GreatVibes_Regular.ttf");
@@ -224,8 +224,8 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
         if(sqlresult != null)
         for (String str : sqlresult[0]) {
             String[] s = str.split(" - ");
-            users_names.add(s[0]);
-            IDS.add(Integer.parseInt(s[1]));
+            //users_names.add(s[0]);
+            //IDS.add(Integer.parseInt(s[1]));
             Event_IDs.add(str);
         }
 
@@ -319,8 +319,8 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
     }
 
     public void setList() {
-        users_names.clear();
-        IDS.clear();
+        //users_names.clear();
+        //IDS.clear();
         Event_IDs.clear();
         sql();
     }
