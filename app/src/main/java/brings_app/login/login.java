@@ -83,11 +83,18 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
     @Override
     public void onPause() {
         super.onPause();
-        if ((progressBar != null) && progressBar.isShowing())
+        if ((progressBar != null) )
             progressBar.dismiss();
         progressBarStatus = false;
     }
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (progressBar != null) {
+            progressBar.dismiss();
+            progressBar = null;
+        }
+    }
     public void signIn(View view) {
         progress(view.getContext(), "Sign in ...");
         new LoginAsyncTask(this, this).execute(etName.getText().toString(), etPass.getText().toString());

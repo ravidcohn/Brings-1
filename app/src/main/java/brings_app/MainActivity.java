@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
                 setList();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                        .commit();
+                        .commitAllowingStateLoss();
             }
 
             @Override
