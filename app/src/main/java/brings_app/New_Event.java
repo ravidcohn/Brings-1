@@ -87,6 +87,7 @@ public class New_Event extends AppCompatActivity {
     private ImageButton search;
     private TextView next_done;
     private static FloatingActionButton fab_task;
+    private final static boolean apk23 = Build.VERSION.SDK_INT >= 23;
 
 
     @Override
@@ -567,8 +568,14 @@ public class New_Event extends AppCompatActivity {
                 time_view2.setText(Helper.format_time(current_time));
             }
             if (!current_time.equals("hh:mm")) {
-                timePicker.setHour(Integer.parseInt(current_time.split(":")[0]));
-                timePicker.setMinute(Integer.parseInt(current_time.split(":")[1]));
+                if(apk23) {
+                    timePicker.setHour(Integer.parseInt(current_time.split(":")[0]));
+                    timePicker.setMinute(Integer.parseInt(current_time.split(":")[1]));
+                }
+                else{
+                    timePicker.setCurrentHour(Integer.parseInt(current_time.split(":")[0]));
+                    timePicker.setCurrentMinute(Integer.parseInt(current_time.split(":")[1]));
+                }
             }
             timePicker.setIs24HourView(true);
             dialog.show();
@@ -576,7 +583,13 @@ public class New_Event extends AppCompatActivity {
                 @TargetApi(Build.VERSION_CODES.M)
                 @Override
                 public void onClick(final View v) {
-                    String time = timePicker.getHour() + ":" + timePicker.getMinute();
+                    String time = "";
+                    if(apk23) {
+                        time = timePicker.getHour() + ":" + timePicker.getMinute();
+                    }
+                    else{
+                        time = timePicker.getCurrentHour() + ":" + timePicker.getCurrentMinute();
+                    }
                     if (isStartTime) {
                         Event_Helper.details[Table_Events.Start_Time_num] = time;
                         Event_Helper.details[Table_Events.End_Time_num] = time;
@@ -908,6 +921,7 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
     private RecyclerView recyclerView;
     private int recyclerView_height_dp;
     private HashMap<Integer, Vote_Date_Helper> vote_date_pointer;
+    private final static boolean apk23 = Build.VERSION.SDK_INT >= 23;
 
     private int Vote_ID;
     private int vote_height;
@@ -1121,15 +1135,23 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
             time_view2.setText(Helper.format_time(current_time));
         }
         if (!current_time.equals("hh:mm")) {
-            timePicker.setHour(Integer.parseInt(current_time.split(":")[0]));
-            timePicker.setMinute(Integer.parseInt(current_time.split(":")[1]));
+            if(apk23) {
+                timePicker.setHour(Integer.parseInt(current_time.split(":")[0]));
+                timePicker.setMinute(Integer.parseInt(current_time.split(":")[1]));
+            }
+            else{
+                timePicker.setCurrentHour(Integer.parseInt(current_time.split(":")[0]));
+                timePicker.setCurrentMinute(Integer.parseInt(current_time.split(":")[1]));
+            }
         }
         timePicker.setIs24HourView(true);
         dialog.show();
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String time = timePicker.getHour() + ":" + timePicker.getMinute();
+                String time = "";
+                if(apk23)time = timePicker.getHour() + ":" + timePicker.getMinute();
+                else time = timePicker.getCurrentHour() + ":" + timePicker.getCurrentMinute();
                 if (isStartTime) {
                     vote_date_pointer.get(vote_id).setStart_Time(time);
                     vote_date_pointer.get(vote_id).setEnd_Time(time);

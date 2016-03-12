@@ -73,11 +73,12 @@ public final class Event_Helper {
         }
     }
 
-    public static void load_event(String event_id) {
+    public static int load_event(String event_id) {
         clear();
         //Load details.
         details[Table_Events.Event_ID_num] = event_id;
         ArrayList<String>[] dbSql = sqlHelper.select(null, Table_Events.Table_Name, new String[]{Table_Events.Event_ID}, new String[]{event_id}, new int[]{1});
+        if(dbSql[Table_Events.Name_num].size() == 0) return -1;
         details[Table_Events.Name_num] = dbSql[Table_Events.Name_num].get(0);
         details[Table_Events.Location_num] = dbSql[Table_Events.Location_num].get(0);
         details[Table_Events.Vote_Location_num] = dbSql[Table_Events.Vote_Location_num].get(0);
@@ -145,6 +146,7 @@ public final class Event_Helper {
                 vote_location.get(vote_location_id).getVotes().put(User_ID, User_ID);
             }
         }
+        return 0;
     }
 }
 
