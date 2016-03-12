@@ -1,10 +1,12 @@
 package brings_app;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -548,6 +550,7 @@ public class New_Event extends AppCompatActivity {
             });
         }
 
+        @TargetApi(Build.VERSION_CODES.M)
         private void time(View v, final TextView time_view1, final TextView time_view2, final Boolean isStartTime) {
             final Dialog dialog = new Dialog(v.getContext());
             dialog.setContentView(R.layout.new_event_detail_time_dialog);
@@ -570,6 +573,7 @@ public class New_Event extends AppCompatActivity {
             timePicker.setIs24HourView(true);
             dialog.show();
             done.setOnClickListener(new View.OnClickListener() {
+                @TargetApi(Build.VERSION_CODES.M)
                 @Override
                 public void onClick(final View v) {
                     String time = timePicker.getHour() + ":" + timePicker.getMinute();
