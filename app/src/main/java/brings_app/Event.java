@@ -153,7 +153,8 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Event_Helper.load_event(Event_Helper.details[Table_Events.Event_ID_num]);
+                    int status = Event_Helper.load_event(Event_Helper.details[Table_Events.Event_ID_num]);
+                    if(status == -1)return;
                     int CurrentItem = mViewPager.getCurrentItem();
                     mViewPager.setAdapter(mSectionsPagerAdapter);
                     mViewPager.setCurrentItem(CurrentItem);
