@@ -277,6 +277,34 @@ public class GcmIntentService extends IntentService {
                         Helper.update_Event_details_field_MySQL(EventID, Filed, Update);
                         break;
                     }
+                    case Constants.Insert_Vote_Date: {
+                        String EventID = details.split("\\^")[0];
+                        int Vote_ID = Integer.parseInt(details.split("\\^")[1]);
+                        String User_ID = details.split("\\^")[2];
+                        Helper.add_vote_date_User_ID_MySQL(EventID, Vote_ID, User_ID);
+                        break;
+                    }
+                    case Constants.Delete_Vote_Date: {
+                        String EventID = details.split("\\^")[0];
+                        int Vote_ID = Integer.parseInt(details.split("\\^")[1]);
+                        String User_ID = details.split("\\^")[2];
+                        Helper.delete_vote_date_User_ID_MySQL(EventID, Vote_ID, User_ID);
+                        break;
+                    }
+                    case Constants.Insert_Vote_Location: {
+                        String EventID = details.split("\\^")[0];
+                        int Vote_ID = Integer.parseInt(details.split("\\^")[1]);
+                        String User_ID = details.split("\\^")[2];
+                        Helper.add_vote_location_User_ID_MySQL(EventID, Vote_ID, User_ID);
+                        break;
+                    }
+                    case Constants.Delete_Vote_Location: {
+                        String EventID = details.split("\\^")[0];
+                        int Vote_ID = Integer.parseInt(details.split("\\^")[1]);
+                        String User_ID = details.split("\\^")[2];
+                        Helper.delete_vote_location_User_ID_MySQL(EventID, Vote_ID, User_ID);
+                        break;
+                    }
                     default: {
                         showToast(extras.getString("message"));
                         break;

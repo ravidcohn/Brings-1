@@ -191,7 +191,7 @@ public class Helper {
         add_vote_location_User_ID_MySQL(Event_ID, Vote_ID, User_ID);
         add_vote_location_User_ID_ServerSQL(context, Event_ID, Vote_ID, User_ID);
         //Send message to all users.
-        String message = Constants.Insert_Vote_Date + "|" + Event_ID + "^" + Vote_ID + "^" + User_ID;
+        String message = Constants.Insert_Vote_Location + "|" + Event_ID + "^" + Vote_ID + "^" + User_ID;
         Send_Message_To_All_My_Friend_By_Event_ServerSQL(context, Event_ID, message);
     }
 
@@ -200,7 +200,7 @@ public class Helper {
         delete_vote_location_User_ID_MySQL(Event_ID, Vote_ID, User_ID);
         delete_vote_location_User_ID_ServerSQL(context, Event_ID, Vote_ID, User_ID);
         //Send message to all users.
-        String message = Constants.Delete_Vote_Date + "|" + Event_ID + "^" + Vote_ID + "^" + User_ID;
+        String message = Constants.Delete_Vote_Location + "|" + Event_ID + "^" + Vote_ID + "^" + User_ID;
         Send_Message_To_All_My_Friend_By_Event_ServerSQL(context, Event_ID, message);
     }
 
@@ -435,7 +435,7 @@ public class Helper {
         sqlHelper.insert(Table_Vote_Date.Table_Name, vote_date);
     }
 
-    private static void add_vote_date_User_ID_MySQL(String event_id, int vote_id, String user_id) {
+    public static void add_vote_date_User_ID_MySQL(String event_id, int vote_id, String user_id) {
         String[] vote_date = new String[Table_Vote_Date.Size()];
         vote_date[Table_Vote_Date.Event_ID_num] = event_id;
         vote_date[Table_Vote_Date.Vote_ID_num] = vote_id + "";
@@ -457,7 +457,7 @@ public class Helper {
         sqlHelper.insert(Table_Vote_Location.Table_Name, vote_location);
     }
 
-    private static void add_vote_location_User_ID_MySQL(String event_id, int vote_id, String user_id) {
+    public static void add_vote_location_User_ID_MySQL(String event_id, int vote_id, String user_id) {
         String[] vote_location = new String[Table_Vote_Location.Size()];
         vote_location[Table_Vote_Location.Event_ID_num] = event_id;
         vote_location[Table_Vote_Location.Vote_ID_num] = vote_id + "";
@@ -504,12 +504,12 @@ public class Helper {
                 new String[]{Table_Events.Event_ID}, new String[]{Event_ID});
     }
 
-    private static void delete_vote_date_User_ID_MySQL(String Event_ID, int Vote_ID, String User_ID) {
+    public static void delete_vote_date_User_ID_MySQL(String Event_ID, int Vote_ID, String User_ID) {
         sqlHelper.delete(Table_Vote_Date.Table_Name, new String[]{Table_Vote_Date.Event_ID, Table_Vote_Date.Vote_ID, Table_Vote_Date.User_ID},
                 new String[]{Event_ID, Vote_ID + "", User_ID}, new int[]{1});
     }
 
-    private static void delete_vote_location_User_ID_MySQL(String Event_ID, int Vote_ID, String User_ID) {
+    public static void delete_vote_location_User_ID_MySQL(String Event_ID, int Vote_ID, String User_ID) {
         sqlHelper.delete(Table_Vote_Location.Table_Name, new String[]{Table_Vote_Location.Event_ID, Table_Vote_Location.Vote_ID, Table_Vote_Location.User_ID},
                 new String[]{Event_ID, Vote_ID + "", User_ID}, new int[]{1});
     }
