@@ -221,13 +221,13 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
         //sqlHelper.delete(Table_Events.Table_Name,new String[]{Table_Events.Event_ID},new String[]{"@ - []"}, null);
         ArrayList<String>[] sqlresult = sqlHelper.select(null, Table_Events.Table_Name, null, null, null);
-        if(sqlresult != null)
-        for (String str : sqlresult[0]) {
-            String[] s = str.split(" - ");
-            //users_names.add(s[0]);
-            //IDS.add(Integer.parseInt(s[1]));
-            Event_IDs.add(str);
-        }
+        if (sqlresult != null)
+            for (String str : sqlresult[0]) {
+                String[] s = str.split(" - ");
+                //users_names.add(s[0]);
+                //IDS.add(Integer.parseInt(s[1]));
+                Event_IDs.add(str);
+            }
 
     }
 
@@ -460,8 +460,8 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
     private static final String TAG = "CustomAdapter";
 
-   // private static ArrayList<String> users_names;
-   //private static ArrayList<Integer> IDS;
+    // private static ArrayList<String> users_names;
+    //private static ArrayList<Integer> IDS;
     private static ArrayList<String> Event_IDs;
     private String Mode;
 
@@ -548,13 +548,19 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
                 TextView attending = (TextView) view.findViewById(R.id.attending);
                 TextView tasks = (TextView) view.findViewById(R.id.tasks);
                 name.setText(dbEvent[Table_Events.Name_num].get(0));
-                if (dbEvent[Table_Events.Location_num].get(0).equals(""))
-                    location.setText("Location having been set yet.");
+                if (dbEvent[Table_Events.Vote_Location_num].get(0).equals(Constants.Yes))
+                    location.setText("Open for voting");
+                else if (dbEvent[Table_Events.Location_num].get(0).equals(""))
+                    location.setText("Location having been set yet");
                 else
                     location.setText(dbEvent[Table_Events.Location_num].get(0));
-                String date_text = Helper.date_text_view(dbEvent[Table_Events.Start_Date_num].get(0), dbEvent[Table_Events.End_Date_num].get(0),
-                        dbEvent[Table_Events.All_Day_Time_num].get(0), dbEvent[Table_Events.Start_Time_num].get(0), dbEvent[Table_Events.End_Time_num].get(0));
-                date.setText(date_text);
+                if (dbEvent[Table_Events.Vote_Time_num].get(0).equals(Constants.Yes))
+                    date.setText("Open for voting");
+                else {
+                    String date_text = Helper.date_text_view(dbEvent[Table_Events.Start_Date_num].get(0), dbEvent[Table_Events.End_Date_num].get(0),
+                            dbEvent[Table_Events.All_Day_Time_num].get(0), dbEvent[Table_Events.Start_Time_num].get(0), dbEvent[Table_Events.End_Time_num].get(0));
+                    date.setText(date_text);
+                }
                 //Set up attending for the event.
                 ArrayList<String>[] dbEvent_Users = sqlHelper.select(null, Table_Events_Users.Table_Name, new String[]{Table_Events_Users.Event_ID},
                         new String[]{Event_ID}, null);

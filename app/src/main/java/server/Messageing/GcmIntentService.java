@@ -474,12 +474,12 @@ public class GcmIntentService extends IntentService {
         try {
             voteLocationCollection = myApiService.voteLocationGetAll(event_id).execute();
             if (voteLocationCollection.getItems() != null) {
-                String[] vote = new String[Table_Vote_Date.Size()];
+                String[] vote = new String[Table_Vote_Location.Size()];
                 for (int i = 0; i < voteLocationCollection.getItems().size(); i++) {
-                    vote[Table_Vote_Date.Event_ID_num] = voteLocationCollection.getItems().get(i).getEventID();
-                    vote[Table_Vote_Date.Vote_ID_num] = voteLocationCollection.getItems().get(i).getVoteID();
-                    vote[Table_Vote_Date.Start_Date_num] = voteLocationCollection.getItems().get(i).getDescription();
-                    vote[Table_Vote_Date.User_ID_num] = voteLocationCollection.getItems().get(i).getUserID();
+                    vote[Table_Vote_Location.Event_ID_num] = voteLocationCollection.getItems().get(i).getEventID();
+                    vote[Table_Vote_Location.Vote_ID_num] = voteLocationCollection.getItems().get(i).getVoteID();
+                    vote[Table_Vote_Location.Description_num] = voteLocationCollection.getItems().get(i).getDescription();
+                    vote[Table_Vote_Location.User_ID_num] = voteLocationCollection.getItems().get(i).getUserID();
                     result.add(vote);
                 }
             }
