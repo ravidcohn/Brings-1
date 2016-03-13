@@ -172,7 +172,7 @@
                         style="@style/event_secondary_text_color"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="15dp"
                         android:layout_toEndOf="@+id/title_votes_date"
                         android:padding="4dp"
                         android:text="Vote" />
@@ -211,7 +211,12 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginEnd="10dp" />
+                        android:layout_marginEnd="10dp"
+                        android:thumb="@drawable/switch_thumb"
+                        android:track="@drawable/switch_bg"
+                        android:switchMinWidth="46dp"
+                        android:textOn=""
+                        android:textOff=""/>
 
                 </RelativeLayout>
 
@@ -290,7 +295,7 @@
                     android:id="@+id/relativeLayout_location_titles"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/title_options_location"
@@ -367,7 +372,13 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginEnd="10dp" />
+                        android:layout_marginEnd="10dp"
+                        android:thumb="@drawable/switch_thumb"
+                        android:track="@drawable/switch_bg"
+                        android:switchMinWidth="46dp"
+                        android:textOn=""
+                        android:textOff=""
+                        />
 
                 </RelativeLayout>
             </LinearLayout>

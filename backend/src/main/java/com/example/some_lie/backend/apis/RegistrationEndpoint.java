@@ -284,14 +284,18 @@ public class RegistrationEndpoint {
                 rs = MySQL_Util.select(new String[]{Table_Users_Devices.Registration_ID}, Table_Users_Devices.Table_Name, new String[]{Table_Users_Devices.User_ID},
                         new String[]{User_ID}, new int[]{1});
                 boolean done = false;
+                String prevId = "";
                 while (rs.next() && !done) {
-                    if (Registration_ID.equals(rs.getString(1))) {
-                        done = true;
-                    }
+                    prevId = rs.getString(Table_Users_Devices.Registration_ID);
+                    done = true;
                 }
                 rs.close();
                 if (!done) {
                     MySQL_Util.insert(Table_Users_Devices.Table_Name, new String[]{User_ID, Registration_ID});
+                }
+                else{
+                    MySQL_Util.update(Table_Users_Devices.Table_Name, new String[]{Table_Users_Devices.Registration_ID}, new String[]{Registration_ID},
+                            new String[]{Table_Users_Devices.User_ID, Table_Users_Devices.Registration_ID}, new String[]{User_ID, prevId});
                 }
             }
         } catch (Exception e) {

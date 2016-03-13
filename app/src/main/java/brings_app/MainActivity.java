@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
     private ImageButton ibAdd;
     private TextView tvSearch;
     private SearchView search;
-    private static ArrayList<String> users_names;
-    private static ArrayList<Integer> IDS;
+    //private static ArrayList<String> users_names;
+    //private static ArrayList<Integer> IDS;
     private static ArrayList<String> Event_IDs;
     private static final String PROPERTY_REG_ID = "registrationId";
     private static final String PROPERTY_APP_VERSION = "appVersion";
@@ -92,8 +92,8 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
         GcmIntentService.delegate = this;
         BringsApi = CloudEndpointBuilderHelper.getEndpoints();
-        users_names = new ArrayList<>();
-        IDS = new ArrayList<>();
+        //users_names = new ArrayList<>();
+        //IDS = new ArrayList<>();
         Event_IDs = new ArrayList<>();
         //Set text font for the app name;
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/GreatVibes_Regular.ttf");
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
                 setList();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                        .commit();
+                        .commitAllowingStateLoss();
             }
 
             @Override
@@ -221,10 +221,11 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 
         //sqlHelper.delete(Table_Events.Table_Name,new String[]{Table_Events.Event_ID},new String[]{"@ - []"}, null);
         ArrayList<String>[] sqlresult = sqlHelper.select(null, Table_Events.Table_Name, null, null, null);
+        if(sqlresult != null)
         for (String str : sqlresult[0]) {
             String[] s = str.split(" - ");
-            users_names.add(s[0]);
-            IDS.add(Integer.parseInt(s[1]));
+            //users_names.add(s[0]);
+            //IDS.add(Integer.parseInt(s[1]));
             Event_IDs.add(str);
         }
 
@@ -318,8 +319,8 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
     }
 
     public void setList() {
-        users_names.clear();
-        IDS.clear();
+        //users_names.clear();
+        //IDS.clear();
         Event_IDs.clear();
         sql();
     }
@@ -435,15 +436,15 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
             CustomAdapter mAdapter;
             switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
                 case 1: {
-                    mAdapter = new CustomAdapter(users_names, IDS, Event_IDs, Constants.Normal_View);
+                    mAdapter = new CustomAdapter(Event_IDs, Constants.Normal_View);
                     break;
                 }
                 case 2: {
-                    mAdapter = new CustomAdapter(users_names, IDS, Event_IDs, Constants.Light_View);
+                    mAdapter = new CustomAdapter(Event_IDs, Constants.Light_View);
                     break;
                 }
                 default: {
-                    mAdapter = new CustomAdapter(users_names, IDS, Event_IDs, Constants.Light_View);
+                    mAdapter = new CustomAdapter(Event_IDs, Constants.Light_View);
                     break;
                 }
             }
@@ -459,8 +460,8 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
 class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
     private static final String TAG = "CustomAdapter";
 
-    private static ArrayList<String> users_names;
-    private static ArrayList<Integer> IDS;
+   // private static ArrayList<String> users_names;
+   //private static ArrayList<Integer> IDS;
     private static ArrayList<String> Event_IDs;
     private String Mode;
 
@@ -494,10 +495,10 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
      *
      * @param mode String[] containing the data to populate views to be used by RecyclerView.
      */
-    public CustomAdapter(ArrayList<String> users_names, ArrayList<Integer> IDS, ArrayList<String> Event_IDs, String mode) {
+    public CustomAdapter(ArrayList<String> Event_IDs, String mode) {
         this.Mode = mode;
-        this.IDS = IDS;
-        this.users_names = users_names;
+        //this.IDS = IDS;
+        //this.users_names = users_names;
         this.Event_IDs = Event_IDs;
     }
 
@@ -652,17 +653,22 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
                             .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     Helper.delete_event(v.getContext(), Event_ID);
-                                    users_names.remove(position);
-                                    IDS.remove(position);
-                                    notifyItemRangeRemoved(position, 1);
+                                    //users_names.remove(position);
+                                    //IDS.remove(position);
+                                    //notifyItemRangeRemoved(position, 1);
+                                    Event_IDs.remove(Event_ID);
+                                    notifyDataSetChanged();
                                 }
                             })
                             .setNeutralButton("Leave", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     Helper.leave_event(v.getContext(), Event_ID, Constants.MY_User_ID);
-                                    users_names.remove(position);
-                                    IDS.remove(position);
-                                    notifyItemRangeRemoved(position, 1);
+                                    //users_names.remove(position);
+                                    //IDS.remove(position);
+                                    //notifyItemRangeRemoved(position, 1);
+                                    Event_IDs.remove(Event_ID);
+                                    notifyDataSetChanged();
+
                                 }
                             })
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -679,11 +685,12 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     Helper.leave_event(v.getContext(), Event_ID, Constants.MY_User_ID);
-                                    users_names.remove(position);
-                                    IDS.remove(position);
+                                    //users_names.remove(position);
+                                    //IDS.remove(position);
                                     Event_IDs.remove(Event_ID);
-                                    int pos = users_names.indexOf(Event_ID);
-                                    notifyItemRangeRemoved(pos, 1);
+                                    //int pos = users_names.indexOf(Event_ID);
+                                    //notifyItemRangeRemoved(pos, 1);
+                                    notifyDataSetChanged();
                                 }
                             })
                             .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -702,7 +709,7 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), Event.class);
                 Bundle data = new Bundle();
-                int pos = users_names.indexOf(Event_ID);
+                //int pos = users_names.indexOf(Event_ID);
                 data.putString("Event_ID", Event_ID);
                 intent.putExtras(data);
                 v.getContext().startActivity(intent);
@@ -714,7 +721,7 @@ class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return IDS.size();
+        return Event_IDs.size();
     }
 
 

@@ -15,6 +15,7 @@ import brings_app.MainActivity;
 import brings_app.R;
 import server.Registration.Registration_AsyncTask;
 import server.ServerAsyncResponse;
+import utils.Constans.Constants;
 
 /**
  * Created by Ravid on 08/10/2015.
@@ -48,16 +49,16 @@ public class Registration extends AppCompatActivity implements ServerAsyncRespon
     }
 
     public void processFinish(String... output) {
-        if (output[0].equals("O.K")) {
+        if (output[0].equals(Constants.OK)) {
             SharedPreferences.Editor editor = getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE).edit();
-            editor.putString("USER", "R-USER");
+            editor.putString(Constants.r_user_key, Constants.r_user);
             String User_ID = et_rg_phone_ui.getText().toString();
             if (User_ID.charAt(0) == '0') {
-                User_ID = "972" + User_ID.substring(1);
+                User_ID = Constants.country_code + User_ID.substring(1);
             }
-            editor.putString("User_ID", User_ID);
-            editor.putString("nickName", et_rg_your_name_ui.getText().toString());
-            editor.putString("Pass", et_rg_password_ui.getText().toString());
+            editor.putString(Constants.MY_User_ID_Key, User_ID);
+            editor.putString(Constants.MY_User_Nickname_Key, et_rg_your_name_ui.getText().toString());
+            editor.putString(Constants.MY_User_Password_Key, et_rg_password_ui.getText().toString());
             editor.commit();
             Intent login = new Intent(this, brings_app.login.login.class);
             startActivity(login);
@@ -87,7 +88,7 @@ public class Registration extends AppCompatActivity implements ServerAsyncRespon
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_main, menu);
+        getMenuInflater().inflate(R.menu.menu_event, menu);
         return true;
     }
 

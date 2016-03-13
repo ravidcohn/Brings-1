@@ -73,11 +73,12 @@ public final class Event_Helper {
         }
     }
 
-    public static void load_event(String event_id) {
+    public static int load_event(String event_id) {
         clear();
         //Load details.
         details[Table_Events.Event_ID_num] = event_id;
         ArrayList<String>[] dbSql = sqlHelper.select(null, Table_Events.Table_Name, new String[]{Table_Events.Event_ID}, new String[]{event_id}, new int[]{1});
+        if(dbSql[Table_Events.Name_num].size() == 0) return -1;
         details[Table_Events.Name_num] = dbSql[Table_Events.Name_num].get(0);
         details[Table_Events.Location_num] = dbSql[Table_Events.Location_num].get(0);
         details[Table_Events.Vote_Location_num] = dbSql[Table_Events.Vote_Location_num].get(0);
@@ -124,7 +125,7 @@ public final class Event_Helper {
                 vote_date_helper = new Vote_Date_Helper(dbSql[Table_Vote_Date.Start_Date_num].get(i), dbSql[Table_Vote_Date.End_Date_num].get(i),
                         dbSql[Table_Vote_Date.All_Day_Time_num].get(i), dbSql[Table_Vote_Date.Start_Time_num].get(i), dbSql[Table_Vote_Date.End_Time_num].get(i));
                 vote_date.put(vote_date_id, vote_date_helper);
-                vote_date_ID_generator = Math.max(vote_date_ID_generator, vote_date_id + 1);
+                vote_date_ID_generator = Math.max(vote_date_ID_generator, vote_date_id);
             } else {
                 String User_ID = dbSql[Table_Vote_Date.User_ID_num].get(i);
                 vote_date.get(vote_date_id).getVotes().put(User_ID, User_ID);
@@ -139,12 +140,13 @@ public final class Event_Helper {
             if (dbSql[Table_Vote_Location.User_ID_num].get(i).equals(Constants.UnCheck)) {//Check if it's a location or user_id.
                 vote_location_helper = new Vote_Location_Helper(dbSql[Table_Vote_Location.Description_num].get(i));
                 vote_location.put(vote_location_id, vote_location_helper);
-                vote_location_ID_generator = Math.max(vote_location_ID_generator, vote_location_id + 1);
+                vote_location_ID_generator = Math.max(vote_location_ID_generator, vote_location_id);
             } else {
                 String User_ID = dbSql[Table_Vote_Location.User_ID_num].get(i);
                 vote_location.get(vote_location_id).getVotes().put(User_ID, User_ID);
             }
         }
+        return 0;
     }
 }
 

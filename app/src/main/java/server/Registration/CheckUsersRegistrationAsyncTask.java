@@ -37,7 +37,7 @@ public class CheckUsersRegistrationAsyncTask extends AsyncTask<ArrayList<String>
                 old_regId = params[1].get(1);
             }
             //this.phones = params[0];
-            CollectionResponseRegistrationRecord result = myApiService.checkUserRegistration(Constants.MY_User_ID,Constants.Password, new_regId, old_regId).execute();
+            CollectionResponseRegistrationRecord result = myApiService.checkUserRegistration(Constants.MY_User_ID,Constants.MY_User_Password, new_regId, old_regId).execute();
             return result.getItems();
         } catch (Exception e) {
             e.printStackTrace();

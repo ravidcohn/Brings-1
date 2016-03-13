@@ -63,8 +63,15 @@ public final class Constants {
     }
 
     public static String MY_User_ID;
-    public static String User_Nickname;
-    public static String Password;
+    public static String MY_User_Nickname;
+    public static String MY_User_Password;
+    public static final String MY_User_ID_Key = "MY_User_ID_Key";
+    public static final String MY_User_Password_Key = "MY_User_Password_Key";
+    public static final String MY_User_Nickname_Key = "MY_User_Nickname_Key";
+    public final static String country_code = "972";
+    public final static String r_user = "R-USER";
+    public final static String r_user_key = "USER";
+    public final static String no_name_defined = "No name defined";
     public final static String Message = "Message";
     public final static String Not_Register = "Not_Register";
     public final static String New_Event = "New_Event";
@@ -83,8 +90,11 @@ public final class Constants {
     public final static String Update_Event_Details_Filed = "Update_Event_Details_Filed";
     public final static String Insert_Vote_Date = "Insert_Vote_Date";
     public final static String Delete_Vote_Date = "Delete_Vote_Date";
+    public final static String Insert_Vote_Location = "Insert_Vote_Location";
+    public final static String Delete_Vote_Location = "Delete_Vote_Location";
     public final static String Yes = "Yes";
     public final static String No = "No";
+    public final static String OK = "O.K";
     public final static String Maybe = "Maybe";
     public final static String Did_Not_Replay = "Did_Not_Replay";
     public final static String UnCheck = "UnCheck";

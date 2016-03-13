@@ -19,6 +19,8 @@ import com.example.some_lie.backend.brings.model.EventUser;
 import com.example.some_lie.backend.brings.model.EventUserCollection;
 import com.example.some_lie.backend.brings.model.Task;
 import com.example.some_lie.backend.brings.model.TaskCollection;
+import com.example.some_lie.backend.brings.model.VoteDateCollection;
+import com.example.some_lie.backend.brings.model.VoteLocationCollection;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
@@ -36,6 +38,8 @@ import utils.Constans.Table_Chat;
 import utils.Constans.Table_Events;
 import utils.Constans.Table_Events_Users;
 import utils.Constans.Table_Tasks;
+import utils.Constans.Table_Vote_Date;
+import utils.Constans.Table_Vote_Location;
 import utils.Helper;
 import utils.sqlHelper;
 
@@ -82,6 +86,9 @@ public class GcmIntentService extends IntentService {
                         if (sqlHelper.select(null, Table_Events.Table_Name, new String[]{Table_Events.Event_ID}, new String[]{event[Table_Events.Event_ID_num]}, new int[1])[0].isEmpty()) {
                             ArrayList<String[]> allUsers = getAllAttending(details);
                             ArrayList<String[]> allTasks = getAllTasks(details);
+                            ArrayList<String[]> allVote_Date = getAllVotes_Date(details);
+                            ArrayList<String[]> allVote_Location = getAllVotes_Location(details);
+
                             String Chat_ID = Table_Chat.Table_Name + Helper.Clean_Event_ID(details);
                             ArrayList<String[]> allChat = getAllChat(Chat_ID);
                             //Add event to my sql.
@@ -96,6 +103,14 @@ public class GcmIntentService extends IntentService {
                             //Add task to my sql.
                             for (String[] task : allTasks) {
                                 sqlHelper.insert(Table_Tasks.Table_Name, task);
+                            }
+                            //Add vote_date to my sql.
+                            for (String[] vote : allVote_Date) {
+                                sqlHelper.insert(Table_Vote_Date.Table_Name, vote);
+                            }
+                            //Add vote_location to my sql.
+                            for (String[] vote : allVote_Location) {
+                                sqlHelper.insert(Table_Vote_Location.Table_Name, vote);
                             }
                             //Add all missing messages.
                             sqlHelper.Create_Table(Chat_ID, Table_Chat.getAllFields(), Table_Chat.getAllSqlParams());
@@ -117,7 +132,7 @@ public class GcmIntentService extends IntentService {
                     }
                     case Constants.Update_Event: {
                         String Event_ID = details.split("|")[0];
-                        String[] update_section = new String[]{details.split("|")[1], details.split("|")[2], details.split("|")[3]};
+                        String[] update_section = new String[]{details.split("|")[1], details.split("|")[2], details.split("|")[3], details.split("|")[4], details.split("|")[5]};
                         //Update event details.
                         String[] event = getEvent(Event_ID);
                         if (update_section[0].equals(Constants.Yes)) {
@@ -146,6 +161,26 @@ public class GcmIntentService extends IntentService {
                             //Add task to my sql.
                             for (String[] task : allTasks) {
                                 sqlHelper.insert(Table_Tasks.Table_Name, task);
+                            }
+                        }
+                        //Update event vote_date.
+                        if (update_section[3].equals(Constants.Yes)) {
+                            //Delete all tasks from the event.
+                            sqlHelper.delete(Table_Vote_Date.Table_Name, new String[]{Table_Vote_Date.Event_ID}, new String[]{Event_ID}, null);
+                            ArrayList<String[]> allVote_Date = getAllVotes_Date(details);
+                            //Add task to my sql.
+                            for (String[] vote : allVote_Date) {
+                                sqlHelper.insert(Table_Vote_Date.Table_Name, vote);
+                            }
+                        }
+                        //Update event vote_location.
+                        if (update_section[4].equals(Constants.Yes)) {
+                            //Delete all tasks from the event.
+                            sqlHelper.delete(Table_Vote_Location.Table_Name, new String[]{Table_Vote_Location.Event_ID}, new String[]{Event_ID}, null);
+                            ArrayList<String[]> allVote_Location = getAllVotes_Location(details);
+                            //Add task to my sql.
+                            for (String[] vote : allVote_Location) {
+                                sqlHelper.insert(Table_Vote_Location.Table_Name, vote);
                             }
                         }
                         try {
@@ -212,9 +247,9 @@ public class GcmIntentService extends IntentService {
                     case Constants.Update_Task_User_ID: {
                         String Event_ID = details.split("\\^")[0];
                         String Task_ID_Number = details.split("\\^")[1];
-                        String Friend_ID = details.split("\\^")[2];
-                        sqlHelper.update(Table_Tasks.Table_Name, new String[]{Table_Tasks.User_ID}, new String[]{Friend_ID},
-                                new String[]{Table_Tasks.Event_ID, Table_Tasks.Task_ID_Number}, new String[]{Event_ID, Task_ID_Number});
+                        String User_ID = details.split("\\^")[2];
+                        sqlHelper.update(Table_Tasks.Table_Name, new String[]{Table_Tasks.User_ID}, new String[]{User_ID},
+                                new String[]{Table_Tasks.Event_ID, Table_Tasks.Task_ID_Number, Table_Tasks.subTask_ID_Number}, new String[]{Event_ID, Task_ID_Number, 0 + ""});
                         break;
                     }
                     case Constants.New_Chat_Message: {
@@ -242,6 +277,34 @@ public class GcmIntentService extends IntentService {
                         Helper.update_Event_details_field_MySQL(EventID, Filed, Update);
                         break;
                     }
+                    case Constants.Insert_Vote_Date: {
+                        String EventID = details.split("\\^")[0];
+                        int Vote_ID = Integer.parseInt(details.split("\\^")[1]);
+                        String User_ID = details.split("\\^")[2];
+                        Helper.add_vote_date_User_ID_MySQL(EventID, Vote_ID, User_ID);
+                        break;
+                    }
+                    case Constants.Delete_Vote_Date: {
+                        String EventID = details.split("\\^")[0];
+                        int Vote_ID = Integer.parseInt(details.split("\\^")[1]);
+                        String User_ID = details.split("\\^")[2];
+                        Helper.delete_vote_date_User_ID_MySQL(EventID, Vote_ID, User_ID);
+                        break;
+                    }
+                    case Constants.Insert_Vote_Location: {
+                        String EventID = details.split("\\^")[0];
+                        int Vote_ID = Integer.parseInt(details.split("\\^")[1]);
+                        String User_ID = details.split("\\^")[2];
+                        Helper.add_vote_location_User_ID_MySQL(EventID, Vote_ID, User_ID);
+                        break;
+                    }
+                    case Constants.Delete_Vote_Location: {
+                        String EventID = details.split("\\^")[0];
+                        int Vote_ID = Integer.parseInt(details.split("\\^")[1]);
+                        String User_ID = details.split("\\^")[2];
+                        Helper.delete_vote_location_User_ID_MySQL(EventID, Vote_ID, User_ID);
+                        break;
+                    }
                     default: {
                         showToast(extras.getString("message"));
                         break;
@@ -252,6 +315,7 @@ public class GcmIntentService extends IntentService {
         GcmBroadcastReceiver.completeWakefulIntent(intent);
         delegate.processFinish(Constants.Update_Activity);
     }
+
 
     protected void showToast(final String message) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -360,9 +424,63 @@ public class GcmIntentService extends IntentService {
         try {
             taskCollection = myApiService.taskGetAll(event_id).execute();
             if (taskCollection.getItems() != null) {
+                String[] task;
                 for (int i = 0; i < taskCollection.getItems().size(); i++) {
-                    result.add(new String[]{taskCollection.getItems().get(i).getEventID(), taskCollection.getItems().get(i).getTaskIDNumber(), taskCollection.getItems().get(i).getSubTaskIDNumber(),
-                            taskCollection.getItems().get(i).getTaskType(), taskCollection.getItems().get(i).getDescription(), taskCollection.getItems().get(i).getUserID()});
+                    task = new String[Table_Tasks.Size()];
+                    task[Table_Tasks.Event_ID_num] = taskCollection.getItems().get(i).getEventID();
+                    task[Table_Tasks.Task_ID_Number_num] = taskCollection.getItems().get(i).getTaskIDNumber();
+                    task[Table_Tasks.subTask_ID_Number_num] = taskCollection.getItems().get(i).getSubTaskIDNumber();
+                    task[Table_Tasks.Task_Type_num] = taskCollection.getItems().get(i).getTaskType();
+                    task[Table_Tasks.Description_num] = taskCollection.getItems().get(i).getDescription();
+                    task[Table_Tasks.User_ID_num] = taskCollection.getItems().get(i).getUserID();
+                    task[Table_Tasks.Mark_num] = taskCollection.getItems().get(i).getUserID();
+                    result.add(task);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private ArrayList<String[]> getAllVotes_Date(String event_id) {
+        ArrayList<String[]> result = new ArrayList<>();
+        VoteDateCollection voteDateCollection;
+        try {
+            voteDateCollection = myApiService.voteDateGetAll(event_id).execute();
+            if (voteDateCollection.getItems() != null) {
+                String[] vote = new String[Table_Vote_Date.Size()];
+                for (int i = 0; i < voteDateCollection.getItems().size(); i++) {
+                    vote[Table_Vote_Date.Event_ID_num] = voteDateCollection.getItems().get(i).getEventID();
+                    vote[Table_Vote_Date.Vote_ID_num] = voteDateCollection.getItems().get(i).getVoteID();
+                    vote[Table_Vote_Date.Start_Date_num] = voteDateCollection.getItems().get(i).getStartDate();
+                    vote[Table_Vote_Date.End_Date_num] = voteDateCollection.getItems().get(i).getEndDate();
+                    vote[Table_Vote_Date.All_Day_Time_num] = voteDateCollection.getItems().get(i).getAllDayTime();
+                    vote[Table_Vote_Date.Start_Time_num] = voteDateCollection.getItems().get(i).getStartTime();
+                    vote[Table_Vote_Date.End_Time_num] = voteDateCollection.getItems().get(i).getEndTime();
+                    vote[Table_Vote_Date.User_ID_num] = voteDateCollection.getItems().get(i).getUserID();
+                    result.add(vote);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private ArrayList<String[]> getAllVotes_Location(String event_id) {
+        ArrayList<String[]> result = new ArrayList<>();
+        VoteLocationCollection voteLocationCollection;
+        try {
+            voteLocationCollection = myApiService.voteLocationGetAll(event_id).execute();
+            if (voteLocationCollection.getItems() != null) {
+                String[] vote = new String[Table_Vote_Date.Size()];
+                for (int i = 0; i < voteLocationCollection.getItems().size(); i++) {
+                    vote[Table_Vote_Date.Event_ID_num] = voteLocationCollection.getItems().get(i).getEventID();
+                    vote[Table_Vote_Date.Vote_ID_num] = voteLocationCollection.getItems().get(i).getVoteID();
+                    vote[Table_Vote_Date.Start_Date_num] = voteLocationCollection.getItems().get(i).getDescription();
+                    vote[Table_Vote_Date.User_ID_num] = voteLocationCollection.getItems().get(i).getUserID();
+                    result.add(vote);
                 }
             }
         } catch (IOException e) {
