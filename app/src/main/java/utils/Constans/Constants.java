@@ -90,6 +90,8 @@ public final class Constants {
     public final static String Update_Event_Details_Filed = "Update_Event_Details_Filed";
     public final static String Insert_Vote_Date = "Insert_Vote_Date";
     public final static String Delete_Vote_Date = "Delete_Vote_Date";
+    public final static String Insert_Vote_Location = "Insert_Vote_Location";
+    public final static String Delete_Vote_Location = "Delete_Vote_Location";
     public final static String Yes = "Yes";
     public final static String No = "No";
     public final static String OK = "O.K";
