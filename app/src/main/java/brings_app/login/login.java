@@ -271,6 +271,16 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         }
     }
 
+    @Override
+    public String currentLocation() {
+        return Constants.login;
+    }
+
+    @Override
+    public void closeActivity() {
+        //TODO ?
+    }
+
     //Handle permissions.
 
     @TargetApi(Build.VERSION_CODES.M)

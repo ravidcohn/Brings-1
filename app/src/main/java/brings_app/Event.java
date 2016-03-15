@@ -31,6 +31,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -167,6 +168,17 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
             });
 
         }
+    }
+
+    @Override
+    public String currentLocation() {
+        return Constants.event + Event_Helper.details[Table_Events.Event_ID_num];
+    }
+
+    @Override
+    public void closeActivity() {
+        Toast.makeText(this,"This Event as been deleted by admin",Toast.LENGTH_LONG).show();
+        finish();
     }
 
     /**

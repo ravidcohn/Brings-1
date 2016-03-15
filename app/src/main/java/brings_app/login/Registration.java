@@ -68,6 +68,16 @@ public class Registration extends AppCompatActivity implements ServerAsyncRespon
         }
     }
 
+    @Override
+    public String currentLocation() {
+        return null;
+    }
+
+    @Override
+    public void closeActivity() {
+        //TODO ?
+    }
+
     private void saveData() {
         String Nickname = et_rg_your_name_ui.getText().toString();
         String User_ID = et_rg_phone_ui.getText().toString();

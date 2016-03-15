@@ -110,5 +110,8 @@ public final class Constants {
     public final static String Vote_Date = "Vote_Date";
     public final static String Vote_Location = "Vote_Location";
 
-
+    public final static String mainActivity = "MainActivity";
+    public final static String event = "Event";
+    public final static String login = "Login";
+    public final static String registration = "Registration";
 }

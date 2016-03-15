@@ -127,7 +127,18 @@ public class GcmIntentService extends IntentService {
                         break;
                     }
                     case Constants.Delete_Event: {
+                        boolean close_event = false;
+                        if(delegate != null){
+                            String event_id = delegate.currentLocation();
+                            if(event_id.contains(" - ")){
+                                event_id = event_id.substring(Constants.event.length());
+                                if(event_id.equals(details)){
+                                    close_event = true;
+                                }
+                            }
+                        }
                         Helper.Delete_Event_MySQL(details);
+                        if(close_event)delegate.closeActivity();
                         break;
                     }
                     case Constants.Update_Event: {

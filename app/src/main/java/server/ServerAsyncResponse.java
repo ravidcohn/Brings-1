@@ -5,4 +5,6 @@ package server;
  */
 public interface ServerAsyncResponse {
      void processFinish(String... output);
+     String currentLocation();
+     void closeActivity();
 }

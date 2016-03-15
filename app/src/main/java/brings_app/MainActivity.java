@@ -55,6 +55,15 @@ import utils.bitmapHelper;
 import utils.sqlHelper;
 
 public class MainActivity extends AppCompatActivity implements ServerAsyncResponse {
+    @Override
+    public String currentLocation() {
+        return Constants.mainActivity;
+    }
+
+    @Override
+    public void closeActivity() {
+        //TODO ?
+    }
 
     /**
      * Time limit for the application to wait on a response from Play Services.
@@ -311,6 +320,7 @@ public class MainActivity extends AppCompatActivity implements ServerAsyncRespon
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
+        GcmIntentService.delegate = this;
         setList();
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         if (recyclerView != null) {
