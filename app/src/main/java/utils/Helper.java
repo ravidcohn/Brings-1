@@ -101,8 +101,8 @@ public class Helper {
         String message;
         for (String[] update_user : Update_Users) {
             if (update_user[1].equals(Constants.Update_Event)) {
-                message = update_user[1] + "|" + Event_ID + "|" + update_section[details_num] + "|" + update_section[users_num] + "|" + update_section[tasks_num]
-                        + "|" + update_section[vote_date_num] + "|" + update_section[vote_location_num];
+                message = update_user[1] + "|" + Event_ID + "^" + update_section[details_num] + "^" + update_section[users_num] + "^" + update_section[tasks_num]
+                        + "^" + update_section[vote_date_num] + "^" + update_section[vote_location_num];
             } else {
                 message = update_user[1] + "|" + Event_ID;
             }
