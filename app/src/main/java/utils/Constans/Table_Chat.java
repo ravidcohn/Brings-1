@@ -6,7 +6,7 @@ package utils.Constans;
 public final class Table_Chat {
     public final static String Table_Name = "Chat_";//The full name is: "Chat_"+EventID".
 
-    public final static String Message_ID = "Message_ID";
+    public final static String Message_ID = "Message_ID";//Integer per user. The same ID can repeat for different users.
     private final static String Message_ID_SQL_Params = "varchar NOT NULL";
     public final static String User_ID = "User_ID";
     private final static String User_ID_SQL_Params = "varchar NOT NULL";

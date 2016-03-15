@@ -156,7 +156,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                 @Override
                 public void run() {
                     int status = Event_Helper.load_event(Event_Helper.details[Table_Events.Event_ID_num]);
-                    if(status == -1)return;
+                    if (status == -1) return;
                     int CurrentItem = mViewPager.getCurrentItem();
                     mViewPager.setAdapter(mSectionsPagerAdapter);
                     mViewPager.setCurrentItem(CurrentItem);
@@ -177,7 +177,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
 
     @Override
     public void closeActivity() {
-        Toast.makeText(this,"This Event as been deleted by admin",Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "This Event as been deleted by admin", Toast.LENGTH_LONG).show();
         finish();
     }
 
@@ -244,6 +244,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
 
         public PlaceholderFragment() {
         }
+
         @Override
         public void onDetach() {
             super.onDetach();
@@ -259,6 +260,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                 throw new RuntimeException(e);
             }
         }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -432,9 +434,11 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                     final List<ExpandableListAdapter_Event_Chat.Item> data = new ArrayList<>();
                     for (int i = 0; i < dbChat[0].size(); i++) {
                         if (dbChat[Table_Chat.User_ID_num].get(i).equals(Constants.MY_User_ID)) {
-                            data.add(new ExpandableListAdapter_Event_Chat.Item(ExpandableListAdapter_Event_Chat.Chat_My));
+                            data.add(new ExpandableListAdapter_Event_Chat.Item(ExpandableListAdapter_Event_Chat.Chat_My, dbChat[Table_Chat.Message_ID_num].get(i),
+                                    dbChat[Table_Chat.User_ID_num].get(i), dbChat[Table_Chat.Message_num].get(i), dbChat[Table_Chat.Date_num].get(i), dbChat[Table_Chat.Time_num].get(i)));
                         } else {
-                            data.add(new ExpandableListAdapter_Event_Chat.Item(ExpandableListAdapter_Event_Chat.Chat_Friend));
+                            data.add(new ExpandableListAdapter_Event_Chat.Item(ExpandableListAdapter_Event_Chat.Chat_Friend, dbChat[Table_Chat.Message_ID_num].get(i),
+                                    dbChat[Table_Chat.User_ID_num].get(i), dbChat[Table_Chat.Message_num].get(i), dbChat[Table_Chat.Date_num].get(i), dbChat[Table_Chat.Time_num].get(i)));
                         }
 
                     }
@@ -471,9 +475,8 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                                 dbChat[Table_Chat.Message_num].add(message);
                                 dbChat[Table_Chat.Date_num].add(date);
                                 dbChat[Table_Chat.Time_num].add(time);
-                                expandableListAdapter_event_chat.setDbChat(dbChat);
-                                data.add(new ExpandableListAdapter_Event_Chat.Item(ExpandableListAdapter_Event_Chat.Chat_My));
-                                expandableListAdapter_event_chat.notifyItemInserted(data.size() - 1);
+                                data.add(new ExpandableListAdapter_Event_Chat.Item(ExpandableListAdapter_Event_Chat.Chat_My, message_id, Constants.MY_User_ID, message, date, time));
+                                expandableListAdapter_event_chat.notifyDataSetChanged();
                                 recyclerview.scrollToPosition(data.size() - 1);
                                 //Send to all users.
                                 Helper.Send_Chat_Message_ServerSQL(getContext(), Chat_ID, chat);
@@ -583,10 +586,10 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                 }
             }
 
-            user_yes.text = yes_num + " Going";
-            user_maybe.text = maybe_num + " Maybe";
-            user_no.text = no_num + " Not Going";
-            user_not_replay.text = not_replay_num + " Did Not Replay";
+            user_yes.parent_text = yes_num + " Going";
+            user_maybe.parent_text = maybe_num + " Maybe";
+            user_no.parent_text = no_num + " Not Going";
+            user_not_replay.parent_text = not_replay_num + " Did Not Replay";
 
             data.add(user_yes);
             data.add(user_maybe);
@@ -601,7 +604,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                 item.invisibleChildren = new ArrayList<>();
             }
             ExpandableListAdapter_Event_Friends.Item temp = new ExpandableListAdapter_Event_Friends.Item(ExpandableListAdapter_Event_Friends.User_Child);
-            temp.text = User_ID;
+            temp.User_ID = User_ID;
             item.invisibleChildren.add(temp);
         }
     }
@@ -1076,11 +1079,11 @@ class ExpandableListAdapter_Event_Vote_Location extends RecyclerView.Adapter<Rec
 class ExpandableListAdapter_Event_Friends extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int User = 0;
     public static final int User_Child = 1;
-    private String text_view;
 
     private List<Item> data;
     private RecyclerView recyclerView;
     private int recyclerView_height_dp;
+    private int child_hight = 38;
 
     public void setData(List<Item> data, RecyclerView recyclerView) {
         this.data = data;
@@ -1101,14 +1104,12 @@ class ExpandableListAdapter_Event_Friends extends RecyclerView.Adapter<RecyclerV
                 inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.event_friend_user, parent, false);
                 ViewHolder_User viewHolder_user = new ViewHolder_User(view);
-                viewHolder_user.textView.setText(text_view);
                 return viewHolder_user;
             }
             case User_Child: {
                 inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.event_friend_user_child, parent, false);
                 ViewHolder_User_Child viewHolder_user_child = new ViewHolder_User_Child(view);
-                set_nickname(viewHolder_user_child);
                 return viewHolder_user_child;
             }
         }
@@ -1122,7 +1123,7 @@ class ExpandableListAdapter_Event_Friends extends RecyclerView.Adapter<RecyclerV
             case User: {
                 final ViewHolder_User itemController = (ViewHolder_User) holder;
                 itemController.refferalItem = item;
-                itemController.textView.setText(item.text);
+                itemController.textView.setText(item.parent_text);
                 if (item.invisibleChildren == null) {
                     itemController.expand_arrow.setImageResource(R.mipmap.ic_collapse_arrow);
                 } else {
@@ -1143,7 +1144,7 @@ class ExpandableListAdapter_Event_Friends extends RecyclerView.Adapter<RecyclerV
                             }
                             notifyItemRangeRemoved(pos + 1, count);
                             itemController.expand_arrow.setImageResource(R.mipmap.ic_expand_arrow);
-                            recyclerView_height_dp -= 38 * count;
+                            recyclerView_height_dp -= child_hight * count;
                             int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, view.getResources().getDisplayMetrics());
                             recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
                         } else {
@@ -1157,7 +1158,7 @@ class ExpandableListAdapter_Event_Friends extends RecyclerView.Adapter<RecyclerV
                             notifyItemRangeInserted(pos + 1, index - pos - 1);
                             itemController.expand_arrow.setImageResource(R.mipmap.ic_collapse_arrow);
                             item.invisibleChildren = null;
-                            recyclerView_height_dp += 38 * (index - pos - 1);
+                            recyclerView_height_dp += child_hight * (index - pos - 1);
                             int recyclerView_height_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, recyclerView_height_dp, view.getResources().getDisplayMetrics());
                             recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, recyclerView_height_px));
                         }
@@ -1169,26 +1170,27 @@ class ExpandableListAdapter_Event_Friends extends RecyclerView.Adapter<RecyclerV
                 final ViewHolder_User_Child itemController = (ViewHolder_User_Child) holder;
                 itemController.refferalItem = item;
                 set_nickname(itemController);
-                String my_permission = Helper.getMyPermission(Event_Helper.details[Table_Events.Event_ID_num]);
-                if (my_permission.equals(Constants.Owner)) {
+                String permission = Event_Helper.friends.get(itemController.refferalItem.User_ID).getPermission();
+                if (permission.equals(Constants.Owner))
                     itemController.textView_permission.setText("Owner");
-                }
+                else
+                    itemController.textView_permission.setText("");
                 break;
             }
         }
     }
 
     public void set_nickname(ViewHolder_User_Child viewHolder_user_child) {
-        if (text_view.equals(Constants.MY_User_ID)) {
+        String User_ID = viewHolder_user_child.refferalItem.User_ID;
+        if (User_ID.equals(Constants.MY_User_ID)) {
             viewHolder_user_child.textView.setText(Constants.MY_User_Nickname);
         } else {
-            viewHolder_user_child.textView.setText(Contacts_List.contacts.get(text_view));
+            viewHolder_user_child.textView.setText(Contacts_List.contacts.get(User_ID));
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        text_view = data.get(position).text;
         return data.get(position).type;
     }
 
@@ -1225,13 +1227,15 @@ class ExpandableListAdapter_Event_Friends extends RecyclerView.Adapter<RecyclerV
     public static class Item {
         public int type;
         public List<Item> invisibleChildren;
-        public String text;
+        public String User_ID;
+        public String parent_text;//value of attending(yes/maybe...).
 
         public Item() {
         }
 
         public Item(int type) {
             this.type = type;
+
         }
     }
 }
@@ -1573,18 +1577,12 @@ class ExpandableListAdapter_Event_Chat extends RecyclerView.Adapter<RecyclerView
 
     private String Chat_ID;
     private List<Item> data;
-    private ArrayList<String>[] dbChat;
-    private int position;
 
     public ExpandableListAdapter_Event_Chat(List<Item> data, ArrayList<String>[] dbChat, String Chat_ID) {
         this.data = data;
-        this.dbChat = dbChat;
         this.Chat_ID = Chat_ID;
     }
 
-    public void setDbChat(ArrayList<String>[] dbChat) {
-        this.dbChat = dbChat;
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int type) {
@@ -1599,14 +1597,12 @@ class ExpandableListAdapter_Event_Chat extends RecyclerView.Adapter<RecyclerView
                 inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.event_chat_my, parent, false);
                 ViewHolder_Chat_My viewHolder_chat_my = new ViewHolder_Chat_My(view);
-                viewHolder_chat_my.textView.setText(chat_message_format(position));
                 return viewHolder_chat_my;
             }
             case Chat_Friend: {
                 inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.event_chat_user, parent, false);
                 ViewHolder_Chat_Friend viewHolder_chat_friend = new ViewHolder_Chat_Friend(view);
-                viewHolder_chat_friend.textView.setText(chat_message_format(position));
                 return viewHolder_chat_friend;
             }
         }
@@ -1614,7 +1610,7 @@ class ExpandableListAdapter_Event_Chat extends RecyclerView.Adapter<RecyclerView
     }
 
     private String chat_message_format(int position) {
-        String time = dbChat[Table_Chat.Time_num].get(position);
+        String time = data.get(position).Time;
         String hour = time.split(":")[0];
         if (hour.length() == 1) {
             hour = 0 + hour;
@@ -1623,8 +1619,10 @@ class ExpandableListAdapter_Event_Chat extends RecyclerView.Adapter<RecyclerView
         if (minute.length() == 1) {
             minute = 0 + hour;
         }
-        String message = dbChat[Table_Chat.Message_num].get(position);
-        String user = dbChat[Table_Chat.User_ID_num].get(position);
+        String message = data.get(position).Message;
+        ;
+        String user = data.get(position).User_ID;
+        ;
         if (user.equals(Constants.MY_User_ID)) {
             return "me, " + hour + ":" + minute + "\n" + message;
         } else {
@@ -1639,6 +1637,8 @@ class ExpandableListAdapter_Event_Chat extends RecyclerView.Adapter<RecyclerView
             case Chat_My: {
                 final ViewHolder_Chat_My itemController = (ViewHolder_Chat_My) holder;
                 itemController.refferalItem = item;
+                int pos = data.indexOf(itemController.refferalItem);
+                itemController.textView.setText(chat_message_format(pos));
                 view.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(final View v) {
@@ -1649,10 +1649,10 @@ class ExpandableListAdapter_Event_Chat extends RecyclerView.Adapter<RecyclerView
                                     public void onClick(DialogInterface dialog, int which) {
                                         int pos = data.indexOf(itemController.refferalItem);
                                         //Remove from adapter.
+                                        String Message_ID = data.get(pos).Message_ID;
                                         data.remove(itemController.refferalItem);
                                         notifyItemRemoved(pos);
                                         //Remove from MySql + ServerSql;
-                                        String Message_ID = dbChat[Table_Chat.Message_ID_num].get(pos);
                                         Helper.delete_chat_message(v.getContext(), Chat_ID, Message_ID, Constants.MY_User_ID);
                                     }
                                 })
@@ -1669,7 +1669,10 @@ class ExpandableListAdapter_Event_Chat extends RecyclerView.Adapter<RecyclerView
                 break;
             }
             case Chat_Friend: {
-
+                final ViewHolder_Chat_Friend itemController = (ViewHolder_Chat_Friend) holder;
+                itemController.refferalItem = item;
+                int pos = data.indexOf(itemController.refferalItem);
+                itemController.textView.setText(chat_message_format(pos));
                 break;
             }
         }
@@ -1677,7 +1680,6 @@ class ExpandableListAdapter_Event_Chat extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public int getItemViewType(int position) {
-        this.position = position;
         return data.get(position).type;
     }
 
@@ -1710,13 +1712,24 @@ class ExpandableListAdapter_Event_Chat extends RecyclerView.Adapter<RecyclerView
 
     public static class Item {
         public int type;
+        public String Message_ID;
+        public String User_ID;
+        public String Message;
+        public String Date;
+        public String Time;
+
         public List<Item> invisibleChildren;
 
         public Item() {
         }
 
-        public Item(int type) {
+        public Item(int type, String Message_ID, String User_ID, String Message, String Date, String Time) {
             this.type = type;
+            this.Message_ID = Message_ID;
+            this.User_ID = User_ID;
+            this.Message = Message;
+            this.Date = Date;
+            this.Time = Time;
         }
     }
 }
