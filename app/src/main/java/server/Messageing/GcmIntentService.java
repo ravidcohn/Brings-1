@@ -143,7 +143,7 @@ public class GcmIntentService extends IntentService {
                         break;
                     }
                     case Constants.Update_Event: {
-                        String Event_ID = details.split("\\|")[0];
+                        String Event_ID = details.split("\\|")[0].split("\\^")[0];
                         String[] update_section = new String[]{details.split("\\^")[1], details.split("\\^")[2], details.split("\\^")[3], details.split("\\^")[4], details.split("\\^")[5]};
                         //Update event details.
                         String[] event = getEvent(Event_ID);
@@ -156,7 +156,7 @@ public class GcmIntentService extends IntentService {
                             //Delete all users from the event.
                             sqlHelper.delete(Table_Events_Users.Table_Name, new String[]{Table_Events_Users.Event_ID}, new String[]{Event_ID}, null);
                             //Add all Users.
-                            ArrayList<String[]> allUsers = getAllAttending(details);
+                            ArrayList<String[]> allUsers = getAllAttending(Event_ID);
                             for (String[] User : allUsers) {
                                 //Add user to my sql.
                                 sqlHelper.insert(Table_Events_Users.Table_Name, User);
@@ -169,7 +169,7 @@ public class GcmIntentService extends IntentService {
                         if (update_section[2].equals(Constants.Yes)) {
                             //Delete all tasks from the event.
                             sqlHelper.delete(Table_Tasks.Table_Name, new String[]{Table_Events_Users.Event_ID}, new String[]{Event_ID}, null);
-                            ArrayList<String[]> allTasks = getAllTasks(details);
+                            ArrayList<String[]> allTasks = getAllTasks(Event_ID);
                             //Add task to my sql.
                             for (String[] task : allTasks) {
                                 sqlHelper.insert(Table_Tasks.Table_Name, task);
@@ -179,7 +179,7 @@ public class GcmIntentService extends IntentService {
                         if (update_section[3].equals(Constants.Yes)) {
                             //Delete all tasks from the event.
                             sqlHelper.delete(Table_Vote_Date.Table_Name, new String[]{Table_Vote_Date.Event_ID}, new String[]{Event_ID}, null);
-                            ArrayList<String[]> allVote_Date = getAllVotes_Date(details);
+                            ArrayList<String[]> allVote_Date = getAllVotes_Date(Event_ID);
                             //Add task to my sql.
                             for (String[] vote : allVote_Date) {
                                 sqlHelper.insert(Table_Vote_Date.Table_Name, vote);
@@ -189,7 +189,7 @@ public class GcmIntentService extends IntentService {
                         if (update_section[4].equals(Constants.Yes)) {
                             //Delete all tasks from the event.
                             sqlHelper.delete(Table_Vote_Location.Table_Name, new String[]{Table_Vote_Location.Event_ID}, new String[]{Event_ID}, null);
-                            ArrayList<String[]> allVote_Location = getAllVotes_Location(details);
+                            ArrayList<String[]> allVote_Location = getAllVotes_Location(Event_ID);
                             //Add task to my sql.
                             for (String[] vote : allVote_Location) {
                                 sqlHelper.insert(Table_Vote_Location.Table_Name, vote);
@@ -205,7 +205,7 @@ public class GcmIntentService extends IntentService {
                     case Constants.New_User: {
                         String Event_ID = details.split("\\^")[0];
                         String USer_ID = details.split("\\^")[1];
-                        String[] event_friend = getEventFriend(Event_ID, USer_ID);
+                        String[] event_friend = getEventUser(Event_ID, USer_ID);
                         sqlHelper.insert(Table_Events_Users.Table_Name, event_friend);
                         Helper.User_Insert_MySQL(USer_ID);
                         break;
@@ -328,7 +328,6 @@ public class GcmIntentService extends IntentService {
         delegate.processFinish(Constants.Update_Activity);
     }
 
-
     protected void showToast(final String message) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -367,11 +366,11 @@ public class GcmIntentService extends IntentService {
         return result;
     }
 
-    private String[] getEventFriend(String event_id, String friend_id) {
+    private String[] getEventUser(String event_id, String user_id) {
         EventUser eventUser;
         String[] result = new String[Table_Events_Users.Size()];
         try {
-            eventUser = myApiService.eventUserGet(event_id, friend_id).execute();
+            eventUser = myApiService.eventUserGet(event_id, user_id).execute();
             result[Table_Events_Users.Event_ID_num] = eventUser.getEventID();
             result[Table_Events_Users.User_ID_num] = eventUser.getUserID();
             result[Table_Events_Users.Attending_num] = eventUser.getAttending();
