@@ -137,8 +137,9 @@ public class GcmIntentService extends IntentService {
                                 }
                             }
                         }
-                        Helper.Delete_Event_MySQL(details);
                         if(close_event)delegate.closeActivity();
+                        Helper.Delete_Event_MySQL(details);
+
                         break;
                     }
                     case Constants.Update_Event: {
