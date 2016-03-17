@@ -340,33 +340,51 @@ public class New_Event extends AppCompatActivity {
                         vote_location_pointer.get(vote_id).setDescription(editText.getText().toString());
                     }
                 }
-                //Check that all vote_date are filled.
                 boolean all_fill_date;
                 boolean all_fill_time;
-                for (Vote_Date_Helper vote_date_helper : vote_date_pointer.values()) {
-                    all_fill_date = !vote_date_helper.getStart_Date().equals("dd/mm/yyy");//Fill "start date" automatically fill "end date".
-                    all_fill_time = vote_date_helper.getAll_Day().equals(Constants.Yes) || !vote_date_helper.getStart_Time().equals("hh:mm");//Fill "start time" automatically fill "end time".
-                    if (!(all_fill_date && all_fill_time)) {
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(), "Please fill all vote date details", Toast.LENGTH_LONG).show();
+                Switch switcher_vote_time = (Switch) findViewById(R.id.switcher_time);
+                //Check if vote option is on.
+                if (Event_Helper.details[Table_Events.Vote_Time_num].equals(Constants.Yes)) {
+                    //Close voting if there are 0 votes.
+                    if (vote_date_pointer.size() == 0) {
+                        Event_Helper.details[Table_Events.Vote_Time_num] = Constants.No;
+                        switcher_vote_time.setChecked(false);
+                    } else
+                        //Check that all vote_date are filled.
+                        for (Vote_Date_Helper vote_date_helper : vote_date_pointer.values()) {
+                            all_fill_date = !vote_date_helper.getStart_Date().equals("dd/mm/yyy");//Fill "start date" automatically fill "end date".
+                            all_fill_time = vote_date_helper.getAll_Day().equals(Constants.Yes) || !vote_date_helper.getStart_Time().equals("hh:mm");//Fill "start time" automatically fill "end time".
+                            if (!(all_fill_date && all_fill_time)) {
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(), "Please fill all vote date details", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                                return false;
                             }
-                        });
-                        return false;
-                    }
+                        }
                 }
-                //Check that all vote_date are filled.
-                for (Vote_Location_Helper vote_location_helper : vote_location_pointer.values()) {
-                    if (vote_location_helper.getDescription().length() == 0) {
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(), "Please fill all vote location details", Toast.LENGTH_LONG).show();
+                Switch switcher_vote_location = (Switch) findViewById(R.id.switcher_location);
+                //Check if vote option is on.
+                if (Event_Helper.details[Table_Events.Vote_Location_num].equals(Constants.Yes)) {
+                    //Close voting if there are 0 votes.
+                    if (vote_location_pointer.size() == 0) {
+                        Event_Helper.details[Table_Events.Vote_Location_num] = Constants.No;
+                        switcher_vote_location.setChecked(false);
+                    } else
+                        //Check that all vote_location are filled.
+                        for (Vote_Location_Helper vote_location_helper : vote_location_pointer.values()) {
+                            if (vote_location_helper.getDescription().length() == 0) {
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(), "Please fill all vote location details", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                                return false;
                             }
-                        });
-                        return false;
-                    }
+                        }
                 }
                 break;
             }
@@ -568,11 +586,10 @@ public class New_Event extends AppCompatActivity {
                 time_view2.setText(Helper.format_time(current_time));
             }
             if (!current_time.equals("hh:mm")) {
-                if(apk23) {
+                if (apk23) {
                     timePicker.setHour(Integer.parseInt(current_time.split(":")[0]));
                     timePicker.setMinute(Integer.parseInt(current_time.split(":")[1]));
-                }
-                else{
+                } else {
                     timePicker.setCurrentHour(Integer.parseInt(current_time.split(":")[0]));
                     timePicker.setCurrentMinute(Integer.parseInt(current_time.split(":")[1]));
                 }
@@ -584,10 +601,9 @@ public class New_Event extends AppCompatActivity {
                 @Override
                 public void onClick(final View v) {
                     String time = "";
-                    if(apk23) {
+                    if (apk23) {
                         time = timePicker.getHour() + ":" + timePicker.getMinute();
-                    }
-                    else{
+                    } else {
                         time = timePicker.getCurrentHour() + ":" + timePicker.getCurrentMinute();
                     }
                     if (isStartTime) {
@@ -1135,11 +1151,10 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
             time_view2.setText(Helper.format_time(current_time));
         }
         if (!current_time.equals("hh:mm")) {
-            if(apk23) {
+            if (apk23) {
                 timePicker.setHour(Integer.parseInt(current_time.split(":")[0]));
                 timePicker.setMinute(Integer.parseInt(current_time.split(":")[1]));
-            }
-            else{
+            } else {
                 timePicker.setCurrentHour(Integer.parseInt(current_time.split(":")[0]));
                 timePicker.setCurrentMinute(Integer.parseInt(current_time.split(":")[1]));
             }
@@ -1150,7 +1165,7 @@ class ExpandableListAdapter_New_Event_Vote_Date extends RecyclerView.Adapter<Rec
             @Override
             public void onClick(View v) {
                 String time = "";
-                if(apk23)time = timePicker.getHour() + ":" + timePicker.getMinute();
+                if (apk23) time = timePicker.getHour() + ":" + timePicker.getMinute();
                 else time = timePicker.getCurrentHour() + ":" + timePicker.getCurrentMinute();
                 if (isStartTime) {
                     vote_date_pointer.get(vote_id).setStart_Time(time);
@@ -1245,6 +1260,7 @@ class ExpandableListAdapter_New_Event_Vote_Location extends RecyclerView.Adapter
         } else {
             this.vote_location_pointer = Event_Helper.vote_location_tmp;
         }
+        Vote_ID_num_has_focus = 1;
         vote_height = 35;
         add_height = 34;
         recyclerView_height_dp = (data.size() - 1) * vote_height + add_height;

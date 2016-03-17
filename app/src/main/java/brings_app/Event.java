@@ -29,7 +29,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -272,16 +271,16 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                     TextView description = (TextView) rootView.findViewById(R.id.description);
                     final TextView date = (TextView) rootView.findViewById(R.id.date);
                     final TextView location = (TextView) rootView.findViewById(R.id.location);
-                    final Switch switcher_time = (Switch) rootView.findViewById(R.id.switcher_time);
+                    //final Switch switcher_time = (Switch) rootView.findViewById(R.id.switcher_time);
                     final RecyclerView recyclerView_date = (RecyclerView) rootView.findViewById(R.id.recyclerView_date);
                     final RelativeLayout relativeLayout_date = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date);
                     final RelativeLayout relativeLayout_date_titles = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date_titles);
-                    RelativeLayout relativeLayout_date_vote = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date_vote);
-                    final Switch switcher_location = (Switch) rootView.findViewById(R.id.switcher_location);
+                    //RelativeLayout relativeLayout_date_vote = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_date_vote);
+                    //final Switch switcher_location = (Switch) rootView.findViewById(R.id.switcher_location);
                     final RecyclerView recyclerView_location = (RecyclerView) rootView.findViewById(R.id.recyclerView_location);
                     final RelativeLayout relativeLayout_location = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_location);
                     final RelativeLayout relativeLayout_location_titles = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_location_titles);
-                    RelativeLayout relativeLayout_location_vote = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_location_vote);
+                    //RelativeLayout relativeLayout_location_vote = (RelativeLayout) rootView.findViewById(R.id.relativeLayout_location_vote);
                     //Set description.
                     if (Event_Helper.details[Table_Events.Description_num].equals("")) {
                         CardView_description.setVisibility(View.GONE);
@@ -290,7 +289,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                     }
                     //Set date.
                     setSwitcher_time_view(recyclerView_date, relativeLayout_date_titles, relativeLayout_date, date);
-                    if (Event_Helper.vote_date.size() == 0) {
+                    /*if (Event_Helper.vote_date.size() == 0) {
                         relativeLayout_date_vote.setVisibility(View.GONE);
                     } else if (my_permission.equals(Constants.Owner)) {
                         relativeLayout_date_vote.setVisibility(View.VISIBLE);
@@ -314,8 +313,10 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                     } else {
                         relativeLayout_date_vote.setVisibility(View.GONE);
                     }
+                    */
                     //Set location.
                     setSwitcher_location_view(recyclerView_location, relativeLayout_location_titles, relativeLayout_location, location);
+                    /*
                     if (Event_Helper.vote_location.size() == 0) {
                         relativeLayout_location_vote.setVisibility(View.GONE);
                     } else if (my_permission.equals(Constants.Owner)) {
@@ -340,7 +341,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
                     } else {
                         relativeLayout_location_vote.setVisibility(View.GONE);
                     }
-
+                    */
                     final RecyclerView recyclerview = (RecyclerView) rootView.findViewById(R.id.recyclerView);
                     recyclerview.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
                     final ExpandableListAdapter_Event_Friends expandableListAdapter_friends = new ExpandableListAdapter_Event_Friends(null);
