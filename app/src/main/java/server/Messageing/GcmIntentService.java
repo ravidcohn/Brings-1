@@ -143,8 +143,8 @@ public class GcmIntentService extends IntentService {
                         break;
                     }
                     case Constants.Update_Event: {
-                        String Event_ID = details.split("|")[0];
-                        String[] update_section = new String[]{details.split("|")[1], details.split("|")[2], details.split("|")[3], details.split("|")[4], details.split("|")[5]};
+                        String Event_ID = details.split("\\|")[0];
+                        String[] update_section = new String[]{details.split("\\^")[1], details.split("\\^")[2], details.split("\\^")[3], details.split("\\^")[4], details.split("\\^")[5]};
                         //Update event details.
                         String[] event = getEvent(Event_ID);
                         if (update_section[0].equals(Constants.Yes)) {
