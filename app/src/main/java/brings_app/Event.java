@@ -118,6 +118,7 @@ public class Event extends AppCompatActivity implements ServerAsyncResponse {
         super.onResume();  // Always call the superclass method first
         //Bundle b = getIntent().getExtras();
         //Event_Helper.load_event(b.getString("Event_ID"));
+        GcmIntentService.delegate = this;
         int CurrentItem = mViewPager.getCurrentItem();
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(CurrentItem);
