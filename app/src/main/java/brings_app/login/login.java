@@ -83,10 +83,11 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
     @Override
     public void onPause() {
         super.onPause();
-        if ((progressBar != null) )
+        if ((progressBar != null))
             progressBar.dismiss();
         progressBarStatus = false;
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -95,6 +96,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
             progressBar = null;
         }
     }
+
     public void signIn(View view) {
         progress(view.getContext(), "Sign in ...");
         new LoginAsyncTask(this, this).execute(etName.getText().toString(), etPass.getText().toString());
@@ -203,7 +205,7 @@ public class login extends AppCompatActivity implements ServerAsyncResponse {
         while (phones.moveToNext()) {
             String Nickname = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String User_ID = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-                    .replaceAll("-", "").replaceAll(" ", "").replaceAll("\\(", "").replaceAll("\\)", "");
+                    .replaceAll("-", "").replaceAll(" ", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("\\+", "");
             if (User_ID.charAt(0) == '0') {
                 User_ID = Constants.country_code + User_ID.substring(1);
             }

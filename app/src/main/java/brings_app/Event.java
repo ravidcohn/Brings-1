@@ -1380,7 +1380,7 @@ class ExpandableListAdapter_Event_Tasks extends RecyclerView.Adapter<RecyclerVie
                 }
                 //Set nickname;
                 if (task.getUser_ID().equals(Constants.MY_User_ID)) {
-                    itemController.user_nickname.setText(Constants.MY_User_Nickname);
+                    itemController.user_nickname.setText("Me");
                 } else if (!task.getUser_ID().equals(Constants.UnCheck)) {
                     itemController.user_nickname.setText(Contacts_List.contacts.get(task.getUser_ID()));
                 }
@@ -1434,7 +1434,7 @@ class ExpandableListAdapter_Event_Tasks extends RecyclerView.Adapter<RecyclerVie
                             if (Event_Helper.task.get(itemController.refferalItem.task_id).getUser_ID().equals(Constants.UnCheck)) {
                                 Event_Helper.task.get(itemController.refferalItem.task_id).setUser_ID(Constants.MY_User_ID);
                                 Helper.set_task_user_ID(v.getContext(), Event_Helper.details[Table_Events.Event_ID_num], task_id, Constants.MY_User_ID);
-                                itemController.user_nickname.setText(Constants.MY_User_Nickname);
+                                itemController.user_nickname.setText("Me");
                                 itemController.imageView.setImageResource(R.mipmap.ic_group_green);
                                 itemController.checkBox.setVisibility(View.VISIBLE);
                                 refresh_children(pos);
