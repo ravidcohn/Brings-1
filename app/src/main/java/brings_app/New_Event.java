@@ -648,7 +648,7 @@ public class New_Event extends AppCompatActivity {
                         switcher_vote_time.setChecked(true);
                     else
                         switcher_vote_time.setChecked(false);
-                    setSwitcher_time_view(recyclerView_date, relativeLayout_date_titles, relativeLayout_date, relativeLayout_all_day, date1, date2, all_day, time1, time1);
+                    setSwitcher_time_view(recyclerView_date, relativeLayout_date_titles, relativeLayout_date, relativeLayout_all_day, date1, date2, all_day, time1, time2);
                     if (Event_Helper.details[Table_Events.Vote_Location_num].equals(Constants.Yes))
                         switcher_vote_location.setChecked(true);
                     else

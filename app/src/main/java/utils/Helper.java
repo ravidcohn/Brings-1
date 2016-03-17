@@ -265,8 +265,8 @@ public class Helper {
         }
         //Delete friends.
         for (String User_ID : Event_Helper.friends.keySet()) {
-            update_section[users_num] = Constants.Yes;
             if (Event_Helper.friends_tmp.get(User_ID) == null) {
+                update_section[users_num] = Constants.Yes;
                 Update_Users.add(new String[]{User_ID, Constants.Delete_Event});
                 sqlHelper.delete(Table_Events_Users.Table_Name, new String[]{Table_Events_Users.Event_ID, Table_Events_Users.User_ID},
                         new String[]{Event_Helper.details[Table_Events.Event_ID_num], User_ID}, new int[]{1});
@@ -495,7 +495,7 @@ public class Helper {
     }
 
     public static void Update_Event_details_MySQL(String[] details) {
-        sqlHelper.update(Table_Events.Table_Name, Table_Events.getAllFields_Except_Event_ID(), details,
+        sqlHelper.update(Table_Events.Table_Name, Table_Events.getAllFields(), details,
                 new String[]{Table_Events.Event_ID}, new String[]{details[Table_Events.Event_ID_num]});
     }
 
