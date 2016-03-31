@@ -281,7 +281,7 @@ public class GcmIntentService extends IntentService {
                             addNotification("New Message - " + event_name, sender + ": \n" + chat[2]);
                         }
                         break;
-                    }
+                    }// commit
                     case Constants.Delete_Chat_Message: {
                         String Chat_ID = details.split("\\^")[0];
                         String Message_ID = details.split("\\^")[1];
