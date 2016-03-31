@@ -160,7 +160,7 @@ public class Helper {
         Send_Message_To_All_My_Friend_By_Event_ServerSQL(context, Event_Helper.details[Table_Events.Event_ID_num], message);
     }
 
-    public static void update_Event_details_field(Context context, String Event_ID, String field_name, String update) 2{
+    public static void update_Event_details_field(Context context, String Event_ID, String field_name, String update){
         update_Event_details_field_MySQL(Event_ID, field_name, update);
         update_Event_details_field_ServerSQL(context, Event_ID, field_name, update);
         //Send message to all users.
