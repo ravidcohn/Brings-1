@@ -270,13 +270,15 @@ public class GcmIntentService extends IntentService {
                         String Message_ID = details.split("\\^")[1];
                         String User_ID = details.split("\\^")[2];
                         String[] chat = getChat(Chat_ID, Message_ID, User_ID);
-                        String[] event = getEvent(Chat_ID.substring("Chat_".length()).replace("_", " - "));
+                        String Event_ID = Chat_ID.substring("Chat_".length()).replace("_", " - ");
+                        ArrayList<String>[] event = sqlHelper.select(null, Table_Events.Table_Name, new String[]{Table_Events.Event_ID},
+                                new String[]{Event_ID}, new int[]{1});
                         if (sqlHelper.select(null, Chat_ID, new String[]{Table_Chat.Message_ID, Table_Chat.User_ID}, new String[]{Message_ID, User_ID}, null)[0].isEmpty()) {
                             sqlHelper.insert(Chat_ID, chat);
-                            String event_name = event[Table_Events.Name_num];
+                            String event_name = event[Table_Events.Name_num].get(0);
                             if(event_name.length() == 0)event_name = "Event Name";
                             String sender = Contacts_List.contacts.get(chat[1]);
-                            addNotification("New Message - "+event_name, sender+": \n"+chat[2]);
+                            addNotification("New Message - " + event_name, sender + ": \n" + chat[2]);
                         }
                         break;
                     }
