@@ -360,7 +360,7 @@ public class New_Event extends AppCompatActivity {
                                     public void run() {
                                         Toast.makeText(getApplicationContext(), "Please fill all vote date details", Toast.LENGTH_LONG).show();
                                     }
-                                });
+                                });//
                                 return false;
                             }
                         }
