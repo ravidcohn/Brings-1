@@ -40,6 +40,7 @@ import utils.Constans.Table_Events_Users;
 import utils.Constans.Table_Tasks;
 import utils.Constans.Table_Vote_Date;
 import utils.Constans.Table_Vote_Location;
+import utils.Event_Helper_Package.Contacts_List;
 import utils.Helper;
 import utils.sqlHelper;
 
@@ -269,8 +270,13 @@ public class GcmIntentService extends IntentService {
                         String Message_ID = details.split("\\^")[1];
                         String User_ID = details.split("\\^")[2];
                         String[] chat = getChat(Chat_ID, Message_ID, User_ID);
+                        String[] event = getEvent(Chat_ID.substring("Chat_".length()).replace("_", " - "));
                         if (sqlHelper.select(null, Chat_ID, new String[]{Table_Chat.Message_ID, Table_Chat.User_ID}, new String[]{Message_ID, User_ID}, null)[0].isEmpty()) {
                             sqlHelper.insert(Chat_ID, chat);
+                            String event_name = event[Table_Events.Name_num];
+                            if(event_name.length() == 0)event_name = "Event Name";
+                            String sender = Contacts_List.contacts.get(chat[1]);
+                            addNotification("New Message - "+event_name, sender+": \n"+chat[2]);
                         }
                         break;
                     }
@@ -525,7 +531,8 @@ public class GcmIntentService extends IntentService {
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(title)
-                        .setContentText(content);
+                        .setContentText(content)
+                        .setAutoCancel(true);
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
@@ -535,6 +542,7 @@ public class GcmIntentService extends IntentService {
         // Add as notification
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(0, builder.build());
+
     }
 
     // Remove notification

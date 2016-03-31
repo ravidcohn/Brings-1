@@ -777,6 +777,7 @@ public class Helper {
     public static String getMyPermission(String Event_ID) {
         ArrayList<String>[] dbResult = sqlHelper.select(null, Table_Events_Users.Table_Name, new String[]{Table_Events_Users.Event_ID, Table_Events_Users.User_ID},
                 new String[]{Event_ID, Constants.MY_User_ID}, null);
+        if(dbResult[Table_Events_Users.Permission_num].size() == 0)return Constants.Owner;
         return dbResult[Table_Events_Users.Permission_num].get(0);
     }
 
@@ -861,9 +862,11 @@ public class Helper {
     }
 
     public static String format_date(String date) {
-        String day = date.split("\\/")[0];
-        String month = date.split("\\/")[1];
-        String year = date.split("\\/")[2];
+        String[] a_date = date.split("\\/");
+        if(a_date.length == 1)return "dd/mm/yyyy";
+        String day = a_date[0];
+        String month = a_date[1];
+        String year = a_date[2];
         if (day.length() == 1)
             day = 0 + day;
         if (month.length() == 1)
@@ -884,8 +887,10 @@ public class Helper {
     }
 
     public static String format_time(String time) {
-        String hour = time.split(":")[0];
-        String minute = time.split(":")[1];
+        String[] a_time = time.split(":");
+        if(a_time.length == 1)return "hh:mm";
+        String hour = a_time[0];
+        String minute = a_time[1];
         if (hour.length() == 1)
             hour = 0 + hour;
         if (minute.length() == 1)
